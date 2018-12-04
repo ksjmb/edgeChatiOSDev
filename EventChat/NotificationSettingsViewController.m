@@ -67,7 +67,6 @@
         cell = [[NotificationSettingsCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
     
-    
     if(indexPath.section == 0){
         [cell configureWithData:@"Allow Notifications"];
     }
@@ -86,7 +85,6 @@
         }
     }
     return cell;
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{

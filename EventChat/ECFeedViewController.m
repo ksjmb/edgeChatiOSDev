@@ -249,6 +249,40 @@
         dcPlaylistsTableViewController.isFeedMode = false;
         [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
     }
+    else if([identifier isEqualToString:@"ECEventTopicCommentsViewController"]) {
+        NSString *feedItemId = [[NSUserDefaults standardUserDefaults] valueForKey:@"feedItemId"];
+        
+        [[ECAPI sharedManager] fetchTopicsByFeedItemId:feedItemId callback:^(NSArray *topics, NSError *error)  {
+            if(error){
+                NSLog(@"Error: %@", error);
+            }
+            else{
+                self.topics = [[NSMutableArray alloc] initWithArray:topics];
+                ECEventTopicCommentsViewController *ecEventTopicCommentsViewController = [[ECEventTopicCommentsViewController alloc] init];
+                ECTopic *topic = [self.topics objectAtIndex:1];
+                ecEventTopicCommentsViewController.selectedFeedItem = self.saveFeedItem;
+                ecEventTopicCommentsViewController.selectedTopic = topic;
+                ecEventTopicCommentsViewController.topicId = topic.topicId;
+                [self.navigationController pushViewController:ecEventTopicCommentsViewController animated:YES];
+            }
+        }];
+    }
+    else if([identifier isEqualToString:@"DCPlaylistsTableViewController"]) {
+        NSString *feedItemId = [[NSUserDefaults standardUserDefaults] valueForKey:@"feedItemId"];
+        
+        DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
+        dcPlaylistsTableViewController.isFeedMode = true;
+        dcPlaylistsTableViewController.isSignedInUser = true;
+        dcPlaylistsTableViewController.feedItemId = feedItemId;
+        UINavigationController *navigationController =
+        [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
+        [self presentViewController:navigationController animated:YES completion:nil];
+    }
+    else if([identifier isEqualToString:@"ECAttendanceDetailsViewController"]) {
+        ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
+        ecAttendanceDetailsViewController.selectedFeedItem = self.saveFeedItem;
+        [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+    }
 }
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
@@ -917,6 +951,8 @@
             }
         }];
     }else{
+        self.saveFeedItem = ecFeedCell.feedItem;
+        [[NSUserDefaults standardUserDefaults] setObject:ecFeedCell.feedItem.feedItemId forKey:@"feedItemId"];
         [self pushToSignInVC:@"ECEventTopicCommentsViewController"];
     }
 }
@@ -933,6 +969,7 @@
         [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
         [self presentViewController:navigationController animated:YES completion:nil];
     }else{
+        [[NSUserDefaults standardUserDefaults] setObject:ecFeedCell.feedItem.feedItemId forKey:@"feedItemId"];
         [self pushToSignInVC:@"DCPlaylistsTableViewController"];
     }
 }
@@ -945,6 +982,7 @@
         ecAttendanceDetailsViewController.selectedFeedItem = ecFeedCell.feedItem;
         [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
     }else{
+        self.saveFeedItem = ecFeedCell.feedItem;
         [self pushToSignInVC:@"ECAttendanceDetailsViewController"];
     }
 }

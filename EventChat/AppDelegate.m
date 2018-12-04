@@ -109,8 +109,8 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
                                }
                                else{
                                    NSLog(@"User AppDelegate: %@", ecUser);
-                                   ECAPI *instance = [ECAPI sharedManager];
-                                   [instance updateSignedInUser:ecUser];
+//                                   ECAPI *instance = [ECAPI sharedManager];
+//                                   [instance updateSignedInUser:ecUser];
                                    self.signedInUser = [[ECAPI sharedManager] signedInUser];
                                    
                                    [[NSUserDefaults standardUserDefaults] setObject:userEmail forKey:@"SignedInUserEmail"];

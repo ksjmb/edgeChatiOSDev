@@ -515,8 +515,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
                            }
                            else{
                                NSLog(@"User: %@", ecUser);
-                               ECAPI *instance = [ECAPI sharedManager];
-                               [instance updateSignedInUser:ecUser];
+//                               ECAPI *instance = [ECAPI sharedManager];
+//                               [instance updateSignedInUser:ecUser];
                                self.signedInUser = [[ECAPI sharedManager] signedInUser];
                                [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"SignedInUserEmail"];
                                [[NSUserDefaults standardUserDefaults] setObject:@"n/a" forKey:@"socialUserId"];

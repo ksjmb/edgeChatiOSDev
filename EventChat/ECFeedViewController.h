@@ -22,6 +22,7 @@
 
 @property (retain, nonatomic) NSString *sbIdentifierString;
 @property (nonatomic, assign) BOOL isCommingFromLogin;
+@property (nonatomic, strong) DCFeedItem *saveFeedItem;
 
 -(void)pushToSignInVC;
 @end
