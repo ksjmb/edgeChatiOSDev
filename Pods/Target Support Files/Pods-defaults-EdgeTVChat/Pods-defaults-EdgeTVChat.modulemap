@@ -1,0 +1,6 @@
+framework module Pods_defaults_EdgeTVChat {
+  umbrella header "Pods-defaults-EdgeTVChat-umbrella.h"
+
+  export *
+  module * { export * }
+}

@@ -1,0 +1,1054 @@
+//
+//  ECFeedViewController.m
+//  EventChat
+//
+//  Created by Jigish Belani on 1/31/16.
+//  Copyright © 2016 Apex Ventures, LLC. All rights reserved.
+//
+
+#import "ECFeedViewController.h"
+#import "ECAPI.h"
+#import "ECEventBriteSearchResult.h"
+#import "ECEventBriteEvent.h"
+#import "ECFeedCell.h"
+#import "AppDelegate.h"
+#import "ECUser.h"
+#import "ECEventDetailsViewController.h"
+#import "SVProgressHUD.h"
+#import "ECTopicViewController.h"
+#import "ECEventDetailViewController.h"
+#import "ECEvent.h"
+#import "AFHTTPRequestOperationManager.h"
+#import "NSObject+AssociatedObject.h"
+#import "ECHowToViewController.h"
+#import "ECFavoritesViewController.h"
+#import "ECEventTopicCommentsViewController.h"
+#import "ECAttendanceDetailsViewController.h"
+#import "DCFeedItem.h"
+#import "ECColor.h"
+#import "DCFeedItemDetailsViewController.h"
+#import "DCPlaylistsTableViewController.h"
+#import "IonIcons.h"
+#import "DCTVShowViewController.h"
+#import <AVFoundation/AVFoundation.h>
+#import <AVKit/AVKit.h>
+#import "DCFeedItemFilter.h"
+#import "ECCommonClass.h"
+#import "DCPersonDetailTableViewController.h"
+#import "AFOAuth2Manager.h"
+#import "ECAuthAPI.h"
+#import "DCProfileTableViewController.h"
+#import "DCNewTVShowViewController.h"
+#import "DCChatReactionViewController.h"
+//
+#import "ECNewTableViewCell.h"
+#import "SignUpLoginViewController.h"
+
+@interface ECFeedViewController () <HTHorizontalSelectionListDataSource, HTHorizontalSelectionListDelegate>
+@property (nonatomic, weak) IBOutlet UITableView *eventFeedTableView;
+@property (nonatomic, strong) ECEventBriteSearchResult *feedResult;
+@property (nonatomic, strong) ECEventBriteSearchResult *searchResult;
+//@property (nonatomic, strong) ECEventBriteEvent *event;
+@property (nonatomic, assign) AppDelegate *appDelegate;
+@property (nonatomic, strong) CLLocation *currentLocation;
+@property (nonatomic, strong) UISearchController *searchController;
+//@property (nonatomic, strong) IBOutlet UISearchBar *searchBar;
+@property (nonatomic, assign) int searchRadius;
+@property (nonatomic, strong) DCFeedItemFilter *currentFilter;
+@property (nonatomic, strong) ECUser *signedInUser;
+@property (nonatomic, strong) AFHTTPRequestOperationManager *operationManager;
+@property (nonatomic, strong) NSMutableArray *topics;
+@property (nonatomic, strong) NSMutableArray *feedItemsArray;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *favoriteBarButtonItem;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *sortOptionsBarButtonItem;
+@property (nonatomic, strong) IBOutlet UIBarButtonItem *searchBarButtonItem;
+@property (nonatomic, strong) HTHorizontalSelectionList *filterList;
+@property (nonatomic, strong) NSArray *feedItemFilters;
+@property (nonatomic, assign) NSString *userEmail;
+// for state restoration
+@property BOOL searchControllerWasActive;
+@property BOOL searchControllerSearchFieldWasFirstResponder;
+@property (nonatomic, strong) FBSDKShareDialog *shareDialog;
+@property (nonatomic, strong) FBSDKShareLinkContent *content;
+@property (nonatomic, retain) UIButton *profileButton;
+
+@end
+
+@implementation ECFeedViewController
+
+#pragma mark:- ViewController LifeCycle Methods
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    _userEmail = [defaults objectForKey:@"SignedInUserEmail"];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationIsActive:)
+                                                 name:UIApplicationDidBecomeActiveNotification
+                                               object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(applicationEnteredForeground:)
+                                                 name:UIApplicationWillEnterForegroundNotification
+                                               object:nil];
+    
+    [self.eventFeedTableView registerNib:[UINib nibWithNibName:@"ECNewTableViewCell" bundle:nil]
+                  forCellReuseIdentifier:@"ECNewTableViewCell"];
+    
+    UIRefreshControl *refreshControl = [UIRefreshControl new];
+    [refreshControl addTarget:self action:@selector(handleRefresh:) forControlEvents:UIControlEventValueChanged];
+    [self.eventFeedTableView addSubview:refreshControl];
+    [self.eventFeedTableView sendSubviewToBack:refreshControl];
+    
+    [self.searchController.searchBar setBarStyle:UIBarStyleDefault];
+    [self.searchController.searchBar setTintColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]];
+    [self.searchController.searchBar setBackgroundColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]];
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+    [SVProgressHUD showWithStatus:@"Loading..."];
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    self.favoriteBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] style:UIBarButtonItemStylePlain target:self action:@selector(didTapViewFavorites:)];
+    self.searchBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[IonIcons imageWithIcon:ion_ios_search_strong  size:30.0 color:[UIColor whiteColor]] style:UIBarButtonItemStylePlain target:self action:@selector(showSearchbar:)];
+    [self.navigationItem setRightBarButtonItems:@[self.favoriteBarButtonItem, self.searchBarButtonItem]];
+
+    //[self.favoriteBarButtonItem setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]]];
+    //[self.searchBarButtonItem  setImage:[IonIcons imageWithIcon:ion_ios_search size:30.0 color:[UIColor whiteColor]]];
+    [self.searchController.searchBar setBackgroundColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]];
+    self.searchRadius = 5;
+    self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    self.currentLocation = self.appDelegate.lastLocation;
+    // Get logged in user
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    self.searchController.searchResultsUpdater = self;
+    // we want to be the delegate for our filtered table so didSelectRowAtIndexPath is called for both tables
+    self.searchController.delegate = self;
+    self.searchController.hidesNavigationBarDuringPresentation = false;
+    self.searchController.dimsBackgroundDuringPresentation = NO; // default is YES
+    self.searchController.searchBar.delegate = self; // so we can monitor text changes + others
+    [self.navigationItem setTitle:@"EdgeChat"]; //self.navigationItem.titleView = self.searchController.searchBar;
+    [self.searchController.searchBar sizeToFit];
+    if (@available(iOS 11.0, *)) {
+        [self.searchController.searchBar.heightAnchor constraintLessThanOrEqualToConstant: 44].active = YES;
+    }
+    // Search is now just presenting a view controller. As such, normal view controller
+    // presentation semantics apply. Namely that presentation will walk up the view controller
+    // hierarchy until it finds the root view controller or one that defines a presentation context.
+    //
+    self.definesPresentationContext = YES;
+    
+    //[self loadEventBriteSearchResults];
+    NSLog(@"Overlay: %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"HasSeenOverlay"]);
+    BOOL hasSeenOverlay = [[NSUserDefaults standardUserDefaults] objectForKey:@"HasSeenOverlay"];
+    if(!hasSeenOverlay){
+        ECHowToViewController *addController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECHowToViewController"];
+        addController.providesPresentationContextTransitionStyle = YES;
+        addController.definesPresentationContext = YES;
+        [addController setModalPresentationStyle:UIModalPresentationOverFullScreen];
+        [self.navigationController presentViewController:addController animated:YES completion: nil];
+    }
+    
+    // JB: 01/26/18 - Commented out for not and loading particular category directly. Will address after business discussion.
+    //    [[ECAPI sharedManager] getFeedItems:^(NSArray *searchResult, NSError *error) {
+    //        self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
+    //
+    ////        dispatch_async(dispatch_get_main_queue(), ^{
+    ////            [self.eventFeedTableView reloadData];
+    ////        });
+    //        [self.eventFeedTableView reloadData];
+    //        [SVProgressHUD dismiss];
+    //    }];
+    
+    self.filterList = [[HTHorizontalSelectionList alloc] initWithFrame:CGRectMake(0, 0.0, self.view.frame.size.width, 56)];
+    self.filterList.delegate = self;
+    self.filterList.dataSource = self;
+    [self.view addSubview:self.filterList];
+    
+    [[ECAPI sharedManager] getFeedItemFilters:^(NSArray *results, NSError *error){
+        self.feedItemFilters = [[NSMutableArray alloc] initWithArray:results];
+        [self.filterList reloadData];
+        DCFeedItemFilter *feedItemFilter = _feedItemFilters[0];
+        _currentFilter = feedItemFilter;
+        [self loadFeedItemsByFilter:feedItemFilter];
+    }];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    if(_currentFilter != nil){
+        [self loadFeedItemsByFilter:_currentFilter];
+    }
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+//    NSString *userEmail = [defaults objectForKey:@"SignedInUserEmail"];
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    
+    if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
+        // Profile pic in UIBarButton [super viewDidLoad];
+        UIImage* img;
+        
+        if([self.signedInUser.profilePicUrl length] > 0){
+            NSString* url = self.signedInUser.profilePicUrl;
+            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL   URLWithString:url]];
+            img = [UIImage imageWithData:data];
+        }
+        else{
+            img = [UIImage imageNamed:@"missing-profile.png"];
+        }
+        
+        UIButton *profileButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        profileButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [profileButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+        profileButton.frame = CGRectMake(0, 0, 30, 30);
+        profileButton.layer.cornerRadius = profileButton.frame.size.width /2;
+        profileButton.layer.masksToBounds = YES;
+        profileButton.layer.borderWidth = 0.5;
+        profileButton.layer.borderColor = [UIColor whiteColor].CGColor;
+        [profileButton setImage:[self imageWithImage:img scaledToSize:CGSizeMake(30, 30)] forState:UIControlStateNormal];
+        [profileButton addTarget:self action:@selector(didTapViewProfile:) forControlEvents:UIControlEventTouchUpInside];
+        self.sortOptionsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
+        self.navigationItem.leftBarButtonItem = self.sortOptionsBarButtonItem;
+    }else{
+        // move to specificVC with identifier and required parameters
+        self.navigationItem.leftBarButtonItem = nil;
+    }
+}
+
+#pragma mark:- SignUpLoginDelegate Methods
+
+- (void)didTapLoginButton:(NSString *)storyboardIdentifier{
+    NSLog(@"didTapLoginButton: storyboardIdentifier: %@", storyboardIdentifier);
+    [self sendToSpecificVC:storyboardIdentifier];
+}
+
+#pragma mark:- Instance Methods
+
+- (void)pushToSignInVC :(NSString*)stbIdentifier{
+    UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
+    SignUpLoginViewController *signUpVC = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
+    signUpVC.delegate = self;
+    signUpVC.hidesBottomBarWhenPushed = YES;
+    signUpVC.storyboardIdentifierString = stbIdentifier;
+    [self.navigationController pushViewController:signUpVC animated:true];
+}
+
+-(void)sendToSpecificVC:(NSString*)identifier{
+    if([identifier isEqualToString:@"DCProfileTableViewController"]) {
+        DCProfileTableViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCProfileTableViewController"];
+        dcProfileTableViewController.isSignedInUser = true;
+        dcProfileTableViewController.profileUser = self.signedInUser;
+        [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
+    }
+    else if([identifier isEqualToString:@"DCPlaylistsTableViewController"]) {
+        DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
+        dcPlaylistsTableViewController.isSignedInUser = true;
+        dcPlaylistsTableViewController.isFeedMode = false;
+        [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+    }
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        if ([[UIScreen mainScreen] scale] == 2.0) {
+            UIGraphicsBeginImageContextWithOptions(newSize, YES, 2.0);
+        } else {
+            UIGraphicsBeginImageContext(newSize);
+        }
+    } else {
+        UIGraphicsBeginImageContext(newSize);
+    }
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+- (void)applicationIsActive:(NSNotification *)notification {
+    NSLog(@"Application Did Become Active");
+}
+
+- (void)applicationEnteredForeground:(NSNotification *)notification {
+    NSLog(@"Application Entered Foreground");
+    if(_currentFilter != nil){
+        [self loadFeedItemsByFilter:_currentFilter];
+    }
+}
+
+- (void)handleRefresh:(UIRefreshControl *)refreshControl {
+    if(_currentFilter != nil){
+        [self loadFeedItemsByFilter:_currentFilter];
+    }
+    [refreshControl endRefreshing];
+}
+
+- (BOOL)prefersStatusBarHidden{
+    return NO;
+}
+
+- (IBAction)showSearchbar:(id)sender{
+    self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
+    
+    [self.searchController.searchBar setBarStyle:UIBarStyleDefault];
+    [self.searchController.searchBar setTintColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]];
+    self.searchController.delegate = self;
+    self.searchController.hidesNavigationBarDuringPresentation = false;
+    self.searchController.dimsBackgroundDuringPresentation = NO; // default is YES
+    self.searchController.searchBar.delegate = self; // so we can monitor text changes + others
+    [self presentViewController:self.searchController animated:YES completion:nil];
+}
+
+#pragma mark - HTHorizontalSelectionListDataSource Protocol Methods
+
+- (NSInteger)numberOfItemsInSelectionList:(HTHorizontalSelectionList *)selectionList {
+    return _feedItemFilters.count;
+}
+
+- (NSString *)selectionList:(HTHorizontalSelectionList *)selectionList titleForItemWithIndex:(NSInteger)index {
+    DCFeedItemFilter *feedItemFilter = _feedItemFilters[index];
+    return [feedItemFilter.name uppercaseString];
+}
+
+#pragma mark - HTHorizontalSelectionListDelegate Protocol Methods
+
+- (void)selectionList:(HTHorizontalSelectionList *)selectionList didSelectButtonWithIndex:(NSInteger)index {
+    // update the view for the corresponding index
+    DCFeedItemFilter *feedItemFilter = _feedItemFilters[index];
+    _currentFilter = feedItemFilter;
+    [[ECAPI sharedManager] filterFeedItemsByFilterObject:feedItemFilter callback:^(NSArray *searchResult, NSError *error) {
+        if (error) {
+            NSLog(@"Error adding user: %@", error);
+        }
+        else{
+            self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
+            [self.eventFeedTableView reloadData];
+            [SVProgressHUD dismiss];
+        }
+    }];
+    
+//    if([feedItemCategory.type isEqual:@"entity"]){
+//        [[ECAPI sharedManager] filterFeedItemsByEntityType:@"person" callback:^(NSArray *searchResult, NSError *error) {
+//            if (error) {
+//                NSLog(@"Error adding user: %@", error);
+//                NSLog(@"%@", error);
+//            }
+//            else{
+//                self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
+//                [self.eventFeedTableView reloadData];
+//                [SVProgressHUD dismiss];
+//            }
+//        }];
+//    }
+//    else{
+//        [[ECAPI sharedManager] filterFeedItemsByCatagory:feedItemCategory.name callback:^(NSArray *searchResult, NSError *error) {
+//            self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
+//            [self.eventFeedTableView reloadData];
+//            [SVProgressHUD dismiss];
+//        }];
+//    }
+//    if(index == 0){
+//        [[ECAPI sharedManager] getFeedItems:^(NSArray *searchResult, NSError *error) {
+//            self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
+//            [self.eventFeedTableView reloadData];
+//            [SVProgressHUD dismiss];
+//        }];
+//    }else{
+//
+//
+//    }
+}
+
+#pragma mark - API calls
+- (void)loadEventBriteSearchResults{
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+    [SVProgressHUD showWithStatus:@"Loading Events"];
+    [[ECAPI sharedManager] getEventsByLocation:[NSString stringWithFormat:@"location.latitude=%f&location.longitude=%f&location.within=%dmi", self.currentLocation.coordinate.latitude, self.currentLocation.coordinate.longitude, self.searchRadius] callback:^(ECEventBriteSearchResult *searchResult, NSError *error) {
+        if(error){
+            NSLog(@"Error: %@", error);
+        }
+        else{
+            self.feedResult = searchResult;
+            
+            for (int i = 0; i < [self.feedResult.events count]; i++){
+                NSError *eventError;
+                ECEventBriteEvent *ebEvent = [[ECEventBriteEvent alloc] initWithDictionary:[self.feedResult.events objectAtIndex:i] error:&eventError];
+                id object = [self.feedResult.events objectAtIndex:i];
+                NSLog(@"EBEvent: %@", ebEvent.id);
+                NSLog(@"EBEvent: %@", ebEvent.eventId);
+                if([self.signedInUser.favoritedEventIds containsObject:ebEvent.eventId]){
+                    [self.feedResult.events removeObjectAtIndex:i];
+                    [self.feedResult.events insertObject:object atIndex:0];
+                }
+            }
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.eventFeedTableView reloadData];
+            });
+            
+            [SVProgressHUD dismiss];
+        }
+        
+    }];
+}
+
+- (void)loadFeedItemsFromSearchResult{
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+    [SVProgressHUD showWithStatus:@"Searching..."];
+    
+    [[ECAPI sharedManager] searchFeedItemsByText:self.searchController.searchBar.text callback:^(NSArray *searchResult, NSError *error) {
+        if(error){
+            NSLog(@"Error: %@", error);
+        }
+        else{
+            self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.eventFeedTableView reloadData];
+            });
+            [SVProgressHUD dismiss];
+        }
+    }];
+}
+
+// 1st API Call
+- (void)loadFeedItemsByFilter:(DCFeedItemFilter *)feedItemFilter{
+    [[ECAPI sharedManager] filterFeedItemsByFilterObject:feedItemFilter callback:^(NSArray *searchResult, NSError *error) {
+        if (error) {
+            NSLog(@"Error adding user: %@", error);
+            NSLog(@"%@", error);
+        }
+        else{
+            self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
+            [self.eventFeedTableView reloadData];
+            [SVProgressHUD dismiss];
+        }
+    }];
+}
+
+- (void)tempCall{
+    [[ECAPI sharedManager] getUserByEmail:@"belani.jigish@gmail.com" callback:^(ECUser *ecUser, NSError *error) {
+        if(error){
+            NSLog(@"Error: %@", error);
+        }
+        else{
+            NSLog(@"User: %@", ecUser);
+        }
+    }];
+}
+
+#pragma mark - Table view data source
+
+- (AFHTTPRequestOperationManager *)operationManager
+{
+    if (!_operationManager)
+    {
+        _operationManager = [[AFHTTPRequestOperationManager alloc] init];
+        _operationManager.responseSerializer = [AFImageResponseSerializer serializer];
+    };
+    
+    return _operationManager;
+}
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return 311.0;
+}
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return [self.feedItemsArray count];
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    static NSString *CellIdentifier = @"ECNewTableViewCell";
+    
+    DCFeedItem *dcFeedItem = [self.feedItemsArray objectAtIndex:indexPath.row];
+    //DCFeedItem *dcFeedItem = [[DCFeedItem alloc] initWithDictionary:[self.feedItemsArray objectAtIndex:indexPath.row]error:nil];
+    ECNewTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    if (cell == nil) {
+        cell = [[ECNewTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+    }
+    //ECFeedCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier
+    //                                                        forIndexPath:indexPath];
+    cell.delegate = self;
+    int commentCount = 0;
+    BOOL isFavorited = false;
+    BOOL isAttending = false;
+    
+    commentCount = [dcFeedItem.commentCount intValue];
+    
+    // Get ECUser favorited feedItems
+    if([self.signedInUser.favoritedFeedItemIds containsObject:dcFeedItem.feedItemId]){
+        isFavorited = true;
+    }
+    else{
+        isFavorited = false;
+    }
+    
+    // Get ECUser attending feedItems
+    if([self.signedInUser.attendingFeedItemIds containsObject:dcFeedItem.feedItemId]){
+        isAttending = true;
+    }
+    else{
+        isAttending = false;
+    }
+    
+    [cell configureWithFeedItem:dcFeedItem ecUser:self.signedInUser cellIndex:indexPath commentCount:commentCount isFavorited:isFavorited isAttending:isAttending];
+    
+    return cell;
+ }
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    //[self performSegueWithIdentifier:@"show_details" sender:nil];
+//    ECEventDetailsViewController *ecEventDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECEventDetailsViewController"];
+//    ECEventBriteEvent *event = [[ECEventBriteEvent alloc] initWithDictionary:[self.feedResult.events objectAtIndex:indexPath.row] error:nil];
+//    ecEventDetailsViewController.selectedEvent = event;
+//    ecEventDetailsViewController.eventId = event.id;
+//
+//    [self.navigationController pushViewController:ecEventDetailsViewController animated:YES];
+}
+
+
+/*
+ // Override to support conditional editing of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+ // Return NO if you do not want the specified item to be editable.
+ return YES;
+ }
+ */
+
+/*
+ // Override to support editing the table view.
+ - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+ if (editingStyle == UITableViewCellEditingStyleDelete) {
+ // Delete the row from the data source
+ [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+ } else if (editingStyle == UITableViewCellEditingStyleInsert) {
+ // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+ }
+ }
+ */
+
+/*
+ // Override to support rearranging the table view.
+ - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
+ }
+ */
+
+/*
+ // Override to support conditional rearranging of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
+ // Return NO if you do not want the item to be re-orderable.
+ return YES;
+ }
+ */
+
+/*
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
+
+/*
+#pragma mark - Navigation
+
+// In a storyboard-based application, you will often want to do a little preparation before navigation
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    // Get the new view controller using [segue destinationViewController].
+    // Pass the selected object to the new view controller.
+}
+*/
+
+#pragma mark - Action sheet
+- (void)actionSheet:(UIActionSheet *)popup clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    NSLog(@"%@", self.feedResult.events);
+    switch (popup.tag) {
+        case 1: {
+            switch (buttonIndex) {
+                case 0:
+                    [self.feedResult.events sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created" ascending:YES]]];
+                    break;
+                case 1:
+                    [self.feedResult.events sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"end.local" ascending:YES]]];
+                    break;
+                case 2:
+                    [self.feedResult.events sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name.text" ascending:YES]]];
+                    break;
+                case 3:
+                    [self.feedResult.events sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"name.text" ascending:NO]]];
+                    break;
+                default:
+                    break;
+            }
+            [self.eventFeedTableView reloadData];
+            break;
+        }
+        case 2: {
+            [SVProgressHUD showWithStatus:@"Loading..."];
+            switch (buttonIndex) {
+                case 0:
+                    self.searchRadius = 5;
+                    break;
+                case 1:
+                    self.searchRadius = 10;
+                    break;
+                case 2:
+                    self.searchRadius = 25;
+                    break;
+                default:
+                    break;
+            }
+            break;
+        }
+        case 3: {
+            [SVProgressHUD showWithStatus:@"Loading..."];
+            switch (buttonIndex) {
+                case 0:
+                    self.searchRadius = 5;
+                    break;
+                case 1:
+                    self.searchRadius = 10;
+                    break;
+                case 2:
+                    self.searchRadius = 25;
+                    break;
+                case 3:
+                    self.searchRadius = 50;
+                    break;
+                default:
+                    break;
+            }
+            break;
+        }
+        default:
+            break;
+    }
+}
+
+#pragma mark - Action sheet
+- (IBAction)didTapMoreOptionsButton:(id)sender
+{
+    UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:
+                            @"Date Added", @"End Date", @"Alphabetical (A - Z)", @"Alphabetical (Z - A)",
+                            nil];
+    popup.tag = 1;
+    [popup showInView:[UIApplication sharedApplication].keyWindow];
+}
+
+- (IBAction)didTapFilterButton:(id)sender
+{
+    UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:
+                            @"5 Miles", @"10 Miles", @"25 Miles", @"50 Miles",
+                            nil];
+    popup.tag = 2;
+    [popup showInView:[UIApplication sharedApplication].keyWindow];
+}
+
+- (IBAction)didTapAddToPlaylistButton:(id)sender
+{
+    UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:
+                            @"Playlist 1", @"Playlist 2", @"Playlist 3",
+                            nil];
+    popup.tag = 3;
+    [popup showInView:[UIApplication sharedApplication].keyWindow];
+}
+
+//** ProfileTap **//
+- (IBAction)didTapViewProfile:(id)sender{
+    DCProfileTableViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCProfileTableViewController"];
+    dcProfileTableViewController.isSignedInUser = true;
+    dcProfileTableViewController.profileUser = self.signedInUser;
+    [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
+}
+
+//** FavTap **//
+- (IBAction)didTapViewFavorites:(id)sender{
+//    if (self.signedInUser != nil){
+        if (self.userEmail != nil){
+        DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
+        dcPlaylistsTableViewController.isFeedMode = false;
+        dcPlaylistsTableViewController.isSignedInUser = true;
+        [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+    }else{
+        [self pushToSignInVC:@"DCPlaylistsTableViewController"];
+    }
+}
+
+- (IBAction)didTapSearchButton:(id)sender{
+    self.navigationItem.rightBarButtonItems = nil;
+    self.navigationItem.leftBarButtonItems = nil;
+    self.navigationItem.titleView = self.searchController.searchBar;
+}
+
+#pragma mark - UISearchBarDelegate
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    //self.searchBar.showsCancelButton = false;
+    [searchBar resignFirstResponder];
+    [self loadFeedItemsFromSearchResult];
+}
+
+- (BOOL)searchBarShouldBeginEditing:(UISearchBar*)searchBar {
+    //self.searchBar.showsCancelButton = true;
+    return YES;
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *) searchBar
+{
+    //self.searchBar.showsCancelButton = false;
+    [searchBar resignFirstResponder];
+    [self loadFeedItemsByFilter:_currentFilter];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
+    if ([searchText length] == 0) {
+        [searchBar resignFirstResponder];
+        [self loadFeedItemsByFilter:_currentFilter];
+    }
+}
+
+#pragma mark - UISearchControllerDelegate
+
+// Called after the search controller's search bar has agreed to begin editing or when
+// 'active' is set to YES.
+// If you choose not to present the controller yourself or do not implement this method,
+// a default presentation is performed on your behalf.
+//
+// Implement this method if the default presentation is not adequate for your purposes.
+//
+- (void)presentSearchController:(UISearchController *)searchController {
+    
+}
+
+- (void)willPresentSearchController:(UISearchController *)searchController {
+    // do something before the search controller is presented
+    self.navigationItem.rightBarButtonItem = nil;
+    self.navigationItem.leftBarButtonItem = nil;
+    self.searchController.searchBar.showsCancelButton = YES;
+}
+
+- (void)didPresentSearchController:(UISearchController *)searchController {
+    // do something after the search controller is presented
+}
+
+- (void)willDismissSearchController:(UISearchController *)searchController {
+    // do something before the search controller is dismissed
+}
+
+- (void)didDismissSearchController:(UISearchController *)searchController {
+    // do something after the search controller is dismissed
+}
+
+#pragma mark - UISearchResultsUpdating
+
+- (void)updateSearchResultsForSearchController:(UISearchController *)searchController {
+    // update the filtered array based on the search text
+    NSString *searchText = searchController.searchBar.text;
+    NSMutableArray *searchResults = [self.feedResult.events mutableCopy];
+    
+    // strip out all the leading and trailing spaces
+    NSString *strippedString = [searchText stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    
+    // break up the search terms (separated by spaces)
+    NSArray *searchItems = nil;
+    if (strippedString.length > 0) {
+        searchItems = [strippedString componentsSeparatedByString:@" "];
+    }
+    
+    // build all the "AND" expressions for each value in the searchString
+    //
+    NSMutableArray *andMatchPredicates = [NSMutableArray array];
+    
+    for (NSString *searchString in searchItems) {
+        // each searchString creates an OR predicate for: name, yearIntroduced, introPrice
+        //
+        // example if searchItems contains "iphone 599 2007":
+        //      name CONTAINS[c] "iphone"
+        //      name CONTAINS[c] "599", yearIntroduced ==[c] 599, introPrice ==[c] 599
+        //      name CONTAINS[c] "2007", yearIntroduced ==[c] 2007, introPrice ==[c] 2007
+        //
+        NSMutableArray *searchItemsPredicate = [NSMutableArray array];
+        
+        // Below we use NSExpression represent expressions in our predicates.
+        // NSPredicate is made up of smaller, atomic parts: two NSExpressions (a left-hand value and a right-hand value)
+        
+        // name field matching
+        NSExpression *lhs = [NSExpression expressionForKeyPath:@"title"];
+        NSExpression *rhs = [NSExpression expressionForConstantValue:searchString];
+        NSPredicate *finalPredicate = [NSComparisonPredicate
+                                       predicateWithLeftExpression:lhs
+                                       rightExpression:rhs
+                                       modifier:NSDirectPredicateModifier
+                                       type:NSContainsPredicateOperatorType
+                                       options:NSCaseInsensitivePredicateOption];
+        [searchItemsPredicate addObject:finalPredicate];
+        
+        // yearIntroduced field matching
+        NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+        numberFormatter.numberStyle = NSNumberFormatterNoStyle;
+        NSNumber *targetNumber = [numberFormatter numberFromString:searchString];
+        if (targetNumber != nil) {   // searchString may not convert to a number
+            lhs = [NSExpression expressionForKeyPath:@"yearIntroduced"];
+            rhs = [NSExpression expressionForConstantValue:targetNumber];
+            finalPredicate = [NSComparisonPredicate
+                              predicateWithLeftExpression:lhs
+                              rightExpression:rhs
+                              modifier:NSDirectPredicateModifier
+                              type:NSEqualToPredicateOperatorType
+                              options:NSCaseInsensitivePredicateOption];
+            [searchItemsPredicate addObject:finalPredicate];
+            
+            // price field matching
+            lhs = [NSExpression expressionForKeyPath:@"introPrice"];
+            rhs = [NSExpression expressionForConstantValue:targetNumber];
+            finalPredicate = [NSComparisonPredicate
+                              predicateWithLeftExpression:lhs
+                              rightExpression:rhs
+                              modifier:NSDirectPredicateModifier
+                              type:NSEqualToPredicateOperatorType
+                              options:NSCaseInsensitivePredicateOption];
+            [searchItemsPredicate addObject:finalPredicate];
+        }
+        
+        // at this OR predicate to our master AND predicate
+        NSCompoundPredicate *orMatchPredicates = [NSCompoundPredicate orPredicateWithSubpredicates:searchItemsPredicate];
+        [andMatchPredicates addObject:orMatchPredicates];
+    }
+    
+    // match up the fields of the Product object
+    NSCompoundPredicate *finalCompoundPredicate =
+    [NSCompoundPredicate andPredicateWithSubpredicates:andMatchPredicates];
+    searchResults = [[searchResults filteredArrayUsingPredicate:finalCompoundPredicate] mutableCopy];
+    
+    [self.eventFeedTableView reloadData];
+}
+
+#pragma mark - API calls
+
+- (void)loadEventTopics:(DCFeedItem* )selectedFeedItem{
+    NSLog(@"%@", selectedFeedItem.feedItemId);
+//    NSMutableArray *array = [[NSMutableArray alloc] init];
+    [[ECAPI sharedManager] fetchTopicsByFeedItemId:selectedFeedItem.feedItemId callback:^(NSArray *topics, NSError *error)  {
+        if(error){
+            NSLog(@"Error: %@", error);
+        }
+        else{
+//            NSArray *reversed = [[array reverseObjectEnumerator] allObjects];
+            self.topics = [[NSMutableArray alloc] initWithArray:topics];
+        }
+    }];
+}
+
+#pragma mark - Event Feed delegate methods
+
+- (void)mainFeedDidTapFeedITemThumbnail:(ECNewTableViewCell *)ecFeedCell index:(NSInteger)index{
+    NSLog(@"ecFeedCell.feedItem.feedItemId: %@", ecFeedCell.feedItem.feedItemId);
+    // EntityType = Digital, Person, Event
+    if([ecFeedCell.feedItem.entityType isEqual:EntityType_DIGITAL]){
+        // Play one-off episodes or navigate to TV Show view
+        if([ecFeedCell.feedItem.digital.seasonNumber intValue] == 0 && [ecFeedCell.feedItem.digital.seasonNumber intValue] ==0){
+            NSLog(@"CID: %@", [[ecFeedCell.feedItem.digital.imageUrl componentsSeparatedByString:@"/"] objectAtIndex:8]);
+            [[ECAPI sharedManager] getPlaybackUrl:[[ecFeedCell.feedItem.digital.imageUrl componentsSeparatedByString:@"/"] objectAtIndex:8] callback:^(NSString *aPlaybackUrl, NSError *error) {
+                AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:aPlaybackUrl]];
+                AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
+                AVPlayerViewController *avvc = [AVPlayerViewController new];
+                avvc.player = player;
+                [player play];
+                [self presentViewController:avvc animated:YES completion:nil];
+            }];
+        }
+        else{
+            [[ECAPI sharedManager] getRelatedEpisodes:ecFeedCell.feedItem.digital.series callback:^(NSArray *searchResult, NSError *error) {
+                if(error){
+                    NSLog(@"Error: %@", error);
+                }
+                else{
+                    /*
+                    DCTVShowViewController * dcTVShowViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCTVShowViewController"];
+                    dcTVShowViewController.selectedFeedItem = ecFeedCell.feedItem;
+                    dcTVShowViewController.relatedFeedItems = searchResult;
+                    [self presentViewController:dcTVShowViewController animated:YES completion:nil];
+                   */
+                    
+                    DCNewTVShowViewController *dc = [self.storyboard instantiateViewControllerWithIdentifier:@"DCNewTVShowViewController"];
+                    dc.selectedFeedItem = ecFeedCell.feedItem;
+                    dc.relatedFeedItems = searchResult;
+                    [self.navigationController pushViewController:dc animated:NO];
+                }
+            }];
+        }
+    }else{
+        DCPersonDetailTableViewController * dcPersonDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPersonDetailTableViewController"];
+        dcPersonDetailTableViewController.selectedFeedItem = ecFeedCell.feedItem;
+//            UINavigationController *navigationController =
+//            [[UINavigationController alloc] initWithRootViewController:dcPersonDetailTableViewController];
+        [self.navigationController pushViewController:dcPersonDetailTableViewController animated:YES];
+        //[self presentViewController:navigationController animated:YES completion:nil];
+    }
+}
+
+//** CommentTap **//
+- (void)mainFeedDidTapCommentsButton:(ECNewTableViewCell *)ecFeedCell index:(NSInteger)index{
+//    if (self.signedInUser != nil){
+        if (self.userEmail != nil){
+        [[ECAPI sharedManager] fetchTopicsByFeedItemId:ecFeedCell.feedItem.feedItemId callback:^(NSArray *topics, NSError *error)  {
+            if(error){
+                NSLog(@"Error: %@", error);
+            }
+            else{
+                self.topics = [[NSMutableArray alloc] initWithArray:topics];
+                ECEventTopicCommentsViewController *ecEventTopicCommentsViewController = [[ECEventTopicCommentsViewController alloc] init];
+                ECTopic *topic = [self.topics objectAtIndex:1];
+                ecEventTopicCommentsViewController.selectedFeedItem = ecFeedCell.feedItem;
+                ecEventTopicCommentsViewController.selectedTopic = topic;
+                ecEventTopicCommentsViewController.topicId = topic.topicId;
+                [self.navigationController pushViewController:ecEventTopicCommentsViewController animated:YES];
+            }
+        }];
+    }else{
+        [self pushToSignInVC:@"ECEventTopicCommentsViewController"];
+    }
+}
+
+//** FavTap **//
+- (void)mainFeedDidTapFavoriteButton:(ECNewTableViewCell *)ecFeedCell index:(NSInteger)index{
+//    if (self.signedInUser != nil){
+        if (self.userEmail != nil){
+        DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
+        dcPlaylistsTableViewController.isFeedMode = true;
+        dcPlaylistsTableViewController.isSignedInUser = true;
+        dcPlaylistsTableViewController.feedItemId = ecFeedCell.feedItem.feedItemId;
+        UINavigationController *navigationController =
+        [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
+        [self presentViewController:navigationController animated:YES completion:nil];
+    }else{
+        [self pushToSignInVC:@"DCPlaylistsTableViewController"];
+    }
+}
+
+//** LikeTap **//
+- (void)mainFeedDidTapAttendanceButton:(ECNewTableViewCell *)ecFeedCell index:(NSInteger)index{
+//    if (self.signedInUser != nil){
+    if (self.userEmail != nil){
+        ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
+        ecAttendanceDetailsViewController.selectedFeedItem = ecFeedCell.feedItem;
+        [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+    }else{
+        [self pushToSignInVC:@"ECAttendanceDetailsViewController"];
+    }
+}
+
+//** ShareTap **//
+- (void)mainFeedDidTapShareButton:(ECNewTableViewCell *)ecFeedCell index:(NSInteger)index {
+//    if (self.signedInUser != nil){
+    if (self.userEmail != nil){
+        NSString* title = ecFeedCell.feedItem.digital.episodeTitle;
+        NSString* link = ecFeedCell.feedItem.digital.imageUrl;
+        NSArray* dataToShare = @[title, link];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+                                                                                 message:nil
+                                                                          preferredStyle:UIAlertControllerStyleActionSheet];
+        
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"Cancel action")
+                                                               style:UIAlertActionStyleCancel
+                                                             handler:^(UIAlertAction *action)
+                                       {
+                                           NSLog(@"Cancel action");
+                                       }];
+        
+        UIAlertAction *facebookAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Facebook", @"Facebook action")
+                                                                 style:UIAlertActionStyleDefault
+                                                               handler:^(UIAlertAction *action)
+                                         {
+                                             NSLog(@"Facebook action");
+                                             NSLog(@"Share to Facebook");
+                                             self.shareDialog = [[FBSDKShareDialog alloc] init];
+                                             self.content = [[FBSDKShareLinkContent alloc] init];
+                                             self.content.contentURL = [NSURL URLWithString:ecFeedCell.feedItem.digital.imageUrl];
+                                             self.content.contentTitle = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"Bundle display name"];
+                                             self.content.contentDescription = ecFeedCell.feedItem.digital.episodeDescription;
+                                             
+                                             if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fbauth2://"]]){
+                                                 [self.shareDialog setMode:FBSDKShareDialogModeNative];
+                                             }
+                                             else {
+                                                 [self.shareDialog setMode:FBSDKShareDialogModeAutomatic];
+                                             }
+                                             //[self.shareDialog setMode:FBSDKShareDialogModeShareSheet];
+                                             [self.shareDialog setShareContent:self.content];
+                                             [self.shareDialog setFromViewController:self];
+                                             [self.shareDialog setDelegate:self];
+                                             [self.shareDialog show];
+                                             //[FBSDKShareDialog showFromViewController:self withContent:self.content delegate:self];
+                                         }];
+        
+        UIAlertAction *twitterAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Twitter", @"Twitter action")
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction *action)
+                                        {
+                                            NSLog(@"Twitter action");
+                                        }];
+        
+        UIAlertAction *moreOptionsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"More Options...", @"More Options... action")
+                                                                    style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction *action)
+                                            {
+                                                NSLog(@"More Option... action");
+                                                
+                                                
+                                                UIActivityViewController* activityViewController =
+                                                [[UIActivityViewController alloc] initWithActivityItems:dataToShare
+                                                                                  applicationActivities:nil];
+                                                
+                                                
+                                                // This is key for iOS 8+
+                                                
+                                                [self presentViewController:activityViewController
+                                                                   animated:YES
+                                                                 completion:^{}];
+                                            }];
+        
+        [alertController addAction:cancelAction];
+        [alertController addAction:facebookAction];
+        [alertController addAction:twitterAction];
+        [alertController addAction:moreOptionsAction];
+        
+        UIPopoverPresentationController *popover = alertController.popoverPresentationController;
+        if (popover)
+        {
+            popover.sourceView = ecFeedCell;
+            popover.sourceRect = ecFeedCell.bounds;
+            popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
+        }
+        
+        [self presentViewController:alertController animated:YES completion:nil];
+    }else{
+        [self pushToSignInVC:@"sameFeedVC"];
+    }
+}
+
+#pragma mark - FBSDKSharingDelegate
+
+- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults :(NSDictionary *)results {
+    NSLog(@"FB: SHARE RESULTS=%@\n",[results debugDescription]);
+}
+
+- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
+    NSLog(@"FB: ERROR=%@\n",[error debugDescription]);
+}
+
+- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
+    NSLog(@"FB: CANCELED SHARER=%@\n",[sharer debugDescription]);
+}
+@end
