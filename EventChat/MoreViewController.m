@@ -13,6 +13,7 @@
 #import "DCProfileTableViewController.h"
 #import "TestTableViewController.h"
 #import "SignUpLoginViewController.h"
+#import "ECCommonClass.h"
 
 @interface MoreViewController ()
 @property (nonatomic, strong)ECUser *signedInUser;
@@ -20,6 +21,8 @@
 @property (nonatomic, strong) NSMutableArray *arrContactsData;
 @property (nonatomic, strong) CNContactPickerViewController *peoplePicker;
 @property (nonatomic, assign) NSString *userEmail;
+@property(nonatomic, assign) int myValue;
+
 @end
 
 @implementation MoreViewController
@@ -31,9 +34,42 @@
     // Do any additional setup after loading the view.
     // Get logged in user
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
-    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
+//    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
     self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     self.navigationController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
+
+//    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
+//
+//    if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
+//        self.myValue = 9;
+//    }else{
+//        self.myValue = 0;
+//        ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+//        sharedInstance.isUserLogoutTap = true;
+//        [self pushToSignInVC:@"sameVC"];
+//    }
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    
+    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
+
+    if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
+        self.myValue = 9;
+    }else{
+        ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+        sharedInstance.isUserLogoutTap = true;
+        
+        if (sharedInstance.isFromMore == false){
+            self.myValue = 0;
+            sharedInstance.isFromMore = true;
+            
+            UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
+            SignUpLoginViewController *signUpVC = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
+            signUpVC.hidesBottomBarWhenPushed = YES;
+            [self.navigationController pushViewController:signUpVC animated:true];
+        }
+    }
 }
 
 #pragma mark:- Table view data source
@@ -46,7 +82,9 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 9;
+    //@kj_new_change
+//    return 9;
+    return self.myValue;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {

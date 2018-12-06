@@ -15,11 +15,14 @@
 #import "ECEventTopicCommentsViewController.h"
 #import "DCPlaylistsTableViewController.h"
 #import "ECAttendanceDetailsViewController.h"
+#import "SignUpLoginViewController.h"
+#import "ECCommonClass.h"
 
 @interface DCEventTableViewController ()
 @property (nonatomic, strong) DCFeedItemFilter *currentFilter;
 @property (nonatomic, strong) NSArray *feedItemFilters;
 @property (nonatomic, strong) NSMutableArray *feedItemsArray;
+@property (nonatomic, assign) NSString *userEmail;
 @end
 
 @implementation DCEventTableViewController
@@ -34,6 +37,8 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
+    //@kj_new_change
+    /*
     [[ECAPI sharedManager] getFeedItemFilters:^(NSArray *results, NSError *error){
         self.feedItemFilters = [[NSMutableArray alloc] initWithArray:results];
         
@@ -46,6 +51,63 @@
         
         [self loadFeedItemsByFilter:_currentFilter];
     }];
+     */
+    
+//    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
+//    
+//    if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
+//        [[ECAPI sharedManager] getFeedItemFilters:^(NSArray *results, NSError *error){
+//            self.feedItemFilters = [[NSMutableArray alloc] initWithArray:results];
+//            
+//            for(int x=0; x < [_feedItemFilters count]; x++){
+//                DCFeedItemFilter *feedItemFilter = _feedItemFilters[x];
+//                if([feedItemFilter.name isEqual:@"Event"]){
+//                    _currentFilter = feedItemFilter;
+//                }
+//            }
+//            
+//            [self loadFeedItemsByFilter:_currentFilter];
+//        }];
+//    }else{
+//        ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+//        sharedInstance.isUserLogoutTap = true;
+//        UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
+//        SignUpLoginViewController *signUpVC = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
+//        signUpVC.hidesBottomBarWhenPushed = YES;
+//        signUpVC.storyboardIdentifierString = @"DCEventTableViewController";
+//        [self.navigationController pushViewController:signUpVC animated:true];
+//    }
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
+
+    if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
+        [[ECAPI sharedManager] getFeedItemFilters:^(NSArray *results, NSError *error){
+            self.feedItemFilters = [[NSMutableArray alloc] initWithArray:results];
+
+            for(int x=0; x < [_feedItemFilters count]; x++){
+                DCFeedItemFilter *feedItemFilter = _feedItemFilters[x];
+                if([feedItemFilter.name isEqual:@"Event"]){
+                    _currentFilter = feedItemFilter;
+                }
+            }
+
+            [self loadFeedItemsByFilter:_currentFilter];
+        }];
+    }else{
+        ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+        sharedInstance.isUserLogoutTap = true;
+        
+        if (sharedInstance.isFromMore == false){
+            sharedInstance.isFromMore = true;
+            UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
+            SignUpLoginViewController *signUpVC = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
+            signUpVC.hidesBottomBarWhenPushed = YES;
+            //signUpVC.storyboardIdentifierString = @"DCEventTableViewController";
+            [self.navigationController pushViewController:signUpVC animated:true];
+        }
+    }
 }
 
 - (void)loadFeedItemsByFilter:(DCFeedItemFilter *)feedItemFilter{

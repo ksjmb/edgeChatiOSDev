@@ -239,6 +239,10 @@
 #pragma mark:- Instance Methods
 
 - (void)pushToSignInVC :(NSString*)stbIdentifier{
+    ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+    sharedInstance.isUserLogoutTap = false;
+    sharedInstance.isFromMore = false;
+    
     UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
     SignUpLoginViewController *signUpVC = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
     signUpVC.delegate = self;
@@ -287,7 +291,8 @@
         dcPlaylistsTableViewController.feedItemId = feedItemId;
         UINavigationController *navigationController =
         [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
-        [self presentViewController:navigationController animated:YES completion:nil];
+        [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+//        [self presentViewController:navigationController animated:YES completion:nil];
     }
     else if([identifier isEqualToString:@"ECAttendanceDetailsViewController"]) {
         ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];

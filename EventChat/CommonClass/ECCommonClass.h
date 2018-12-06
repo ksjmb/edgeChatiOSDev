@@ -54,6 +54,8 @@ typedef void (^ResultBlock)( BOOL);
 @property (nonatomic) BOOL isUserLogoutTap;
 @property (nonatomic) BOOL isAouthToken;
 
+@property (nonatomic) BOOL isFromMore;
+
 -(void)showActionSheetToSelectMediaFromGalleryOrCamFromController:(UIViewController *)controller andMediaType : (NSString*)type andResult:(void (^)(bool))block;
 /*
 -(void)pushToSignInVC;

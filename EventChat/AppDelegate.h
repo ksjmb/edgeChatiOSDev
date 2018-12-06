@@ -36,6 +36,7 @@
 - (void)signOut;
 - (void)moveViewController;
 - (void)showCommentViewController:(DCFeedItem *)feedItem;
+- (void)backToMainVC;
 
 @end
 

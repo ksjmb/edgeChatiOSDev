@@ -191,7 +191,13 @@
 #pragma mark:- IBAction Methods
 
 - (IBAction)Back{
-    [self.navigationController popViewControllerAnimated:true];
+    ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+    if (sharedInstance.isUserLogoutTap == false){
+        [self.navigationController popViewControllerAnimated:true];
+    }else{
+        sharedInstance.isFromMore = false;
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] backToMainVC];
+    }
 }
 
 - (IBAction)dismissKeyboaard:(id)sender{
@@ -488,6 +494,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 }
 
 - (IBAction)didTapViewDocument:(id)sender{
+    /*
     UIButton *button = (UIButton *)sender;
     TermsConditionsViewController *termsConditionsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"TermsConditionsViewController"];
     
@@ -502,15 +509,18 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
     [[UINavigationController alloc] initWithRootViewController:termsConditionsViewController];
     termsConditionsViewController.isSocialLogin = false;
     [self presentViewController:navigationController animated:YES completion:nil];
+     */
 }
 
 - (void)showTermsOfUseModal{
+    /*
     TermsConditionsViewController *termsConditionsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"TermsConditionsViewController"];
     termsConditionsViewController.urlToOpen = @"https://docs.google.com/document/d/e/2PACX-1vS2KQuYMEsZ6F5OEsEyCEidH-Afg8rFvjldhA_gbvVnO5nCFq6LK9yHA3bDLf8Qco5uumCsRyge7sPg/pub";
     UINavigationController *navigationController =
     [[UINavigationController alloc] initWithRootViewController:termsConditionsViewController];
     termsConditionsViewController.isSocialLogin = true;
     [self presentViewController:navigationController animated:YES completion:nil];
+     */
 }
 
 - (IBAction)didTapSignUpWithEmail:(id)sender{

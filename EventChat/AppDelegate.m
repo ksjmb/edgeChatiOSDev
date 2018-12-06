@@ -353,6 +353,11 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
     }
 }
 
+- (void)backToMainVC{
+    UITabBarController *tabBar = (UITabBarController *)self.window.rootViewController;
+    [tabBar setSelectedIndex:0];
+}
+
 - (void)didSetRequiresFeedUpdate:(BOOL )requiresFeedUpdate{
     self.requiresFeedUpdate = requiresFeedUpdate;
 }
@@ -400,7 +405,7 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
     //
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"SignedInUserEmail"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    self.signedInUser = nil;
+//    self.signedInUser = nil;
     
     UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     ECFeedViewController *ecFeedViewController = [mainStoryboard instantiateViewControllerWithIdentifier:@"ECFeedViewController"];

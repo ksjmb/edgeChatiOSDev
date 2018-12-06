@@ -7,6 +7,8 @@
 #import "AppDelegate.h"
 #import "ECEventTopicCommentsViewController.h"
 #import "ECProfileViewController.h"
+#import "SignUpLoginViewController.h"
+#import "ECCommonClass.h"
 
 @interface ECNotificationsViewController ()
 @property (nonatomic, weak) IBOutlet UITableView *notificationTableView;
@@ -15,6 +17,7 @@
 @property (nonatomic, strong) ECUser *signedInUser;
 @property (nonatomic, strong) NSMutableArray *topics;
 @property (nonatomic, strong) NSMutableOrderedSet *acknowledgedNotificationIdList;
+@property (nonatomic, assign) NSString *userEmail;
 @end
 
 @implementation ECNotificationsViewController
@@ -26,6 +29,21 @@
     // Get logged in user
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     _acknowledgedNotificationIdList = [[NSMutableOrderedSet alloc] init];
+//    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
+//
+//    if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
+//        [self loadNotifications];
+//        [(AppDelegate *)[[UIApplication sharedApplication] delegate] clearNotificationCount];
+//    }else{
+//        ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+//        sharedInstance.isUserLogoutTap = true;
+//
+//        UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
+//        SignUpLoginViewController *signUpVC = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
+//        signUpVC.hidesBottomBarWhenPushed = YES;
+//        //signUpVC.storyboardIdentifierString = @"ECNotificationsViewController";
+//        [self.navigationController pushViewController:signUpVC animated:true];
+//    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -34,8 +52,24 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-    [self loadNotifications];
-    [(AppDelegate *)[[UIApplication sharedApplication] delegate] clearNotificationCount];
+    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
+
+    if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
+        [self loadNotifications];
+        [(AppDelegate *)[[UIApplication sharedApplication] delegate] clearNotificationCount];
+    }else{
+        ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+        sharedInstance.isUserLogoutTap = true;
+        
+        if (sharedInstance.isFromMore == false){
+            sharedInstance.isFromMore = true;
+            UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
+            SignUpLoginViewController *signUpVC = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
+            signUpVC.hidesBottomBarWhenPushed = YES;
+            //signUpVC.storyboardIdentifierString = @"ECNotificationsViewController";
+            [self.navigationController pushViewController:signUpVC animated:true];
+        }
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated{
