@@ -52,6 +52,7 @@ typedef void (^ResultBlock)( BOOL);
 @property (nonatomic,strong) NSMutableArray *parentCommentIDArray;
 @property (nonatomic,strong) NSMutableArray *indexPathRowArray;
 @property (nonatomic) BOOL isUserLogoutTap;
+@property (nonatomic) BOOL isAouthToken;
 
 -(void)showActionSheetToSelectMediaFromGalleryOrCamFromController:(UIViewController *)controller andMediaType : (NSString*)type andResult:(void (^)(bool))block;
 /*

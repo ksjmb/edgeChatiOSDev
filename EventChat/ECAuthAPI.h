@@ -24,7 +24,10 @@
 
 - (void)refreshTokenWithSuccess:(void (^)(AFOAuthCredential *newCredential))success
                         failure:(void (^)(NSError *error))failure;
-
+/*
+- (void)refreshTokenWithSuccessNew:(void (^)(AFOAuthCredential *newCredential))success
+                           failure:(void (^)(NSError *error))failure;
+*/
 - (void)signOut;
 
 - (bool)isSignInRequired;

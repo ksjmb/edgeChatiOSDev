@@ -135,9 +135,7 @@ static NSString * const DCWebBasePath = @"http://www.diddychat.com";
         sharedInstance.responseSerializer.acceptableContentTypes = [sharedInstance.responseSerializer.acceptableContentTypes setByAddingObject:@"application/json"];
         AFOAuthCredential *credential = [[ECAuthAPI sharedClient] retrieveCredential];
         [sharedInstance.requestSerializer setValue:[NSString stringWithFormat:@"Bearer %@", credential.accessToken] forHTTPHeaderField:@"Authorization"];
-        //**@kj_undo_change
-//        [sharedInstance.requestSerializer setValue:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"DBName"] forHTTPHeaderField:@"x-key-db"];
-         [sharedInstance.requestSerializer setValue:@"edgetvchat_dev" forHTTPHeaderField:@"x-key-db"];
+        [sharedInstance.requestSerializer setValue:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"DBName"] forHTTPHeaderField:@"x-key-db"];
     });
     return sharedInstance;
 }

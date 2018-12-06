@@ -262,7 +262,14 @@
                                             [[ECAuthAPI sharedClient] signInWithUsernameAndPassword:username
                                                                                            password:tempPassword
                                                                                             success:^(AFOAuthCredential *credential) {
-                                                                                                [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+//                                                                                                [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+                                                                                                ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+                                                                                                if (sharedInstance.isUserLogoutTap == false){
+                                                                                                    [self.navigationController popViewControllerAnimated:false];
+                                                                                                    [self.delegate didTapLoginButton:_storyboardIdentifierString];
+                                                                                                }else{
+                                                                                                    [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+                                                                                                }
                                                                                             }
                                                                                             failure:^(NSError *error) {
                                                                                                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -369,7 +376,14 @@
                                       [[ECAuthAPI sharedClient] signInWithUsernameAndPassword:username
                                                                                      password:tempPassword
                                                                                       success:^(AFOAuthCredential *credential) {
-                                                                                          [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+//                                                                                          [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+                                                                                          ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+                                                                                          if (sharedInstance.isUserLogoutTap == false){
+                                                                                              [self.navigationController popViewControllerAnimated:false];
+                                                                                              [self.delegate didTapLoginButton:_storyboardIdentifierString];
+                                                                                          }else{
+                                                                                              [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+                                                                                          }
                                                                                       }
                                                                                       failure:^(NSError *error) {
                                                                                           dispatch_async(dispatch_get_main_queue(), ^{
@@ -393,6 +407,7 @@
          }
      }];
 }
+
 - (void)loginButton:(FBSDKLoginButton *)loginButton
 didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
               error:(NSError *)error {
@@ -437,7 +452,14 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
                              [[ECAuthAPI sharedClient] signInWithUsernameAndPassword:username
                                                                             password:tempPassword
                                                                              success:^(AFOAuthCredential *credential) {
-                                                                                 [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+//                                                                                 [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+                                                                                 ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+                                                                                 if (sharedInstance.isUserLogoutTap == false){
+                                                                                     [self.navigationController popViewControllerAnimated:false];
+                                                                                     [self.delegate didTapLoginButton:_storyboardIdentifierString];
+                                                                                 }else{
+                                                                                     [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+                                                                                 }
                                                                              }
                                                                              failure:^(NSError *error) {
                                                                                  dispatch_async(dispatch_get_main_queue(), ^{
@@ -503,59 +525,10 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 //** Simple Login
 - (IBAction)didTapLogInWithEmail:(id)sender{
     NSString *email = [_emailTextField.text lowercaseString];
-    
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
-                                 1 * NSEC_PER_SEC),
-                   dispatch_get_main_queue(),
-                   ^{
-                       [[ECAPI sharedManager] getUserByEmail:email callback:^(ECUser *ecUser, NSError *error) {
-                           if(error){
-                               NSLog(@"Error: %@", error);
-                               [SVProgressHUD dismiss];
-                           }
-                           else{
-                               NSLog(@"User: %@", ecUser);
-//                               ECAPI *instance = [ECAPI sharedManager];
-//                               [instance updateSignedInUser:ecUser];
-                               self.signedInUser = [[ECAPI sharedManager] signedInUser];
-                               [[NSUserDefaults standardUserDefaults] setObject:email forKey:@"SignedInUserEmail"];
-                               [[NSUserDefaults standardUserDefaults] setObject:@"n/a" forKey:@"socialUserId"];
-                               [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
-                               [[NSUserDefaults standardUserDefaults] setObject:ecUser.username forKey:@"username"];
-                               [[NSUserDefaults standardUserDefaults] setObject:_passwordTextField.text forKey:@"password"];
-                               [[NSUserDefaults standardUserDefaults] synchronize];
-                               [SVProgressHUD dismiss];
-                               
-                               //            [[NSUserDefaults standardUserDefaults] setValue:_storyboardIdentifierString forKey:@"sbIdentifier"];
-                               
-                               //1.Not working
-                               //            [(AppDelegate *)[[UIApplication sharedApplication] delegate] moveViewController];
-                               
-                               //2.Not working
-                               //            UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-                               //            ECFeedViewController *ecFeedVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"ECFeedViewController"];
-                               //            ecFeedVC.sbIdentifierString = _storyboardIdentifierString;
-                               //            ecFeedVC.isCommingFromLogin = true;
-                               //            [self.navigationController pushViewController:ecFeedVC animated:true];
-                               
-                               //3. Using Delegate
-                               ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
-                               if (sharedInstance.isUserLogoutTap == false){
-                                   [self.navigationController popViewControllerAnimated:false];
-                                   [self.delegate didTapLoginButton:_storyboardIdentifierString];
-                               }else{
-                                   [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
-                               }
-                           }
-                       }];
-                   });
-    
-    //@kj_undo_change
-    /*
-    NSString *email = [_emailTextField.text lowercaseString];
     [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
     [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
     [SVProgressHUD showWithStatus:@"Authenticating..."];
+    
     [[ECAuthAPI sharedClient] signInWithEmailAndPassword:email
                                                    password:_passwordTextField.text
                                                     success:^(AFOAuthCredential *credential) {
@@ -577,7 +550,15 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
                                                                                    [[NSUserDefaults standardUserDefaults] setObject:_passwordTextField.text forKey:@"password"];
                                                                                    [[NSUserDefaults standardUserDefaults] synchronize];
                                                                                    [SVProgressHUD dismiss];
-                                                                                   [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+                                                                                   //@kj_undo_change
+//                                                                                   [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+                                                                                   ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+                                                                                   if (sharedInstance.isUserLogoutTap == false){
+                                                                                       [self.navigationController popViewControllerAnimated:false];
+                                                                                       [self.delegate didTapLoginButton:_storyboardIdentifierString];
+                                                                                   }else{
+                                                                                       [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+                                                                                   }
                                                                                }
                                                                            }];
                                                                        });
@@ -596,7 +577,6 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
                                                                         andButtons:self.arrayOfButtonTitles];
                                                         });
                                                     }];
-     */
 }
 
 #pragma mark - Google Login methods

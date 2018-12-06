@@ -11,8 +11,8 @@
 		<string>On the fence</string>
 	</array>
 	<key>BaseAPIUrl</key>
-<!--    <string>http://diddychat-api-stage.us-east-1.elasticbeanstalk.com</string>-->
-    <string>http://diddychat-api-prod.us-east-1.elasticbeanstalk.com</string>
+    <string>http://diddychat-api-stage.us-east-1.elasticbeanstalk.com</string>
+<!--    <string>http://diddychat-api-prod.us-east-1.elasticbeanstalk.com</string>-->
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>

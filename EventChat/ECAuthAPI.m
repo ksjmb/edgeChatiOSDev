@@ -31,10 +31,8 @@ static NSString * const kClientSecret   = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A
                               success:(void (^)(AFOAuthCredential *credential))success
                               failure:(void (^)(NSError *error))failure {
     NSLog(@"[ECAuthAPI signInWithUsernameAndPassword]");
-    //**@kj_undo_change
     
-//    [self authenticateUsingOAuthWithURLString:@"/rest/v4/oauth/token"
-     [self authenticateUsingOAuthWithURLString:@"/rest/v3/oauth/token"
+    [self authenticateUsingOAuthWithURLString:@"/rest/v4/oauth/token"
                                 username:username
                                 password:password
                                    scope:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"DBName"]
@@ -58,12 +56,11 @@ static NSString * const kClientSecret   = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A
                               success:(void (^)(AFOAuthCredential *credential))success
                               failure:(void (^)(NSError *error))failure {
     NSLog(@"[ECAuthAPI signInWithEmailAndPassword]");
-    //**@kj_undo_change
-//    [self authenticateUsingOAuthWithURLString:@"/rest/v4/oauth/token"
-     [self authenticateUsingOAuthWithURLString:@"/rest/v3/oauth/token"
+    
+    [self authenticateUsingOAuthWithURLString:@"/rest/v4/oauth/token"
                                      email:email
                                      password:password
-                                        scope:@"edgetvchat_dev"
+                                        scope:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"DBName"]
                                       success:^(AFOAuthCredential *credential) {
                                           NSLog(@"[ECAuthAPI signInWithUsernameAndPassword]: received access token %@", credential.accessToken);
                                           
@@ -97,26 +94,7 @@ static NSString * const kClientSecret   = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A
     }
     
     NSLog(@"[ECAuthAPI refreshTokenWithSuccess]: refreshing credential, credential.refreshToken: %@", credential.refreshToken);
-    //**@kj_undo_change
-    [self authenticateUsingOAuthWithURLString:@"/rest/v3/oauth/token"
-                                 refreshToken:credential.refreshToken
-                                        scope:@"edgetvchat_dev"
-                                      success:^(AFOAuthCredential *newCredential) {
-                                          NSLog(@"[ECAuthAPI refreshTokenWithSuccess]: refreshed access token %@", newCredential.accessToken);
-                                          [AFOAuthCredential storeCredential:newCredential withIdentifier:self.serviceProviderIdentifier];
-                                          
-                                          if (success) {
-                                              success(newCredential);
-                                          }
-                                      }
-                                      failure:^(NSError *error) {
-                                          NSLog(@"[ECAuthAPI refreshTokenWithSuccess]: an error occurred refreshing credential: %@", error);
-                                          if (failure) {
-                                              failure(error);
-                                          }
-                                      }];
-
-    /*
+    
     [self authenticateUsingOAuthWithURLString:@"/rest/v4/oauth/token"
                             refreshToken:credential.refreshToken
                                         scope:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"DBName"]
@@ -134,7 +112,6 @@ static NSString * const kClientSecret   = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A
                                          failure(error);
                                      }
                                  }];
-     */
 }
 
 - (void)signOut {

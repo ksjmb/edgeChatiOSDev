@@ -62,8 +62,7 @@ static const int kRetryCount = 3;
 
 #pragma mark - Accessors
 - (void)updateSignedInUser:(ECUser *)ecUser{
-    //@kj_undo_change
-    self.signedInUser = ecUser;
+//    self.signedInUser = ecUser;
 }
 
 #pragma mark - API authorization
@@ -280,9 +279,7 @@ static const int kRetryCount = 3;
 }
 
 - (void)getFeedItemFilters:(void (^)(NSArray *searchResult, NSError *error))callback{
-    //**@kj_undo_change
-//    NSString *endpoint = @"/rest/v4/feeditems/filters/all";
-    NSString *endpoint = @"/rest/v3/feeditems/filters/all";
+    NSString *endpoint = @"/rest/v4/feeditems/filters/all";
     
     DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
         AFHTTPRequestOperation *createdTask = [[ECHTTPRequestOperationManager sharedManagerDC]
@@ -375,9 +372,7 @@ static const int kRetryCount = 3;
 }
 //** 1st time api call from feedVC **//
 - (void)filterFeedItemsByFilterObject:(DCFeedItemFilter *)filter callback:(void (^)(NSArray *searchResult, NSError *error))callback{
-//    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/feeditems/filterFeedItemsByFilterObject"];
-    //**@kj_undo_change
-    NSString *endpoint = [NSString stringWithFormat:@"/rest/v3/feeditems/filterFeedItemsByFilterObject"];
+    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/feeditems/filterFeedItemsByFilterObject"];
     
     DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
         NSLog(@"here now");
@@ -440,9 +435,7 @@ static const int kRetryCount = 3;
 
 - (void)getRelatedEpisodes:(NSString *)series callback:(void (^)(NSArray *searchResult, NSError *error))callback{
     NSString *encodedParams = [series stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
-//    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/feeditems/getRelatedEpisodes/%@", encodedParams];
-    //@kj_undo_change
-    NSString *endpoint = [NSString stringWithFormat:@"/rest/v3/feeditems/getRelatedEpisodes/%@", encodedParams];
+    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/feeditems/getRelatedEpisodes/%@", encodedParams];
     
     DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
         AFHTTPRequestOperation *createdTask = [[ECHTTPRequestOperationManager sharedManagerDC]
@@ -587,9 +580,7 @@ static const int kRetryCount = 3;
      }];
 }
 - (void)getUserByEmail:(NSString *)email callback:(void (^)(ECUser *ecUser, NSError *error))callback{
-    //**@kj_undo_change
-//    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/users/email/%@", email];
-    NSString *endpoint = [NSString stringWithFormat:@"/rest/v3/users/email/%@", email];
+    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/users/email/%@", email];
     
     DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
         AFHTTPRequestOperation *createdTask = [[ECHTTPRequestOperationManager sharedManagerDC]
@@ -600,8 +591,6 @@ static const int kRetryCount = 3;
                                                    
                                                    NSError *infoError = nil;
                                                    ECUser *aECUser = [[ECUser alloc] initWithDictionary:responseDictionary[@"data"] error:&infoError];
-                                                   //@kj_undo_change
-                                                   [self updateSignedInUser:aECUser];
                                                    self.signedInUser = aECUser;
                                                    if (infoError) {
                                                        NSLog(@"Error fetching app info: %@", infoError);
@@ -622,9 +611,7 @@ static const int kRetryCount = 3;
 }
 
 - (void)getUserByUsername:(NSString *)username callback:(void (^)(ECUser *ecUser, NSError *error))callback{
-    //** @kj_undo_change
-//    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/users/username/%@", username];
-    NSString *endpoint = [NSString stringWithFormat:@"/rest/v3/users/username/%@", username];
+    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/users/username/%@", username];
     
     DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
         AFHTTPRequestOperation *createdTask = [[ECHTTPRequestOperationManager sharedManagerDC]
@@ -1186,9 +1173,7 @@ static const int kRetryCount = 3;
           parentId:(NSString *)parentId
              postId:(NSString *)postId
           callback:(void (^)(NSDictionary *jsonDictionary, NSError *error))callback{
-//    NSString *endpoint = @"/rest/v4/comments/add";
-    //@kj_undo_change
-    NSString *endpoint = @"/rest/v3/comments/add";
+    NSString *endpoint = @"/rest/v4/comments/add";
     
     NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionary];
     mutableParameters[@"topicId"] = topicId;
@@ -1241,9 +1226,7 @@ static const int kRetryCount = 3;
                  postId:(NSString *)postId
                callback:(void (^)(NSDictionary *jsonDictionary, NSError *error))callback {
     
-//    NSString *endpoint = @"/rest/v4/comments/add";
-//    @kj_undo_change
-    NSString *endpoint = @"/rest/v3/comments/add";
+    NSString *endpoint = @"/rest/v4/comments/add";
     
     NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionary];
     mutableParameters[@"topicId"]               = topicId;
@@ -1299,9 +1282,7 @@ static const int kRetryCount = 3;
 - (void)likeComment:(NSString *)commentId
              userId:(NSString *)userId
            callback:(void (^)(NSDictionary *jsonDictionary, NSError *error))callback{
-//        NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/comments/like/%@/%@", commentId, userId];
-    //@kj_undo_change
-    NSString *endpoint = [NSString stringWithFormat:@"/rest/v3/comments/like/%@/%@", commentId, userId];
+        NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/comments/like/%@/%@", commentId, userId];
     
     DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
         AFHTTPRequestOperation *createdTask = [[ECHTTPRequestOperationManager sharedManagerDC]
@@ -1335,9 +1316,7 @@ static const int kRetryCount = 3;
 - (void)reportComment:(NSString *)commentId
              userId:(NSString *)userId
            callback:(void (^)(NSDictionary *jsonDictionary, NSError *error))callback{
-//    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/comments/report/%@/%@", commentId, userId];
-    //@kj_undo_change
-    NSString *endpoint = [NSString stringWithFormat:@"/rest/v3/comments/report/%@/%@", commentId, userId];
+    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/comments/report/%@/%@", commentId, userId];
     
     DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
         AFHTTPRequestOperation *createdTask = [[ECHTTPRequestOperationManager sharedManagerDC]
@@ -1370,9 +1349,7 @@ static const int kRetryCount = 3;
 
 - (void)deleteCommentById:(NSString *)commentId
                   callback:(void (^)(ECComment *comment, NSError *error))callback{
-    //@kj_undo_chagne
-//    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/comments/%@", commentId];
-    NSString *endpoint = [NSString stringWithFormat:@"/rest/v3/comments/%@", commentId];
+    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/comments/%@", commentId];
     
     DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
         AFHTTPRequestOperation *createdTask = [[ECHTTPRequestOperationManager sharedManagerDC]
@@ -1404,9 +1381,7 @@ static const int kRetryCount = 3;
 }
 
 - (void)fetchCommentsByTopicId:(NSString *)eventId callback:(void (^)(NSArray *comments, NSError *error))callback{
-    //@kj_undo_change
-//    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/comments/topic/%@", eventId];
-    NSString *endpoint = [NSString stringWithFormat:@"/rest/v3/comments/topic/%@", eventId];
+    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/comments/topic/%@", eventId];
     
     DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
         AFHTTPRequestOperation *createdTask = [[ECHTTPRequestOperationManager sharedManagerDC]
@@ -1468,9 +1443,7 @@ static const int kRetryCount = 3;
 }
 
 - (void)fetchCommentsByPostId:(NSString *)postId callback:(void (^)(NSArray *comments, NSError *error))callback{
-    //@kj_undo_change
-//    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/comments/getCommentsByPostId/%@", postId];
-    NSString *endpoint = [NSString stringWithFormat:@"/rest/v3/comments/getCommentsByPostId/%@", postId];
+    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/comments/getCommentsByPostId/%@", postId];
     
     DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
         AFHTTPRequestOperation *createdTask = [[ECHTTPRequestOperationManager sharedManagerDC]
@@ -1631,9 +1604,7 @@ static const int kRetryCount = 3;
 
 #pragma mark - Topics
 - (void)fetchTopicsByFeedItemId:(NSString *)feedItemId callback:(void (^)(NSArray *topics, NSError *error))callback{
-    //@kj_undo_change
-//    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/topics/%@", feedItemId];
-    NSString *endpoint = [NSString stringWithFormat:@"/rest/v3/topics/%@", feedItemId];
+    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/topics/%@", feedItemId];
     
     DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
         AFHTTPRequestOperation *createdTask = [[ECHTTPRequestOperationManager sharedManagerDC]
@@ -1668,9 +1639,7 @@ static const int kRetryCount = 3;
             content:(NSString *)content
            parentId:(NSString *)parentId
            callback:(void (^)(NSDictionary *jsonDictionary, NSError *error))callback{
-    //@kj_undo_change
-//    NSString *endpoint = @"/rest/v4/topics/add";
-    NSString *endpoint = @"/rest/v3/topics/add";
+    NSString *endpoint = @"/rest/v4/topics/add";
     
     NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionary];
     mutableParameters[@"eventId"] = eventId;

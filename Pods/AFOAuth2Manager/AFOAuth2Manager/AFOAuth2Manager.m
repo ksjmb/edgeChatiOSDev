@@ -115,7 +115,9 @@ static NSError * AFErrorFromRFC6749Section5_2Error(id object) {
 
     self.useHTTPBasicAuthentication = YES;
 
+//    @kj_undo_change
     [self.requestSerializer setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+//    [self.requestSerializer setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Accept"];
     
     return self;
 }
@@ -259,11 +261,10 @@ static NSError * AFErrorFromRFC6749Section5_2Error(id object) {
         mutableParameters[@"client_id"] = self.clientID;
         mutableParameters[@"client_secret"] = self.secret;
     }
-    //**kj_undo_change
-    // Set custom header value for dbName used by DiddyChat API
-//    [self.requestSerializer setValue:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"DBName"] forHTTPHeaderField:@"x-key-db"];
     
-        [self.requestSerializer setValue:@"edgetvchat_dev" forHTTPHeaderField:@"x-key-db"];
+    // Set custom header value for dbName used by DiddyChat API
+    [self.requestSerializer setValue:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"DBName"] forHTTPHeaderField:@"x-key-db"];
+//    [self.requestSerializer setValue:@"application/x-www-form-urlencoded" forHTTPHeaderField:@"Accept"];
     
     parameters = [NSDictionary dictionaryWithDictionary:mutableParameters];
 
@@ -272,7 +273,6 @@ static NSError * AFErrorFromRFC6749Section5_2Error(id object) {
             if (failure) {
                 failure(nil);
             }
-
             return;
         }
 
@@ -280,7 +280,6 @@ static NSError * AFErrorFromRFC6749Section5_2Error(id object) {
             if (failure) {
                 failure(AFErrorFromRFC6749Section5_2Error(responseObject));
             }
-
             return;
         }
 
@@ -290,7 +289,6 @@ static NSError * AFErrorFromRFC6749Section5_2Error(id object) {
         }
 
         AFOAuthCredential *credential = [AFOAuthCredential credentialWithOAuthToken:[responseObject valueForKey:@"access_token"] tokenType:[responseObject valueForKey:@"token_type"]];
-
 
         if (refreshToken) { // refreshToken is optional in the OAuth2 spec
             [credential setRefreshToken:refreshToken];

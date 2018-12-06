@@ -25,6 +25,7 @@
 #import "ECEventTopicCommentsViewController.h"
 #import "DCFeedItem.h"
 #import "ECFeedViewController.h"
+#import "ECCommonClass.h"
 
 #define ROOTVIEW [[[UIApplication sharedApplication] keyWindow] rootViewController]
 
@@ -73,18 +74,21 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
     } else {
         NSLog(@"Root view controller expected to be Tab Bar Controller at launch");
     }
-    /*
+    
+    //    @kj_undo_changes
+    
     UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
     SignUpLoginViewController *signUpLoginViewController = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
     self.window.rootViewController = signUpLoginViewController;
-    */
-    
+   
+    /*
     UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     ECFeedViewController *ecFeedViewController = [mainStoryboard instantiateViewControllerWithIdentifier:@"ECFeedViewController"];
     self.window.rootViewController = ecFeedViewController;
     self.window.rootViewController = self.tabBarController;
     [self.tabBarController setSelectedIndex:0];
-    
+     */
+     
     // UIAppearance configuration
     // Set placeholder viewcontroller
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -92,40 +96,10 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
     NSString *socialUserId = [defaults objectForKey:@"socialUserId"];
     NSString *username = [defaults objectForKey:@"username"];
     NSString *password = [defaults objectForKey:@"password"];
-
-    //NSString *socialUserId = @"10153412688527026";
-
-//    @kj_undo_changes
-    if (userEmail != nil && ![userEmail isEqualToString:@""]){
-        
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
-                                     1 * NSEC_PER_SEC),
-                       dispatch_get_main_queue(),
-                       ^{
-                           [[ECAPI sharedManager] getUserByEmail:userEmail callback:^(ECUser *ecUser, NSError *error) {
-                               if(error){
-                                   NSLog(@"Error: %@", error);
-                                   [SVProgressHUD dismiss];
-                               }
-                               else{
-                                   NSLog(@"User AppDelegate: %@", ecUser);
-//                                   ECAPI *instance = [ECAPI sharedManager];
-//                                   [instance updateSignedInUser:ecUser];
-                                   self.signedInUser = [[ECAPI sharedManager] signedInUser];
-                                   
-                                   [[NSUserDefaults standardUserDefaults] setObject:userEmail forKey:@"SignedInUserEmail"];
-                                   [[NSUserDefaults standardUserDefaults] setObject:@"n/a" forKey:@"socialUserId"];
-                                   [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
-                                   [[NSUserDefaults standardUserDefaults] setObject:ecUser.username forKey:@"username"];
-                                   //                [[NSUserDefaults standardUserDefaults] setObject:_passwordTextField.text forKey:@"password"];
-                                   [[NSUserDefaults standardUserDefaults] synchronize];
-                                   [SVProgressHUD dismiss];
-                               }
-                           }];
-                       });
-    }
     
-    /*
+//    [[NSUserDefaults standardUserDefaults] setValue:userEmail forKey:@"SignedInUserEmail"];
+    //NSString *socialUserId = @"10153412688527026";
+    
     //TODO: Display logging-in loading screen here
     if(username != nil && ![username isEqual:@""]){
         [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
@@ -146,6 +120,8 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
                                                                                    else{
                                                                                        NSLog(@"User: %@", ecUser);
                                                                                        [SVProgressHUD dismiss];
+                                                                                       ECCommonClass *instance = [ECCommonClass sharedManager];
+                                                                                       instance.isAouthToken = true;
                                                                                        [self updateApplicationData];
                                                                                        [self replaceRootViewController];
                                                                                    }
@@ -164,8 +140,43 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
                                                                 self.window.rootViewController = signUpLoginViewController;
                                                             });
                                                         }];
+    }else{
+        /*
+         "grant_type" = password;
+         password = qwertyuio;
+         scope = "edgetvchat_stage";
+         username = "DC_4786EF0D6BCB43F7971EC0FD65A18E4F";
+         */
+        [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+        [SVProgressHUD showWithStatus:@"Authenticating..."];
+        [[ECAuthAPI sharedClient] signInWithUsernameAndPassword:@"jigish"
+                                                       password:@"test1234"
+                                                        success:^(AFOAuthCredential *credential) {
+                                                            dispatch_after(dispatch_time(DISPATCH_TIME_NOW,
+                                                                                         1 * NSEC_PER_SEC),
+                                                                           dispatch_get_main_queue(),
+                                                                           ^{
+                                                                               ECCommonClass *instance = [ECCommonClass sharedManager];
+                                                                               instance.isAouthToken = true;
+                                                                               
+                                                                               UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+                                                                               ECFeedViewController *ecFeedViewController = [mainStoryboard instantiateViewControllerWithIdentifier:@"ECFeedViewController"];
+                                                                               self.window.rootViewController = ecFeedViewController;
+                                                                               self.window.rootViewController = self.tabBarController;
+                                                                               [self.tabBarController setSelectedIndex:0];
+                                                                           });
+                                                            
+                                                        }
+                                                        failure:^(NSError *error) {
+                                                            dispatch_async(dispatch_get_main_queue(), ^{
+                                                                
+                                                                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                                                [alert show];
+                                                            });
+                                                        }];
+        
     }
-    */
     
     self.window.backgroundColor = [ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]];
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
@@ -283,17 +294,6 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
     }
 }
 
-/*
-- (void)moveViewController{
-    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    ECFeedViewController *ecFeedViewController = [mainStoryboard instantiateViewControllerWithIdentifier:@"ECFeedViewController"];
-    self.window.rootViewController = ecFeedViewController;
-    self.window.rootViewController = self.tabBarController;
-    [self.tabBarController setSelectedIndex:0];
-    [self.tabBarController presentationController];
-}
-*/
-
 - (void)updateApplicationData{
     [self getCurrentLocation];
 }
@@ -397,10 +397,23 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
 - (void)signOut{
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+    //
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"SignedInUserEmail"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+    self.signedInUser = nil;
     
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    ECFeedViewController *ecFeedViewController = [mainStoryboard instantiateViewControllerWithIdentifier:@"ECFeedViewController"];
+    self.window.rootViewController = ecFeedViewController;
+    self.window.rootViewController = self.tabBarController;
+    [self.tabBarController setSelectedIndex:0];
+    
+    //@kj_undo_change
+    /*
     UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
     SignUpLoginViewController *signUpLoginViewController = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
     self.window.rootViewController = signUpLoginViewController;
+     */
 }
 
 #pragma mark - 3rd party login

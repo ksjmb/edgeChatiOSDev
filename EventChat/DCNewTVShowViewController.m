@@ -20,6 +20,7 @@
 #import "DCPlaylistsTableViewController.h"
 #import "ECAttendanceDetailsViewController.h"
 #import "DCChatReactionViewController.h"
+#import "SignUpLoginViewController.h"
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
 
@@ -37,6 +38,8 @@
 @property (nonatomic, strong) NSString* topEpisodeDescription;
 @property (nonatomic, strong) NSString* topEpisodeImageURL;
 @property (nonatomic, strong) NSMutableArray *topics;
+//
+@property (nonatomic, assign) NSString *userEmail;
 
 @end
 
@@ -53,6 +56,11 @@
 - (void)viewWillAppear:(BOOL)animated{
     NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationPortrait];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
+    
+    //    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    //    _userEmail = [defaults objectForKey:@"SignedInUserEmail"];
+    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 #pragma mark - Table view data source
@@ -144,122 +152,141 @@
 - (void)didTapCommentsButton:(DCNewTVShowEpisodeTableViewCell *)dcTVNewShowEpisodeTableViewCell index:(NSInteger)index {
 //    NSLog(@"didTapCommentsButton");
     
-    [[ECAPI sharedManager] fetchTopicsByFeedItemId:dcTVNewShowEpisodeTableViewCell.feedItem.feedItemId callback:^(NSArray *topics, NSError *error)  {
-        if(error){
-            NSLog(@"Error: %@", error);
-        }
-        else{
-            self.topics = [[NSMutableArray alloc] initWithArray:topics];
-            ECTopic *topic = [self.topics objectAtIndex:1];
-            
-            DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
-            dcChat.selectedFeedItem = dcTVNewShowEpisodeTableViewCell.feedItem;
-            dcChat.selectedTopic = topic;
-            dcChat.topicId = topic.topicId;
-            [self.navigationController pushViewController:dcChat animated:NO];
-        }
-    }];
+    if (self.userEmail != nil){
+        [[ECAPI sharedManager] fetchTopicsByFeedItemId:dcTVNewShowEpisodeTableViewCell.feedItem.feedItemId callback:^(NSArray *topics, NSError *error)  {
+            if(error){
+                NSLog(@"Error: %@", error);
+            }
+            else{
+                self.topics = [[NSMutableArray alloc] initWithArray:topics];
+                ECTopic *topic = [self.topics objectAtIndex:1];
+                
+                DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
+                dcChat.selectedFeedItem = dcTVNewShowEpisodeTableViewCell.feedItem;
+                dcChat.selectedTopic = topic;
+                dcChat.topicId = topic.topicId;
+                [self.navigationController pushViewController:dcChat animated:NO];
+            }
+        }];
+    }else{
+        self.saveFeedItem = dcTVNewShowEpisodeTableViewCell.feedItem;
+        [[NSUserDefaults standardUserDefaults] setObject:dcTVNewShowEpisodeTableViewCell.feedItem.feedItemId forKey:@"feedItemId"];
+        [self pushToSignInVC:@"DCChatReactionViewController"];
+    }
 }
 
 - (void)mainFeedDidTapFavoriteButton:(DCNewTVShowEpisodeTableViewCell *)dcTVNewShowEpisodeTableViewCell index:(NSInteger)index{
-    DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
-    dcPlaylistsTableViewController.isFeedMode = true;
-    dcPlaylistsTableViewController.isSignedInUser = true;
-    dcPlaylistsTableViewController.feedItemId = dcTVNewShowEpisodeTableViewCell.feedItem.feedItemId;
-    UINavigationController *navigationController =
-    [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
-    [self presentViewController:navigationController animated:YES completion:nil];
+    if (self.userEmail != nil){
+        DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
+        dcPlaylistsTableViewController.isFeedMode = true;
+        dcPlaylistsTableViewController.isSignedInUser = true;
+        dcPlaylistsTableViewController.feedItemId = dcTVNewShowEpisodeTableViewCell.feedItem.feedItemId;
+        UINavigationController *navigationController =
+        [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
+        [self presentViewController:navigationController animated:YES completion:nil];
+    }else{
+        [[NSUserDefaults standardUserDefaults] setObject:dcTVNewShowEpisodeTableViewCell.feedItem.feedItemId forKey:@"feedItemId"];
+        self.isTopFavButtonSelected = false;
+        [self pushToSignInVC:@"DCPlaylistsTableViewController"];
+    }
 }
 
 - (void)mainFeedDidTapAttendanceButton:(DCNewTVShowEpisodeTableViewCell *)dcTVNewShowEpisodeTableViewCell index:(NSInteger)index{
-    ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
-    ecAttendanceDetailsViewController.selectedFeedItem = dcTVNewShowEpisodeTableViewCell.feedItem;
-    
-    [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+    if (self.userEmail != nil){
+        ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
+        ecAttendanceDetailsViewController.selectedFeedItem = dcTVNewShowEpisodeTableViewCell.feedItem;
+        [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+    }else{
+        self.saveFeedItem = dcTVNewShowEpisodeTableViewCell.feedItem;
+        [self pushToSignInVC:@"ECAttendanceDetailsViewController"];
+    }
 }
 
-- (void)mainFeedDidTapShareButton:(DCNewTVShowEpisodeTableViewCell *)dcTVNewShowEpisodeTableViewCell index:(NSInteger)index
-{
-    NSString* title = dcTVNewShowEpisodeTableViewCell.feedItem.digital.episodeTitle;
-    NSString* link = dcTVNewShowEpisodeTableViewCell.feedItem.digital.imageUrl;
-    NSArray* dataToShare = @[title, link];
-    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
-                                                                             message:nil
-                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
-    
-    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"Cancel action")
-                                                           style:UIAlertActionStyleCancel
-                                                         handler:^(UIAlertAction *action)
-                                   {
-                                       NSLog(@"Cancel action");
-                                   }];
-    
-    UIAlertAction *facebookAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Facebook", @"Facebook action")
-                                                             style:UIAlertActionStyleDefault
-                                                           handler:^(UIAlertAction *action)
-                                     {
-                                         NSLog(@"Facebook action");
-                                         NSLog(@"Share to Facebook");
-                                         self.shareDialog = [[FBSDKShareDialog alloc] init];
-                                         self.content = [[FBSDKShareLinkContent alloc] init];
-                                         self.content.contentURL = [NSURL URLWithString:dcTVNewShowEpisodeTableViewCell.feedItem.digital.imageUrl];
-                                         self.content.contentTitle = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"Bundle display name"];
-                                         self.content.contentDescription = dcTVNewShowEpisodeTableViewCell.feedItem.digital.episodeDescription;
-                                         
-                                         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fbauth2://"]]){
-                                             [self.shareDialog setMode:FBSDKShareDialogModeNative];
-                                         }
-                                         else {
-                                             [self.shareDialog setMode:FBSDKShareDialogModeAutomatic];
-                                         }
-                                         //[self.shareDialog setMode:FBSDKShareDialogModeShareSheet];
-                                         [self.shareDialog setShareContent:self.content];
-                                         [self.shareDialog setFromViewController:self];
-                                         [self.shareDialog setDelegate:self];
-                                         [self.shareDialog show];
-                                         //[FBSDKShareDialog showFromViewController:self withContent:self.content delegate:self];
-                                     }];
-    
-    UIAlertAction *twitterAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Twitter", @"Twitter action")
-                                                            style:UIAlertActionStyleDefault
-                                                          handler:^(UIAlertAction *action)
-                                    {
-                                        NSLog(@"Twitter action");
-                                    }];
-    
-    UIAlertAction *moreOptionsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"More Options...", @"More Options... action")
+- (void)mainFeedDidTapShareButton:(DCNewTVShowEpisodeTableViewCell *)dcTVNewShowEpisodeTableViewCell index:(NSInteger)index {
+    if (self.userEmail != nil){
+        NSString* title = dcTVNewShowEpisodeTableViewCell.feedItem.digital.episodeTitle;
+        NSString* link = dcTVNewShowEpisodeTableViewCell.feedItem.digital.imageUrl;
+        NSArray* dataToShare = @[title, link];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+                                                                                 message:nil
+                                                                          preferredStyle:UIAlertControllerStyleActionSheet];
+        
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"Cancel action")
+                                                               style:UIAlertActionStyleCancel
+                                                             handler:^(UIAlertAction *action)
+                                       {
+                                           NSLog(@"Cancel action");
+                                       }];
+        
+        UIAlertAction *facebookAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Facebook", @"Facebook action")
+                                                                 style:UIAlertActionStyleDefault
+                                                               handler:^(UIAlertAction *action)
+                                         {
+                                             NSLog(@"Facebook action");
+                                             NSLog(@"Share to Facebook");
+                                             self.shareDialog = [[FBSDKShareDialog alloc] init];
+                                             self.content = [[FBSDKShareLinkContent alloc] init];
+                                             self.content.contentURL = [NSURL URLWithString:dcTVNewShowEpisodeTableViewCell.feedItem.digital.imageUrl];
+                                             self.content.contentTitle = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"Bundle display name"];
+                                             self.content.contentDescription = dcTVNewShowEpisodeTableViewCell.feedItem.digital.episodeDescription;
+                                             
+                                             if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fbauth2://"]]){
+                                                 [self.shareDialog setMode:FBSDKShareDialogModeNative];
+                                             }
+                                             else {
+                                                 [self.shareDialog setMode:FBSDKShareDialogModeAutomatic];
+                                             }
+                                             //[self.shareDialog setMode:FBSDKShareDialogModeShareSheet];
+                                             [self.shareDialog setShareContent:self.content];
+                                             [self.shareDialog setFromViewController:self];
+                                             [self.shareDialog setDelegate:self];
+                                             [self.shareDialog show];
+                                             //[FBSDKShareDialog showFromViewController:self withContent:self.content delegate:self];
+                                         }];
+        
+        UIAlertAction *twitterAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Twitter", @"Twitter action")
                                                                 style:UIAlertActionStyleDefault
                                                               handler:^(UIAlertAction *action)
                                         {
-                                            NSLog(@"More Option... action");
-                                            
-                                            
-                                            UIActivityViewController* activityViewController =
-                                            [[UIActivityViewController alloc] initWithActivityItems:dataToShare
-                                                                              applicationActivities:nil];
-                                            
-                                            
-                                            // This is key for iOS 8+
-                                            
-                                            [self presentViewController:activityViewController
-                                                               animated:YES
-                                                             completion:^{}];
+                                            NSLog(@"Twitter action");
                                         }];
-    
-    [alertController addAction:cancelAction];
-    [alertController addAction:facebookAction];
-    [alertController addAction:twitterAction];
-    [alertController addAction:moreOptionsAction];
-    
-    UIPopoverPresentationController *popover = alertController.popoverPresentationController;
-    if (popover)
-    {
-        popover.sourceView = dcTVNewShowEpisodeTableViewCell;
-        popover.sourceRect = dcTVNewShowEpisodeTableViewCell.bounds;
-        popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
+        
+        UIAlertAction *moreOptionsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"More Options...", @"More Options... action")
+                                                                    style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction *action)
+                                            {
+                                                NSLog(@"More Option... action");
+                                                
+                                                
+                                                UIActivityViewController* activityViewController =
+                                                [[UIActivityViewController alloc] initWithActivityItems:dataToShare
+                                                                                  applicationActivities:nil];
+                                                
+                                                
+                                                // This is key for iOS 8+
+                                                
+                                                [self presentViewController:activityViewController
+                                                                   animated:YES
+                                                                 completion:^{}];
+                                            }];
+        
+        [alertController addAction:cancelAction];
+        [alertController addAction:facebookAction];
+        [alertController addAction:twitterAction];
+        [alertController addAction:moreOptionsAction];
+        
+        UIPopoverPresentationController *popover = alertController.popoverPresentationController;
+        if (popover)
+        {
+            popover.sourceView = dcTVNewShowEpisodeTableViewCell;
+            popover.sourceRect = dcTVNewShowEpisodeTableViewCell.bounds;
+            popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
+        }
+        
+        [self presentViewController:alertController animated:YES completion:nil];
+    }else{
+        [self pushToSignInVC:@"sameVC"];
     }
-    
-    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 - (void)viewMoreButtonTapped:(DCNewTVShowEpisodeTableViewCell *)dcTVNewShowEpisodeTableViewCell{
@@ -297,11 +324,42 @@
 }
 
 - (IBAction)didTapShareButton:(id)sender {
-    [self openShareSheet];
+    if (self.userEmail != nil){
+        [self openShareSheet];
+    }else{
+        [self pushToSignInVC:@"sameVC"];
+    }
 }
 
 - (IBAction)didTapFavButton:(id)sender {
     [self didTapFavButton];
+}
+
+- (IBAction)actionOnViewMoreButton:(id)sender {
+    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
+    DCNewTVShowEpisodeTableViewCell* cell = [self.episodeTableView cellForRowAtIndexPath:indexPath];
+    
+    if (self.isLabelExpanded == false){
+        self.topDescriptionLabel.numberOfLines = 0;
+            self.topDescriptionLabel.contentMode = NSLineBreakByWordWrapping;
+        [self.viewMoreButton setTitle:@"View less..." forState:UIControlStateNormal];
+        CGSize labelSize = [self.topDescriptionLabel.text sizeWithFont:self.topDescriptionLabel.font
+            constrainedToSize:self.topDescriptionLabel.frame.size
+                                                        lineBreakMode:NSLineBreakByWordWrapping];
+        CGFloat labelHeight = labelSize.height;
+        self.topDescriptionLabelHeightConstraints.constant = labelHeight;
+        cell.episodeImageViewTopConstraint.constant = 30.0;
+        self.isLabelExpanded = true;
+    }else{
+        self.topDescriptionLabel.numberOfLines = 3;
+        self.topDescriptionLabel.contentMode = NSLineBreakByWordWrapping;
+        [self.viewMoreButton setTitle:@"View more..." forState:UIControlStateNormal];
+        self.topDescriptionLabelHeightConstraints.constant = 42;
+        cell.episodeImageViewTopConstraint.constant = 8.0;
+        self.isLabelExpanded = false;
+    }
+    [self.episodeTableView beginUpdates];
+    [self.episodeTableView endUpdates];
 }
 
 #pragma mark:- Instance Methods
@@ -340,6 +398,57 @@
     [[UIDevice currentDevice] setValue:@(UIInterfaceOrientationPortrait) forKey:@"orientation"];
 }
 
+- (void)pushToSignInVC :(NSString*)stbIdentifier{
+    UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
+    SignUpLoginViewController *signUpVC = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
+    signUpVC.delegate = self;
+    signUpVC.hidesBottomBarWhenPushed = YES;
+    signUpVC.storyboardIdentifierString = stbIdentifier;
+    [self.navigationController pushViewController:signUpVC animated:true];
+}
+
+-(void)sendToSpecificVC:(NSString*)identifier{
+    if([identifier isEqualToString:@"DCChatReactionViewController"]) {
+        NSString *feedItemId = [[NSUserDefaults standardUserDefaults] valueForKey:@"feedItemId"];
+        
+        [[ECAPI sharedManager] fetchTopicsByFeedItemId:feedItemId callback:^(NSArray *topics, NSError *error)  {
+            if(error){
+                NSLog(@"Error: %@", error);
+            }
+            else{
+                self.topics = [[NSMutableArray alloc] initWithArray:topics];
+                ECTopic *topic = [self.topics objectAtIndex:1];
+                DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
+                dcChat.selectedFeedItem = self.saveFeedItem;
+                dcChat.selectedTopic = topic;
+                dcChat.topicId = topic.topicId;
+                [self.navigationController pushViewController:dcChat animated:NO];
+            }
+        }];
+    }
+    else if([identifier isEqualToString:@"DCPlaylistsTableViewController"]) {
+        NSString *feedItemId = [[NSUserDefaults standardUserDefaults] valueForKey:@"feedItemId"];
+        DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
+        dcPlaylistsTableViewController.isSignedInUser = true;
+        
+        if (self.isTopFavButtonSelected == true){
+            dcPlaylistsTableViewController.isFeedMode = false;
+            [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+        }else{
+            dcPlaylistsTableViewController.isFeedMode = true;
+            dcPlaylistsTableViewController.feedItemId = feedItemId;
+            UINavigationController *navigationController =
+            [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
+            [self presentViewController:navigationController animated:YES completion:nil];
+        }
+    }
+    else if([identifier isEqualToString:@"ECAttendanceDetailsViewController"]) {
+        ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
+        ecAttendanceDetailsViewController.selectedFeedItem = self.saveFeedItem;
+        [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+    }
+}
+
 - (void)loadEpisodesInSelectedSeasion:(NSString *)seasonNumber{
     _episodesInSeason = [[NSMutableArray alloc] initWithArray:[_relatedFeedItems filteredArrayUsingPredicate:[NSPredicate predicateWithFormat:@"(digital.seasonNumber LIKE[cd] %@)", seasonNumber]]];
     NSSortDescriptor *aSortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"digital.episodeNumber" ascending:YES comparator:^(id obj1, id obj2) {
@@ -357,10 +466,15 @@
 }
 
 - (void)didTapFavButton{
-    DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
-    dcPlaylistsTableViewController.isFeedMode = false;
-    dcPlaylistsTableViewController.isSignedInUser = true;
-    [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+    if (self.userEmail != nil){
+        DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
+        dcPlaylistsTableViewController.isFeedMode = false;
+        dcPlaylistsTableViewController.isSignedInUser = true;
+        [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+    }else{
+        self.isTopFavButtonSelected = true;
+        [self pushToSignInVC:@"DCPlaylistsTableViewController"];
+    }
 }
 
 -(void)openShareSheet{
@@ -427,6 +541,13 @@
     [alertController addAction:moreOptionsAction];
     
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+#pragma mark:- SignUpLoginDelegate Methods
+
+- (void)didTapLoginButton:(NSString *)storyboardIdentifier{
+    NSLog(@"didTapLoginButton: DCNewTVShowVC: storyboardIdentifier: %@", storyboardIdentifier);
+    [self sendToSpecificVC:storyboardIdentifier];
 }
 
 #pragma mark:- AF

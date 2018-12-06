@@ -43,6 +43,8 @@
 //
 #import "ECNewTableViewCell.h"
 #import "SignUpLoginViewController.h"
+#import "AFOAuth2Manager.h"
+#import "ECAuthAPI.h"
 
 @interface ECFeedViewController () <HTHorizontalSelectionListDataSource, HTHorizontalSelectionListDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *eventFeedTableView;
@@ -80,12 +82,10 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    self.signedInUser = [[ECAPI sharedManager] signedInUser];
     
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    _userEmail = [defaults objectForKey:@"SignedInUserEmail"];
-    
+    ECCommonClass *instance = [ECCommonClass sharedManager];
+    if (instance.isAouthToken){
+        
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(applicationIsActive:)
                                                  name:UIApplicationDidBecomeActiveNotification
@@ -166,14 +166,22 @@
     self.filterList.delegate = self;
     self.filterList.dataSource = self;
     [self.view addSubview:self.filterList];
-    
-    [[ECAPI sharedManager] getFeedItemFilters:^(NSArray *results, NSError *error){
-        self.feedItemFilters = [[NSMutableArray alloc] initWithArray:results];
-        [self.filterList reloadData];
-        DCFeedItemFilter *feedItemFilter = _feedItemFilters[0];
-        _currentFilter = feedItemFilter;
-        [self loadFeedItemsByFilter:feedItemFilter];
-    }];
+
+
+        [[ECAPI sharedManager] getFeedItemFilters:^(NSArray *results, NSError *error){
+            self.feedItemFilters = [[NSMutableArray alloc] initWithArray:results];
+            [self.filterList reloadData];
+            if (self.feedItemFilters.count > 0){
+                DCFeedItemFilter *feedItemFilter = _feedItemFilters[0];
+                _currentFilter = feedItemFilter;
+                [self loadFeedItemsByFilter:feedItemFilter];
+            }else{
+                NSLog(@"_feedItemFilters get empty array...");
+            }
+        }];
+    }else{
+        
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -183,9 +191,12 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-//    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-//    NSString *userEmail = [defaults objectForKey:@"SignedInUserEmail"];
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    
+    //    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    //    _userEmail = [defaults objectForKey:@"SignedInUserEmail"];
+    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     
     if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
         // Profile pic in UIBarButton [super viewDidLoad];
@@ -221,7 +232,7 @@
 #pragma mark:- SignUpLoginDelegate Methods
 
 - (void)didTapLoginButton:(NSString *)storyboardIdentifier{
-    NSLog(@"didTapLoginButton: storyboardIdentifier: %@", storyboardIdentifier);
+    NSLog(@"didTapLoginButton: ECFeedVC: storyboardIdentifier: %@", storyboardIdentifier);
     [self sendToSpecificVC:storyboardIdentifier];
 }
 

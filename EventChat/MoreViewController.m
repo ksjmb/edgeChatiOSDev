@@ -19,6 +19,7 @@
 @property (nonatomic, assign) AppDelegate *appDelegate;
 @property (nonatomic, strong) NSMutableArray *arrContactsData;
 @property (nonatomic, strong) CNContactPickerViewController *peoplePicker;
+@property (nonatomic, assign) NSString *userEmail;
 @end
 
 @implementation MoreViewController
@@ -30,6 +31,7 @@
     // Do any additional setup after loading the view.
     // Get logged in user
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
     self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     self.navigationController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
 }
@@ -85,7 +87,7 @@
         cell.textLabel.text = @"How To";
     }
     else if(indexPath.row == 7) {
-        if (self.signedInUser != nil){
+        if (self.userEmail != nil){
             cell.textLabel.text = @"Sign out";
         }else{
             cell.textLabel.text = @"Sign In";
@@ -104,7 +106,7 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if(indexPath.row == 0) {
-        if (self.signedInUser != nil){
+        if (self.userEmail != nil){
             DCProfileTableViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCProfileTableViewController"];
             dcProfileTableViewController.isSignedInUser = true;
             dcProfileTableViewController.profileUser = self.signedInUser;
@@ -114,7 +116,7 @@
         }
     }
     else if(indexPath.row == 1) {
-        if (self.signedInUser != nil){
+        if (self.userEmail != nil){
             DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
             dcPlaylistsTableViewController.isFeedMode = false;
             dcPlaylistsTableViewController.isSignedInUser = true;
@@ -158,7 +160,7 @@
     }
     else if(indexPath.row == 7) {
         ECCommonClass *instance = [ECCommonClass sharedManager];
-        if (self.signedInUser != nil){
+        if (self.userEmail != nil){
             instance.isUserLogoutTap = true;
             [(AppDelegate *)[[UIApplication sharedApplication] delegate] signOut];
         }else{

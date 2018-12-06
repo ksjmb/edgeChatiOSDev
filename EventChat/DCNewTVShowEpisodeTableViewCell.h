@@ -34,6 +34,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *commentCountLabel;
 @property (weak, nonatomic) IBOutlet UIButton *viewMoreButton;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *episodeDescriptionLabelHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *episodeImageViewTopConstraint;
 
 @property (nonatomic, weak) id <DCNewTVShowEpisodeTableViewCellDelegate> delegate;
 @property (nonatomic, strong) DCFeedItem *feedItem;
