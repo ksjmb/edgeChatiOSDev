@@ -605,11 +605,15 @@
             
             ECCommonClass *instance = [ECCommonClass sharedManager];
             if (instance.isFromChatVC == false){
-                self.likeCountLabel.text = [NSString stringWithFormat:@"%@ \u2022 Liked \u2022 %@", ago, [NSString stringWithFormat:@"%ld", (long)newLikeCount + 1]];
+                NSString *mLikeCount = [NSString stringWithFormat:@"%@, Like(%ld", ago, (long)newLikeCount + 1];
+                mLikeCount = [mLikeCount stringByAppendingString:@")"];
+                self.likeCountLabel.text = mLikeCount;
+//                self.likeCountLabel.text = [NSString stringWithFormat:@"%@ \u2022 Liked \u2022 %@", ago, [NSString stringWithFormat:@"%ld", (long)newLikeCount + 1]];
             }else{
-                self.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Liked", ago, [NSString stringWithFormat:@"%ld", (long)newLikeCount + 1]];
-                //                DCChatReactionViewController *dc = [DCChatReactionViewController new];
-                //                [dc.chatTableView reloadData];
+//                self.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Liked", ago, [NSString stringWithFormat:@"%ld", (long)newLikeCount + 1]];
+                NSString *mLikeCount = [NSString stringWithFormat:@"%@, Like(%ld", ago, (long)newLikeCount + 1];
+                mLikeCount = [mLikeCount stringByAppendingString:@")"];
+                self.likeCountLabel.text = mLikeCount;
             }
         }
     }];

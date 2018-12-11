@@ -111,6 +111,7 @@
 - (void)initialSetup{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(replyComment) name:@"replyComment" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewReplyTap) name:@"viewReplyTap" object:nil];
+
     
     [self.chatTableView registerClass:[MessageTableViewCell class] forCellReuseIdentifier:MessengerCellIdentifier];
     
@@ -124,13 +125,30 @@
     //Set imageView image
     if( _selectedFeedItem.digital.imageUrl != nil){
         _topEpisodeImageURL = _selectedFeedItem.digital.imageUrl;
-        [self showImageOnHeader:_selectedFeedItem.digital.imageUrl];
+        if (![_topEpisodeImageURL  isEqual: @""]){
+            [self showImageOnHeader:_selectedFeedItem.digital.imageUrl];
+        }else{
+            _topEpisodeImageURL = _selectedFeedItem.person.profilePic_url;
+            [self showImageOnHeader:_selectedFeedItem.person.profilePic_url];
+        }
     }
-    _topEpisodeTitle = _selectedFeedItem.digital.episodeTitle;
-    _topEpisodeDescription = _selectedFeedItem.digital.episodeDescription;
     
     self.nameLabel.text = _selectedFeedItem.digital.episodeTitle;
     self.descriptionLabel.text = _selectedFeedItem.digital.episodeDescription;
+    
+    _topEpisodeTitle = _selectedFeedItem.digital.episodeTitle;
+    if ([_topEpisodeTitle  isEqual: @""]){
+        _topEpisodeTitle = _selectedFeedItem.person.profession.title;
+        self.nameLabel.text = _selectedFeedItem.person.profession.title;
+    }
+    _topEpisodeDescription = _selectedFeedItem.digital.episodeDescription;
+    if ([_topEpisodeDescription  isEqual: @""]){
+        _topEpisodeDescription = _selectedFeedItem.person.blurb;
+        self.descriptionLabel.text = _selectedFeedItem.person.blurb;
+    }
+    
+//    self.nameLabel.text = _selectedFeedItem.digital.episodeTitle;
+//    self.descriptionLabel.text = _selectedFeedItem.digital.episodeDescription;
     [self convertStringDateToNSDate:_selectedFeedItem.created_at];
     
     NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.signedInUser.profilePicUrl]];
@@ -355,6 +373,7 @@
 }
 
 - (IBAction)actionOnReactionsButton:(id)sender {
+    [self.view endEditing:YES];
     self.commentsBottomLabel.backgroundColor = [UIColor whiteColor];
     self.reactionBottomLabel.backgroundColor = [UIColor colorWithRed:160.0/255.0 green:82.0/255.0 blue:45.0/255.0 alpha:0.75];
     [self.chatTableView setHidden:true];
@@ -487,10 +506,16 @@
         cell.likeCountLabel.textColor = [UIColor lightGrayColor];
     }
     if(message.likeCount != nil){
-        cell.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Like", ago, message.likeCount];
+        NSString *mLikeCount = [NSString stringWithFormat:@"%@, Like(%@", ago, message.likeCount];
+        mLikeCount = [mLikeCount stringByAppendingString:@")"];
+        cell.likeCountLabel.text = mLikeCount;
+//        cell.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Like", ago, message.likeCount];
     }
     else{
-        cell.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Like", ago, @"0"];
+        NSString *mLikeCount = [NSString stringWithFormat:@"%@, Like(%@", ago, @"0"];
+        mLikeCount = [mLikeCount stringByAppendingString:@")"];
+        cell.likeCountLabel.text = mLikeCount;
+//        cell.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Like", ago, @"0"];
     }
     
     cell.bodyLabel.text = message.content;

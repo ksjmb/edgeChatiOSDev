@@ -55,11 +55,11 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    
     NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationPortrait];
     [[UIDevice currentDevice] setValue:value forKey:@"orientation"];
     
-    //    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    //    _userEmail = [defaults objectForKey:@"SignedInUserEmail"];
     self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
@@ -83,6 +83,8 @@
     BOOL isAttending = false;
     
 //    commentCount = [dcFeedItem.commentCount intValue];
+    NSLog(@"self.signedInUser.favoritedFeedItemIds: %@", self.signedInUser.favoritedFeedItemIds);
+    NSLog(@"dcFeedItem.feedItemId: %@", dcFeedItem.feedItemId);
     
     if([self.signedInUser.favoritedFeedItemIds containsObject:dcFeedItem.feedItemId]){
         isFavorited = true;
@@ -363,11 +365,19 @@
     [self.episodeTableView endUpdates];
 }
 
+#pragma mark:- Post Notification Methods
+
+-(void)profileUpdatedNew {
+    [self.episodeTableView reloadData];
+}
+
 #pragma mark:- Instance Methods
 
 - (void)initialSetup{
     _currentSeason = 1;
     self.feedItemSeasonArray = [_relatedFeedItems valueForKeyPath:@"@distinctUnionOfObjects.digital.seasonNumber"];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(profileUpdatedNew) name:@"profileUpdatedNew" object:nil];
     
     self.filterSeasonList = [[HTHorizontalSelectionList alloc] initWithFrame:CGRectMake(0, 0.0, self.view.frame.size.width, 40)];
     self.filterSeasonList.delegate = self;

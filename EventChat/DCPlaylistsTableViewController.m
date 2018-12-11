@@ -182,7 +182,17 @@
             }
             else{
                 _playlists = [[NSMutableArray alloc] initWithArray:playlists];
-                [self dismissViewControllerAnimated:YES completion:nil];
+                //Update user profile API call
+                [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:self.signedInUser.profilePicUrl callback:^(NSError *error) {
+                    if (error) {
+                        NSLog(@"Error adding user: %@", error);
+                    } else {
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdated" object:nil];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdatedNew" object:nil];
+                        [self dismissViewControllerAnimated:YES completion:nil];
+                    }
+                }];
+//                [self dismissViewControllerAnimated:YES completion:nil];
             };
         }];
     }else{

@@ -95,6 +95,8 @@
                                              selector:@selector(applicationEnteredForeground:)
                                                  name:UIApplicationWillEnterForegroundNotification
                                                object:nil];
+        
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(profileUpdated) name:@"profileUpdated" object:nil];
     
     [self.eventFeedTableView registerNib:[UINib nibWithNibName:@"ECNewTableViewCell" bundle:nil]
                   forCellReuseIdentifier:@"ECNewTableViewCell"];
@@ -192,9 +194,6 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
-    
-    //    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    //    _userEmail = [defaults objectForKey:@"SignedInUserEmail"];
     self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
@@ -227,6 +226,12 @@
         // move to specificVC with identifier and required parameters
         self.navigationItem.leftBarButtonItem = nil;
     }
+}
+
+#pragma mark:- Post Notification Methods
+
+-(void)profileUpdated {
+    [self.eventFeedTableView reloadData];
 }
 
 #pragma mark:- SignUpLoginDelegate Methods
@@ -264,9 +269,27 @@
         dcPlaylistsTableViewController.isFeedMode = false;
         [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
     }
-    else if([identifier isEqualToString:@"ECEventTopicCommentsViewController"]) {
-        NSString *feedItemId = [[NSUserDefaults standardUserDefaults] valueForKey:@"feedItemId"];
+//    else if([identifier isEqualToString:@"ECEventTopicCommentsViewController"]) {
+    else if([identifier isEqualToString:@"DCChatReactionViewController"]) {
+    NSString *feedItemId = [[NSUserDefaults standardUserDefaults] valueForKey:@"feedItemId"];
         
+        [[ECAPI sharedManager] fetchTopicsByFeedItemId:feedItemId callback:^(NSArray *topics, NSError *error)  {
+            if(error){
+                NSLog(@"Error: %@", error);
+            }
+            else{
+                self.topics = [[NSMutableArray alloc] initWithArray:topics];
+                ECTopic *topic = [self.topics objectAtIndex:1];
+                
+                DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
+                dcChat.selectedFeedItem = self.saveFeedItem;
+                dcChat.selectedTopic = topic;
+                dcChat.topicId = topic.topicId;
+                [self.navigationController pushViewController:dcChat animated:NO];
+            }
+        }];
+        
+        /*
         [[ECAPI sharedManager] fetchTopicsByFeedItemId:feedItemId callback:^(NSArray *topics, NSError *error)  {
             if(error){
                 NSLog(@"Error: %@", error);
@@ -281,6 +304,7 @@
                 [self.navigationController pushViewController:ecEventTopicCommentsViewController animated:YES];
             }
         }];
+         */
     }
     else if([identifier isEqualToString:@"DCPlaylistsTableViewController"]) {
         NSString *feedItemId = [[NSUserDefaults standardUserDefaults] valueForKey:@"feedItemId"];
@@ -534,7 +558,7 @@
     
     commentCount = [dcFeedItem.commentCount intValue];
     
-    // Get ECUser favorited feedItems
+    // Get ECUser favorited feedItems //5b32f95c3fa5b10b07f4fb5d
     if([self.signedInUser.favoritedFeedItemIds containsObject:dcFeedItem.feedItemId]){
         isFavorited = true;
     }
@@ -952,6 +976,22 @@
 - (void)mainFeedDidTapCommentsButton:(ECNewTableViewCell *)ecFeedCell index:(NSInteger)index{
 //    if (self.signedInUser != nil){
         if (self.userEmail != nil){
+            [[ECAPI sharedManager] fetchTopicsByFeedItemId:ecFeedCell.feedItem.feedItemId callback:^(NSArray *topics, NSError *error)  {
+                if(error){
+                    NSLog(@"Error: %@", error);
+                }
+                else{
+                    self.topics = [[NSMutableArray alloc] initWithArray:topics];
+                    ECTopic *topic = [self.topics objectAtIndex:1];
+                    
+                    DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
+                    dcChat.selectedFeedItem = ecFeedCell.feedItem;
+                    dcChat.selectedTopic = topic;
+                    dcChat.topicId = topic.topicId;
+                    [self.navigationController pushViewController:dcChat animated:NO];
+                }
+            }];
+            /*
         [[ECAPI sharedManager] fetchTopicsByFeedItemId:ecFeedCell.feedItem.feedItemId callback:^(NSArray *topics, NSError *error)  {
             if(error){
                 NSLog(@"Error: %@", error);
@@ -966,10 +1006,16 @@
                 [self.navigationController pushViewController:ecEventTopicCommentsViewController animated:YES];
             }
         }];
+             */
     }else{
         self.saveFeedItem = ecFeedCell.feedItem;
         [[NSUserDefaults standardUserDefaults] setObject:ecFeedCell.feedItem.feedItemId forKey:@"feedItemId"];
+        [self pushToSignInVC:@"DCChatReactionViewController"];
+        /*
+        self.saveFeedItem = ecFeedCell.feedItem;
+        [[NSUserDefaults standardUserDefaults] setObject:ecFeedCell.feedItem.feedItemId forKey:@"feedItemId"];
         [self pushToSignInVC:@"ECEventTopicCommentsViewController"];
+         */
     }
 }
 
