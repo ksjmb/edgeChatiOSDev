@@ -144,6 +144,7 @@
     [self.contentView addGestureRecognizer:feedItemThumbnailTapRecognizer];
     
     // Get Comment Count :-
+//    NSLog(@"commentCount : %d", commentCount);
     if(commentCount > 0){
         self.commentButton.enabled = FALSE;
         self.commentButton.enabled = TRUE;
@@ -152,6 +153,7 @@
         [self.commentCountLabel setText:mCommentCount];
     }
     else{
+        [self.commentCountLabel setText:@"00 comments"];
         self.commentButton.enabled = FALSE;
         //Remove Later
         self.commentButton.enabled = TRUE;

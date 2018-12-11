@@ -136,6 +136,7 @@
     [_episodeDescription setText:feedItem.digital.episodeDescription];
     
     //Comments Button
+//    NSLog(@"[feedItem.commentCount intValue] : %d", [feedItem.commentCount intValue]);
     if([feedItem.commentCount intValue] > 0){
         NSString *mCommentCount = [NSString stringWithFormat:@"%@", feedItem.commentCount];
         mCommentCount = [mCommentCount stringByAppendingString:@" comments"];
@@ -143,6 +144,7 @@
         self.commentButton.enabled = TRUE;
     }
     else{
+        [self.commentCountLabel setText:@"00 comments"];
         self.commentButton.enabled = FALSE;
         //Remove Later
         self.commentButton.enabled = TRUE;

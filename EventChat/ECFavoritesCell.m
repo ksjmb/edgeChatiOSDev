@@ -113,6 +113,7 @@
     }
     else{
         UIImage *image = [UIImage imageNamed:@"ECComment_Off.png"];
+        [self.commentsButton setTitle:[NSString stringWithFormat:@"0"] forState:UIControlStateNormal];
         [self.commentsButton setBackgroundImage:image forState:UIControlStateNormal];
     }
     [self.commentsButton setNeedsLayout];

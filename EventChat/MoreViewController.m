@@ -37,7 +37,7 @@
 //    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
     self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     self.navigationController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-
+    
 //    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
 //
 //    if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
@@ -53,10 +53,13 @@
 - (void)viewWillAppear:(BOOL)animated{
     
     self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
-
+    
     if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
         self.myValue = 9;
     }else{
+//        [self.tabBarController setSelectedIndex:0];
+//        [[NSNotificationCenter defaultCenter] postNotificationName:@"morevctap" object:nil];
+        
         ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
         sharedInstance.isUserLogoutTap = true;
         
@@ -70,6 +73,7 @@
             [self.navigationController pushViewController:signUpVC animated:true];
         }
     }
+         
 }
 
 #pragma mark:- Table view data source

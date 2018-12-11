@@ -38,6 +38,7 @@
 @property (nonatomic, strong) NSString* topEpisodeTitle;
 @property (nonatomic, strong) NSString* topEpisodeDescription;
 @property (nonatomic, strong) NSString* topEpisodeImageURL;
+@property (nonatomic, strong) NSString* selectedFeedItemId;
 @property (nonatomic, strong) NSMutableArray *topics;
 //
 @property (nonatomic, assign) NSString *userEmail;
@@ -51,6 +52,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"Season List";
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
     [self initialSetup];
 }
 
@@ -83,8 +85,8 @@
     BOOL isAttending = false;
     
 //    commentCount = [dcFeedItem.commentCount intValue];
-    NSLog(@"self.signedInUser.favoritedFeedItemIds: %@", self.signedInUser.favoritedFeedItemIds);
-    NSLog(@"dcFeedItem.feedItemId: %@", dcFeedItem.feedItemId);
+//    NSLog(@"self.signedInUser.favoritedFeedItemIds: %@", self.signedInUser.favoritedFeedItemIds);
+//    NSLog(@"dcFeedItem.feedItemId: %@", dcFeedItem.feedItemId);
     
     if([self.signedInUser.favoritedFeedItemIds containsObject:dcFeedItem.feedItemId]){
         isFavorited = true;
@@ -369,6 +371,13 @@
 
 -(void)profileUpdatedNew {
     [self.episodeTableView reloadData];
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    
+    if([self.signedInUser.favoritedFeedItemIds containsObject:_selectedFeedItemId]){
+        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+    }else{
+        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+    }
 }
 
 #pragma mark:- Instance Methods
@@ -393,13 +402,19 @@
             _topEpisodeTitle = feedItem.digital.episodeTitle;
             _topEpisodeImageURL = feedItem.digital.imageUrl;
             _topEpisodeDescription = feedItem.digital.episodeDescription;
+            _selectedFeedItemId = feedItem.feedItemId;
             if( feedItem.digital.imageUrl != nil){
                 [self showImageOnHeader:feedItem.digital.imageUrl];
             }
         }
     }
     
-    [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+    if([self.signedInUser.favoritedFeedItemIds containsObject:_selectedFeedItemId]){
+        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+    }else{
+        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+    }
+    
     [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
     
     self.episodeTableView.estimatedRowHeight = 279.0;
