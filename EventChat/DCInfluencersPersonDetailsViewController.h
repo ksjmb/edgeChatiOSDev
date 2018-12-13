@@ -8,11 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import "SignUpLoginViewController.h"
+#import "DCInfluencersPersonDetailsTableViewCell.h"
+#import "DCFeedItem.h"
+#import "DCDigital.h"
+#import "SignUpLoginViewController.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
+
 @class DCFeedItem;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DCInfluencersPersonDetailsViewController : UIViewController <SignUpLoginViewControllerDelegate, UITableViewDataSource, UITableViewDelegate>
+@interface DCInfluencersPersonDetailsViewController : UIViewController <SignUpLoginViewControllerDelegate, UITableViewDataSource, UITableViewDelegate, DCInfluencersPersonDetailsTVCellDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *mBKImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *mProfilePhotoImageView;
@@ -22,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UITableView *mTableView;
 //
 @property (nonatomic, strong) DCFeedItem *mSelectedDCFeedItem;
-@property (nonatomic, strong) DCFeedItem *saveSelectedFeedItem;
+//@property (nonatomic, strong) DCFeedItem *saveSelectedFeedItem;
 
 - (void)pushToSignInViewController :(NSString*)stbIdentifier;
 @end

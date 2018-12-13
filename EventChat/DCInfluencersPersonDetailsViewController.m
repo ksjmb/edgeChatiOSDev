@@ -10,7 +10,6 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "DCFeedItem.h"
 #import "ECUser.h"
-#import "DCPersonBlurbTableViewCell.h"
 #import "DCYTPlayerTableViewCell.h"
 #import "IonIcons.h"
 #import "DCPersonEntityObject.h"
@@ -21,6 +20,8 @@
 #import "DCChatReactionViewController.h"
 #import "DCInfluencersPersonDetailsTableViewCell.h"
 #import "DCSocialTableViewCell.h"
+#import "DCPlaylistsTableViewController.h"
+#import "ECAttendanceDetailsViewController.h"
 
 @interface DCInfluencersPersonDetailsViewController ()
 @property (nonatomic, strong)ECUser *signedInUser;
@@ -28,6 +29,11 @@
 @property (nonatomic, assign) AppDelegate *appDelegate;
 @property (nonatomic, assign) NSString *userEmailStr;
 @property (nonatomic, strong) NSMutableArray *topicsArray;
+@property (nonatomic, strong) NSMutableArray *videoArray;
+
+
+@property (nonatomic, strong) FBSDKShareDialog *fbShareDialog;
+@property (nonatomic, strong) FBSDKShareLinkContent *fbContent;
 
 @end
 
@@ -53,14 +59,22 @@
     self.mProfilePhotoImageView.layer.borderWidth = 5;
     self.mProfilePhotoImageView.layer.borderColor = [UIColor whiteColor].CGColor;
     self.mProfilePhotoImageView.layer.masksToBounds = YES;
+    
+    self.mBKImageView.layer.cornerRadius = 5.0;
     self.mBKImageView.layer.masksToBounds = YES;
     self.mBKImageView.layer.borderWidth = 5;
-    self.mBKImageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.mBKImageView.layer.borderColor = [UIColor whiteColor].CGColor;
+    
+    self.mFollowbtn.layer.cornerRadius = 5.0;
     
     [self.mPersonTitleLabel setText:[NSString  stringWithFormat:@"%@", self.mSelectedDCFeedItem.person.name]];
-    [self.mPersonDescriptionLabel setText:[NSString stringWithFormat:@"%@", self.mSelectedDCFeedItem.person.profession.title]];
+    [self.mPersonDescriptionLabel setText:[NSString stringWithFormat:@"%@", self.mSelectedDCFeedItem.person.blurb]];
 //    [self showImageOnHeader:self.mSelectedDCFeedItem.mainImage_url];
     [self showImageOnHeader:self.mSelectedDCFeedItem.person.profilePic_url];
+    
+    // Register cell
+    [self.mTableView registerNib:[UINib nibWithNibName:@"DCInfluencersPersonDetailsTableViewCell" bundle:nil]
+         forCellReuseIdentifier:@"DCInfluencersPersonDetailsTableViewCell"];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -77,23 +91,45 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1;
+    return 2;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-//    if(indexPath.row == 0){
+    if(indexPath.row == 0){
         static NSString *CellIdentifier = @"DCSocialTableViewCell";
         DCSocialTableViewCell *mCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
         [mCell configureCell:self.mSelectedDCFeedItem];
         return mCell;
-//    }
-//    else{
-//        static NSString *CellIdentifier = @"DCSocialButtonTableViewCell";
-//        DCSocialButtonTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-//        // Configure the cell...
-//        [cell configure:_selectedFeedItem];
-//        return cell;
-//    }
+    }
+    else{
+        static NSString *CellIdentifierNew = @"DCInfluencersPersonDetailsTableViewCell";
+        DCInfluencersPersonDetailsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierNew];
+//        DCFeedItem *dcFeedItem = [self.mSelectedDCFeedItem objectAtIndex:indexPath.row];
+        if (!cell) {
+            cell = [[DCInfluencersPersonDetailsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifierNew];
+        }
+        
+        cell.dcPersonDelegate = self;
+        BOOL isFavorited = false;
+        BOOL isAttending = false;
+        
+        if([self.signedInUser.favoritedFeedItemIds containsObject:self.mSelectedDCFeedItem.feedItemId]){
+            isFavorited = true;
+        }
+        else{
+            isFavorited = false;
+        }
+        
+        if([self.signedInUser.attendingFeedItemIds containsObject:self.mSelectedDCFeedItem.feedItemId]){
+            isAttending = true;
+        }
+        else{
+            isAttending = false;
+        }
+
+        [cell configureTableViewCellWithItem:self.mSelectedDCFeedItem isFavorited:isFavorited isAttending:isAttending indexPath:indexPath];
+        return cell;
+    }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -102,34 +138,24 @@
         return 50.0;
     }
     else{
-        return 0.0;
+//        return 279.0;
+        return 248.0;
     }
 }
 
 #pragma mark:- Instance Methods
 
 - (IBAction)didTapComment:(id)sender{
-    if (![self.userEmailStr  isEqual: @""] || self.userEmailStr != nil){
+    if (![self.userEmailStr  isEqual: @""] && self.userEmailStr != nil){
         [[ECAPI sharedManager] fetchTopicsByFeedItemId:self.mSelectedDCFeedItem.feedItemId callback:^(NSArray *topics, NSError *error)  {
             if(error){
                 NSLog(@"Error: %@", error);
             }
             else{
-                /*
-                 // Push to comments view controller directly
-                 
-                 ECEventTopicCommentsViewController *ecEventTopicCommentsViewController = [[ECEventTopicCommentsViewController alloc] init];
-                 ECTopic *topic = [topics objectAtIndex:1];
-                 ecEventTopicCommentsViewController.selectedFeedItem = _selectedFeedItem;
-                 ecEventTopicCommentsViewController.selectedTopic = topic;
-                 ecEventTopicCommentsViewController.topicId = topic.topicId;
-                 [self.navigationController pushViewController:ecEventTopicCommentsViewController animated:YES];
-                 */
-                
                 self.topicsArray = [[NSMutableArray alloc] initWithArray:topics];
                 ECTopic *topic = [self.topicsArray objectAtIndex:1];
                 DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
-                dcChat.selectedFeedItem = self.saveSelectedFeedItem;
+                dcChat.selectedFeedItem = self.mSelectedDCFeedItem;
                 dcChat.selectedTopic = topic;
                 dcChat.topicId = topic.topicId;
                 [self.navigationController pushViewController:dcChat animated:NO];
@@ -149,10 +175,179 @@
     [self.navigationController pushViewController:vc animated:true];
 }
 
-#pragma mark:- Instance Methods
+-(void)sendToSpecificVC:(NSString*)identifier{
+    if([identifier isEqualToString:@"DCChatReactionViewController"]) {
+        NSString *feedItemId = [[NSUserDefaults standardUserDefaults] valueForKey:@"feedItemId"];
+        
+        [[ECAPI sharedManager] fetchTopicsByFeedItemId:feedItemId callback:^(NSArray *topics, NSError *error)  {
+            if(error){
+                NSLog(@"Error: %@", error);
+            }
+            else{
+                self.topicsArray = [[NSMutableArray alloc] initWithArray:topics];
+                ECTopic *topic = [self.topicsArray objectAtIndex:1];
+                DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
+                dcChat.selectedFeedItem = self.mSelectedDCFeedItem;
+                dcChat.selectedTopic = topic;
+                dcChat.topicId = topic.topicId;
+                [self.navigationController pushViewController:dcChat animated:NO];
+            }
+        }];
+    }
+    else if([identifier isEqualToString:@"DCPlaylistsTableViewController"]) {
+        NSString *feedItemId = [[NSUserDefaults standardUserDefaults] valueForKey:@"feedItemId"];
+        DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
+            dcPlaylistsTableViewController.isSignedInUser = true;
+            dcPlaylistsTableViewController.isFeedMode = true;
+            dcPlaylistsTableViewController.feedItemId = feedItemId;
+            [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+    }
+    else if([identifier isEqualToString:@"ECAttendanceDetailsViewController"]) {
+        ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
+        ecAttendanceDetailsViewController.selectedFeedItem = self.mSelectedDCFeedItem;
+        [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+    }
+}
+
+#pragma mark:- SignUpLoginDelegate Methods
+
+- (void)didTapLoginButton:(NSString *)storyboardIdentifier{
+    NSLog(@"didTapLoginButton: DCInfluencersPersonDetails: storyboardIdentifier: %@", storyboardIdentifier);
+    [self sendToSpecificVC:storyboardIdentifier];
+}
+
+#pragma mark:- IBAction Methods
 
 - (IBAction)actionOnFollowBtn:(id)sender {
     NSLog(@"Comming soon...");
+}
+
+#pragma mark:- Delegate Methods
+
+- (void)didTapShareButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
+    if (![self.userEmailStr  isEqual: @""] && self.userEmailStr != nil){
+        NSString* title = self.mSelectedDCFeedItem.person.name;
+        NSString* link = self.mSelectedDCFeedItem.person.profilePic_url;
+        NSArray* dataToShare = @[title, link];
+        UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+                                                                                 message:nil
+                                                                          preferredStyle:UIAlertControllerStyleActionSheet];
+        
+        UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"Cancel action")
+                                                               style:UIAlertActionStyleCancel
+                                                             handler:^(UIAlertAction *action)
+                                       {
+                                           NSLog(@"Cancel action");
+                                       }];
+        
+        UIAlertAction *facebookAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Facebook", @"Facebook action")
+                                                                 style:UIAlertActionStyleDefault
+                                                               handler:^(UIAlertAction *action)
+                                         {
+                                             NSLog(@"Facebook action");
+                                             NSLog(@"Share to Facebook");
+                                             self.fbShareDialog = [[FBSDKShareDialog alloc] init];
+                                             self.fbContent = [[FBSDKShareLinkContent alloc] init];
+                                             self.fbContent.contentURL = [NSURL URLWithString:self.mSelectedDCFeedItem.person.profilePic_url];
+                                             self.fbContent.contentTitle = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"Bundle display name"];
+                                             self.fbContent.contentDescription = self.mSelectedDCFeedItem.person.blurb;
+                                             
+                                             if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fbauth2://"]]){
+                                                 [self.fbShareDialog setMode:FBSDKShareDialogModeNative];
+                                             }
+                                             else {
+                                                 [self.fbShareDialog setMode:FBSDKShareDialogModeAutomatic];
+                                             }
+                                             //[self.shareDialog setMode:FBSDKShareDialogModeShareSheet];
+                                             [self.fbShareDialog setShareContent:self.fbContent];
+                                             [self.fbShareDialog setFromViewController:self];
+                                             [self.fbShareDialog setDelegate:self];
+                                             [self.fbShareDialog show];
+                                             //[FBSDKShareDialog showFromViewController:self withContent:self.content delegate:self];
+                                         }];
+        
+        UIAlertAction *twitterAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Twitter", @"Twitter action")
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction *action)
+                                        {
+                                            NSLog(@"Twitter action");
+                                        }];
+        
+        UIAlertAction *moreOptionsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"More Options...", @"More Options... action")
+                                                                    style:UIAlertActionStyleDefault
+                                                                  handler:^(UIAlertAction *action)
+                                            {
+                                                NSLog(@"More Option... action");
+                                                
+                                                
+                                                UIActivityViewController* activityViewController =
+                                                [[UIActivityViewController alloc] initWithActivityItems:dataToShare
+                                                                                  applicationActivities:nil];
+                                                
+                                                
+                                                // This is key for iOS 8+
+                                                
+                                                [self presentViewController:activityViewController
+                                                                   animated:YES
+                                                                 completion:^{}];
+                                            }];
+        
+        [alertController addAction:cancelAction];
+        [alertController addAction:facebookAction];
+        [alertController addAction:twitterAction];
+        [alertController addAction:moreOptionsAction];
+    }else{
+        [self pushToSignInViewController:@"sameVC"];
+    }
+}
+
+- (void)didTapCommentsButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
+    if (![self.userEmailStr  isEqual: @""] && self.userEmailStr != nil){
+        [[ECAPI sharedManager] fetchTopicsByFeedItemId:self.mSelectedDCFeedItem.feedItemId callback:^(NSArray *topics, NSError *error)  {
+            if(error){
+                NSLog(@"Error: %@", error);
+            }
+            else{
+                self.topicsArray = [[NSMutableArray alloc] initWithArray:topics];
+                ECTopic *topic = [self.topicsArray objectAtIndex:1];
+                DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
+                dcChat.selectedFeedItem = self.mSelectedDCFeedItem;
+                dcChat.selectedTopic = topic;
+                dcChat.topicId = topic.topicId;
+                [self.navigationController pushViewController:dcChat animated:NO];
+            }
+        }];
+    }else{
+//        self.saveSelectedFeedItem = dcPersonDetailsCell.feedItem;
+        [[NSUserDefaults standardUserDefaults] setObject:self.mSelectedDCFeedItem.feedItemId forKey:@"feedItemId"];
+        [self pushToSignInViewController:@"DCChatReactionViewController"];
+    }
+}
+
+- (void)didTapFavoriteButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
+    if (![self.userEmailStr  isEqual: @""] && self.userEmailStr != nil){
+        DCPlaylistsTableViewController *dcPlaylistsTVC = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
+        dcPlaylistsTVC.isFeedMode = true;
+        dcPlaylistsTVC.isSignedInUser = true;
+        dcPlaylistsTVC.feedItemId = self.mSelectedDCFeedItem.feedItemId;
+        UINavigationController *navigationController =
+        [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTVC];
+        [self presentViewController:navigationController animated:YES completion:nil];
+    }else{
+        [[NSUserDefaults standardUserDefaults] setObject:self.mSelectedDCFeedItem.feedItemId forKey:@"feedItemId"];
+        [self pushToSignInViewController:@"DCPlaylistsTableViewController"];
+    }
+}
+
+- (void)didTapAttendanceButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
+    if (![self.userEmailStr  isEqual: @""] && self.userEmailStr != nil){
+        ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
+        ecAttendanceDetailsViewController.selectedFeedItem = self.mSelectedDCFeedItem;
+        [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+    }else{
+//        self.saveFeedItem = dcTVNewShowEpisodeTableViewCell.feedItem;
+        [self pushToSignInViewController:@"ECAttendanceDetailsViewController"];
+    }
 }
 
 #pragma mark:- SDWebImage
