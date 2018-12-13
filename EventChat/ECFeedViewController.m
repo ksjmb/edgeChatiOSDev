@@ -45,6 +45,7 @@
 #import "SignUpLoginViewController.h"
 #import "AFOAuth2Manager.h"
 #import "ECAuthAPI.h"
+#import "DCInfluencersPersonDetailsViewController.h"
 
 @interface ECFeedViewController () <HTHorizontalSelectionListDataSource, HTHorizontalSelectionListDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *eventFeedTableView;
@@ -975,12 +976,18 @@
             }];
         }
     }else{
+        /*
         DCPersonDetailTableViewController * dcPersonDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPersonDetailTableViewController"];
         dcPersonDetailTableViewController.selectedFeedItem = ecFeedCell.feedItem;
         //            UINavigationController *navigationController =
         //            [[UINavigationController alloc] initWithRootViewController:dcPersonDetailTableViewController];
         [self.navigationController pushViewController:dcPersonDetailTableViewController animated:YES];
         //[self presentViewController:navigationController animated:YES completion:nil];
+        */
+        
+        DCInfluencersPersonDetailsViewController * dcInfluencersPersonDetailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"DCInfluencersPersonDetailsViewController"];
+        dcInfluencersPersonDetailsVC.mSelectedDCFeedItem = ecFeedCell.feedItem;
+        [self.navigationController pushViewController:dcInfluencersPersonDetailsVC animated:YES];
     }
 }
 

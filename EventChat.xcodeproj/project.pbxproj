@@ -1385,6 +1385,14 @@
 		D4EDB6F521647D9A0011761E /* icon_1024_EdgeTVChat.png in Resources */ = {isa = PBXBuildFile; fileRef = D4EDB6F021647D9A0011761E /* icon_1024_EdgeTVChat.png */; };
 		D4EDB6F621647D9A0011761E /* icon_1024_EdgeTVChat.png in Resources */ = {isa = PBXBuildFile; fileRef = D4EDB6F021647D9A0011761E /* icon_1024_EdgeTVChat.png */; };
 		F935B783219B0816005A7E89 /* EdgeTVChat-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F935B782219B0816005A7E89 /* EdgeTVChat-Info.plist */; };
+		F93BCCC121C243920079242D /* DCInfluencersPersonDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F93BCCC021C243920079242D /* DCInfluencersPersonDetailsViewController.m */; };
+		F93BCCC221C243920079242D /* DCInfluencersPersonDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F93BCCC021C243920079242D /* DCInfluencersPersonDetailsViewController.m */; };
+		F93BCCC621C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F93BCCC421C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.m */; };
+		F93BCCC721C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F93BCCC421C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.m */; };
+		F93BCCC821C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F93BCCC521C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib */; };
+		F93BCCC921C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F93BCCC521C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib */; };
+		F93BCCCC21C248610079242D /* DCSocialTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F93BCCCB21C248610079242D /* DCSocialTableViewCell.m */; };
+		F93BCCCD21C248610079242D /* DCSocialTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F93BCCCB21C248610079242D /* DCSocialTableViewCell.m */; };
 		F9940D24219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9940D23219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m */; };
 		F9940D25219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9940D23219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m */; };
 		F9AD5C2F21A67AD20074C43B /* DCReactionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9AD5C2E21A67AD20074C43B /* DCReactionTableViewCell.m */; };
@@ -1863,6 +1871,13 @@
 		DF85B4EA77B68265D259968B /* Pods-defaults-CoachellaChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-defaults-CoachellaChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-defaults-CoachellaChat/Pods-defaults-CoachellaChat.release.xcconfig"; sourceTree = "<group>"; };
 		F3F706CB35A257375867BBE6 /* libPods-defaults-CoachellaChat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-defaults-CoachellaChat.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		F935B782219B0816005A7E89 /* EdgeTVChat-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "EdgeTVChat-Info.plist"; sourceTree = "<group>"; };
+		F93BCCBF21C243920079242D /* DCInfluencersPersonDetailsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCInfluencersPersonDetailsViewController.h; sourceTree = "<group>"; };
+		F93BCCC021C243920079242D /* DCInfluencersPersonDetailsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCInfluencersPersonDetailsViewController.m; sourceTree = "<group>"; };
+		F93BCCC321C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCInfluencersPersonDetailsTableViewCell.h; sourceTree = "<group>"; };
+		F93BCCC421C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCInfluencersPersonDetailsTableViewCell.m; sourceTree = "<group>"; };
+		F93BCCC521C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCInfluencersPersonDetailsTableViewCell.xib; sourceTree = "<group>"; };
+		F93BCCCA21C248610079242D /* DCSocialTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCSocialTableViewCell.h; sourceTree = "<group>"; };
+		F93BCCCB21C248610079242D /* DCSocialTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCSocialTableViewCell.m; sourceTree = "<group>"; };
 		F9940D22219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCNewTVShowEpisodeTableViewCell.h; sourceTree = "<group>"; };
 		F9940D23219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCNewTVShowEpisodeTableViewCell.m; sourceTree = "<group>"; };
 		F9AD5C2D21A67AD20074C43B /* DCReactionTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCReactionTableViewCell.h; sourceTree = "<group>"; };
@@ -2602,6 +2617,7 @@
 		36A218FA1F2549EF00FC3380 /* FeedItem */ = {
 			isa = PBXGroup;
 			children = (
+				F93BCCBE21C243350079242D /* InfluPersonDetails */,
 				F9F10D1721A2CEE0005C21FD /* DCChatAndReaction */,
 				F9BAE2F6219C1CB600921566 /* DCTVShow */,
 				3632D56F20052FCB0081ED09 /* DCTVShowEpisodeTableViewCell.h */,
@@ -2773,6 +2789,20 @@
 				DF85B4EA77B68265D259968B /* Pods-defaults-CoachellaChat.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		F93BCCBE21C243350079242D /* InfluPersonDetails */ = {
+			isa = PBXGroup;
+			children = (
+				F93BCCBF21C243920079242D /* DCInfluencersPersonDetailsViewController.h */,
+				F93BCCC021C243920079242D /* DCInfluencersPersonDetailsViewController.m */,
+				F93BCCC321C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.h */,
+				F93BCCC421C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.m */,
+				F93BCCC521C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib */,
+				F93BCCCA21C248610079242D /* DCSocialTableViewCell.h */,
+				F93BCCCB21C248610079242D /* DCSocialTableViewCell.m */,
+			);
+			name = InfluPersonDetails;
 			sourceTree = "<group>";
 		};
 		F9BAE2F6219C1CB600921566 /* DCTVShow */ = {
@@ -3130,6 +3160,7 @@
 				0E0820F21C728539001C40F0 /* VOYAGER_REGULAR.ttf in Resources */,
 				3696A76D2050648200CE742B /* Default-568.png in Resources */,
 				364098E12016BB9600CBB9F8 /* error@2x.png in Resources */,
+				F93BCCC821C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib in Resources */,
 				0E1A3CBC1D8D1A350065FA89 /* ECComment_Off@2x.png in Resources */,
 				0E0820FE1C72CCA2001C40F0 /* contact_card.png in Resources */,
 				36168425204392E300F6740B /* StPatricks18_4x6.jpg in Resources */,
@@ -3370,6 +3401,7 @@
 				369B9CEF1F18900000DA883D /* sorting_options.png in Resources */,
 				369B9CF01F18900000DA883D /* ECAttendance_Off.png in Resources */,
 				3619B21A2006BC26002811B2 /* VideoProcessor.storyboard in Resources */,
+				F93BCCC921C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib in Resources */,
 				369B9CF11F18900000DA883D /* filter@2x.png in Resources */,
 				3619B2282006BD5C002811B2 /* cancel.png in Resources */,
 				D4EDB6F321647D9A0011761E /* icon_1024_EdgeTVChat.png in Resources */,
@@ -4159,6 +4191,7 @@
 				735CFEC91DA43320006E0A38 /* NotificationSettingsViewController.m in Sources */,
 				3619B1B92006B419002811B2 /* MediaBrowser.m in Sources */,
 				36D312C31FB90083006D7153 /* DCBranchIOParams.m in Sources */,
+				F93BCCC121C243920079242D /* DCInfluencersPersonDetailsViewController.m in Sources */,
 				730E27891D9F8003001F2032 /* MoreViewController.m in Sources */,
 				0E0820B21C634615001C40F0 /* NSDate+Conversions.m in Sources */,
 				3619B1EE2006B472002811B2 /* ECSliderLeft.m in Sources */,
@@ -4177,6 +4210,7 @@
 				0E3FAE071C5B43D5005C28AA /* SecondViewController.m in Sources */,
 				735CFED51DA4755C006E0A38 /* ECUserListCell.m in Sources */,
 				361684352043E78A00F6740B /* DCEventTableViewCell.m in Sources */,
+				F93BCCCC21C248610079242D /* DCSocialTableViewCell.m in Sources */,
 				362BF311201B083D003DF01C /* DCFeedItemFilter.m in Sources */,
 				362FDB432024E48100D436AB /* DCFollowOrMessageCell.m in Sources */,
 				363352AD201D655A002C0C60 /* DCYTPlayerTableViewCell.m in Sources */,
@@ -4185,6 +4219,7 @@
 				F9F10D1A21A2CF36005C21FD /* DCChatReactionViewController.m in Sources */,
 				36319DE91F0BE2B700678524 /* ECAuthAPI.m in Sources */,
 				36AAE02D1F9868F400DB1C33 /* DCFeedItemDetailsWebViewController.m in Sources */,
+				F93BCCC621C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.m in Sources */,
 				360E95311F1D735700BBC842 /* DCMediaEntityObject.m in Sources */,
 				735CFECC1DA4334C006E0A38 /* NotificationSettingsCell.m in Sources */,
 				36539324201C11100066A986 /* DCPersonBlurbTableViewCell.m in Sources */,
@@ -4639,6 +4674,7 @@
 				365DCB051F4EA4BF00499800 /* DCTopicCell.m in Sources */,
 				3619B2042006B57F002811B2 /* S3UploadVideo.m in Sources */,
 				360175C92004A7300042FB3F /* KeepLayoutConstraint.m in Sources */,
+				F93BCCC221C243920079242D /* DCInfluencersPersonDetailsViewController.m in Sources */,
 				3619B1D62006B461002811B2 /* VideoBrowserViewController.m in Sources */,
 				369B9C991F18900000DA883D /* NotificationSettingsViewController.m in Sources */,
 				369B9C9A1F18900000DA883D /* MoreViewController.m in Sources */,
@@ -4657,6 +4693,7 @@
 				369B9CA31F18900000DA883D /* ECAuthAPI.m in Sources */,
 				3686FF8F1F2435C9000B85F8 /* DCMediaEntityObject.m in Sources */,
 				369B9CA41F18900000DA883D /* NotificationSettingsCell.m in Sources */,
+				F93BCCCD21C248610079242D /* DCSocialTableViewCell.m in Sources */,
 				3662FFDB2039D15C00DD510C /* TestTableViewController.m in Sources */,
 				369B9CA51F18900000DA883D /* ECUser.m in Sources */,
 				360175C72004A7300042FB3F /* KeepAttribute.m in Sources */,
@@ -4665,6 +4702,7 @@
 				F9F10D1B21A2CF36005C21FD /* DCChatReactionViewController.m in Sources */,
 				369B9CA71F18900000DA883D /* ECFavoritesCell.m in Sources */,
 				369B9CA81F18900000DA883D /* ECAppInfo.m in Sources */,
+				F93BCCC721C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.m in Sources */,
 				369B9CA91F18900000DA883D /* ECTopicViewController.m in Sources */,
 				369B9CAA1F18900000DA883D /* ECFacebookUserData.m in Sources */,
 				3688572E202799C0004DE2AA /* DCUserPostCell.m in Sources */,
