@@ -171,15 +171,31 @@
     
 //    self.nameLabel.text = _selectedFeedItem.digital.episodeTitle;
 //    self.descriptionLabel.text = _selectedFeedItem.digital.episodeDescription;
-    [self convertStringDateToNSDate:_selectedFeedItem.created_at];
+
+        if (self.isCommingFromEvent == false){
+        // No need to set date
+        self.monthNameLabelWidthConstraint.constant = 0.0;
+        self.monthDayLabelWidthConstraint.constant = 0.0;
+    }else{
+        // set date dirctly come from eventVC
+        self.monthNameLabelWidthConstraint.constant = 60.0;
+        self.monthDayLabelWidthConstraint.constant = 60.0;
+        [self setEventDate];
+        [self.nameLabel setText:self.selectedFeedItem.event.name];
+        [self.descriptionLabel setText:[NSString stringWithFormat:@"%@, %@", self.selectedFeedItem.event.city, self.selectedFeedItem.event.state]];
+        if(self.selectedFeedItem.event.mainImage != nil){
+            [self showImageOnHeader:self.selectedFeedItem.event.mainImage];
+        }
+        //[self convertStringDateToNSDate:_selectedFeedItem.created_at];
+    }
     
+    //Add camera image to upload video or image
+    /*
     NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.signedInUser.profilePicUrl]];
     UIImage *image = [UIImage imageWithData:data];
     self.profileImageView.layer.cornerRadius = 20.0;
     self.profileImageView.clipsToBounds = YES;
-    
-    //Add camera image to upload video or image
-    /*
+     
     if (image != nil){
         [self.profileImageView setImage:image];
     }else{
@@ -228,6 +244,19 @@
     self.monthNameLabel.text = [calMonth stringFromDate:date];
     NSString *monthDay = [NSString stringWithFormat:@"%lu", (long)day];
     [self.monthDayLabel setText:monthDay];
+}
+
+-(void)setEventDate{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
+    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+    NSDate *eventDate = [dateFormatter dateFromString:self.selectedFeedItem.event.startDate];
+    [dateFormatter setDateFormat:@"MMM"];
+//    NSLog(@"month is %@", [[dateFormatter stringFromDate:eventDate] uppercaseString]);
+    [self.monthNameLabel setText:[[dateFormatter stringFromDate:eventDate] uppercaseString]];
+    [dateFormatter setDateFormat:@"dd"];
+//    NSLog(@"date is %@", [[dateFormatter stringFromDate:eventDate] uppercaseString]);
+    [self.monthDayLabel setText:[[dateFormatter stringFromDate:eventDate] uppercaseString]];
 }
 
 - (void)setInverted:(BOOL)inverted
@@ -1075,7 +1104,6 @@
 
 // Displaying Image on Cell
 -(void)showImageOnTheCell:(MessageTableViewCell *)cell ForImageUrl:(NSString *)url isFromDownloadButton:(BOOL)downloadFlag{
-    
     
     UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
     indicator.color = [UIColor colorWithRed:171.0/255.0 green:57.0/255.0 blue:158.0/255.0 alpha:1.0];

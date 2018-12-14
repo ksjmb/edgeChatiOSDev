@@ -207,21 +207,30 @@
 
 - (void)eventFeedDidTapCommentsButton:(DCEventTableViewCell *)dcEventTableViewCell index:(NSInteger)index{
     NSLog(@"%@", dcEventTableViewCell.feedItem.feedItemId);
-    NSMutableArray *array = [[NSMutableArray alloc] init];
+//    NSMutableArray *array = [[NSMutableArray alloc] init];
     [[ECAPI sharedManager] fetchTopicsByFeedItemId:dcEventTableViewCell.feedItem.feedItemId callback:^(NSArray *topics, NSError *error)  {
         if(error){
             NSLog(@"Error: %@", error);
         }
         else{
-            
+            /*
             // Push to comments view controller directly
             ECEventTopicCommentsViewController *ecEventTopicCommentsViewController = [[ECEventTopicCommentsViewController alloc] init];
             ECTopic *topic = [topics objectAtIndex:1];
             ecEventTopicCommentsViewController.selectedFeedItem = dcEventTableViewCell.feedItem;
             ecEventTopicCommentsViewController.selectedTopic = topic;
             ecEventTopicCommentsViewController.topicId = topic.topicId;
-            
             [self.navigationController pushViewController:ecEventTopicCommentsViewController animated:YES];
+            */
+            
+            ECTopic *topic = [topics objectAtIndex:1];
+            DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
+            dcChat.selectedFeedItem = dcEventTableViewCell.feedItem;
+            dcChat.selectedTopic = topic;
+            dcChat.topicId = topic.topicId;
+            dcChat.isCommingFromEvent = true;
+            [self.navigationController pushViewController:dcChat animated:NO];
+             
         }
     }];
 }
@@ -239,11 +248,11 @@
 - (void)eventFeedDidTapAttendanceButton:(DCEventTableViewCell *)dcEventTableViewCell index:(NSInteger)index{
     ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
     ecAttendanceDetailsViewController.selectedFeedItem = dcEventTableViewCell.feedItem;
-    
     [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
 }
 
 - (void)eventFeedDidTapShareButton:(DCEventTableViewCell *)dcEventTableViewCell index:(NSInteger)index{
+    
 }
 
 @end

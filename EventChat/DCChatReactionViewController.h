@@ -50,6 +50,8 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentControl;
 @property (weak, nonatomic) IBOutlet UIView *postCommentView;
 @property (weak, nonatomic) IBOutlet UIButton *cameraButton;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *monthNameLabelWidthConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *monthDayLabelWidthConstraint;
 
 @property (nonatomic, strong)DCFeedItem *selectedFeedItem;
 @property (nonatomic, strong)DCPost *dcPost;
@@ -65,6 +67,6 @@
 @property (weak, nonatomic) IBOutlet UITableView *attendeeListTableView;
 //@property (nonatomic, strong) NSMutableArray *mainParentIdArray;
 @property (nonatomic, strong) NSMutableArray *childParentIdArray;
-
+@property (nonatomic, assign) BOOL isCommingFromEvent;
 
 @end
