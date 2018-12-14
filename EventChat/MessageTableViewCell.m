@@ -42,12 +42,6 @@
         [self configureSubviewsForMediaCell];
     } else {
         [self configureSubviewsForChatReaction];
-//        ECCommonClass *instance = [ECCommonClass sharedManager];
-//        if (instance.isFromChatVC == false){
-//            [self configureSubviews];
-//        }else{
-//            [self configureSubviewsForChatReaction];
-//        }
     }
     [[NSNotificationCenter defaultCenter] removeObserver:self name:@"configureView" object:nil];
 }
@@ -212,7 +206,8 @@
 
 - (void)configureNewCell {
     // Handle touchUpInside event for Like label
-    self.likeCountLabel.userInteractionEnabled = YES;
+//    self.likeCountLabel.userInteractionEnabled = YES;
+    self.likeCountLabel.userInteractionEnabled = NO;
     UITapGestureRecognizer *likeLabelTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapLikeComment:)];
     [self.likeCountLabel addGestureRecognizer:likeLabelTapGesture];
     
@@ -231,10 +226,16 @@
     UITapGestureRecognizer *viewReplyLabelTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapViewReplyByUser:)];
     [self.viewReplyLabel addGestureRecognizer:viewReplyLabelTapGesture];
     
+    //Handle touchUpInside event for favImageView label
+    self.favImageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *favImageViewTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapFavImageViewByUser:)];
+    [self.favImageView addGestureRecognizer:favImageViewTapGesture];
+    
     NSDictionary *metrics;
     // Disable like button if user has already liked the comment
     if([self.signedInUser.likedCommentIds containsObject:_message.commentId]){
         [self.likeCountLabel setEnabled:NO];
+        [self.favImageView setUserInteractionEnabled:NO];
     }
     
     if (![_message.parantId isEqualToString:@"0"]) {
@@ -547,7 +548,7 @@
         _favImageView.translatesAutoresizingMaskIntoConstraints = NO;
         _favImageView.userInteractionEnabled = NO;
         //        _favImageView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
-        [self.favImageView setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]]];
+        [self.favImageView setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]]];
         _favImageView.layer.cornerRadius = kMessageTableViewCellAvatarHeight/2.0;
         _favImageView.layer.masksToBounds = YES;
     }
@@ -587,7 +588,42 @@
 }
 
 #pragma mark - MessageTableViewCellDelegate Methods
+
+-(void)didTapFavImageViewByUser:(id)sender{
+    NSLog(@"MessageTableViewCell - CommentId: %@ - UserId: %@", _message.commentId, self.signedInUser.userId);
+    
+    [[ECAPI sharedManager] likeComment:_message.commentId userId:self.signedInUser.userId callback:^(NSDictionary *jsonDictionary,NSError *error) {
+        if (error) {
+            NSLog(@"Error adding user: %@", error);
+        } else {
+            // Format date
+            NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+            [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+            NSDate *created_atFromString = [[NSDate alloc] init];
+            created_atFromString = [dateFormatter dateFromString:_message.created_at];
+            NSString *ago = [created_atFromString formattedAsTimeAgo];
+            NSInteger newLikeCount = [_message.likeCount intValue];
+            self.likeCountLabel.textColor = [UIColor lightGrayColor];
+            
+            ECCommonClass *instance = [ECCommonClass sharedManager];
+            if (instance.isFromChatVC == false){
+                NSString *mLikeCount = [NSString stringWithFormat:@"%@, Like(%ld", ago, (long)newLikeCount + 1];
+                mLikeCount = [mLikeCount stringByAppendingString:@")"];
+                self.likeCountLabel.text = mLikeCount;
+                //                self.likeCountLabel.text = [NSString stringWithFormat:@"%@ \u2022 Liked \u2022 %@", ago, [NSString stringWithFormat:@"%ld", (long)newLikeCount + 1]];
+            }else{
+                //                self.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Liked", ago, [NSString stringWithFormat:@"%ld", (long)newLikeCount + 1]];
+                NSString *mLikeCount = [NSString stringWithFormat:@"%@, Like(%ld", ago, (long)newLikeCount + 1];
+                mLikeCount = [mLikeCount stringByAppendingString:@")"];
+                self.likeCountLabel.text = mLikeCount;
+            }
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"didTapFavImageView" object:nil];
+        }
+    }];
+}
+
 -(void)didTapLikeComment:(id)sender{
+    /*
     NSLog(@"MessageTableViewCell - CommentId: %@ - UserId: %@", _message.commentId, self.signedInUser.userId);
     
     [[ECAPI sharedManager] likeComment:_message.commentId userId:self.signedInUser.userId callback:^(NSDictionary *jsonDictionary,NSError *error) {
@@ -617,6 +653,7 @@
             }
         }
     }];
+     */
 }
 
 

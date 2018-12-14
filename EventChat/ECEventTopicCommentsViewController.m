@@ -1260,10 +1260,6 @@
     }
 }
 
--(void)moviePlaybackDidFinish
-{
-}
-
 #pragma mark - UITableViewDataSource Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
@@ -1627,6 +1623,7 @@
         [[ECCommonClass sharedManager] alertViewTitle:@"Network Error" message:@"No internet connection available"];
     }
 }
+
 - (MessageTableViewCell *)autoCompletionCellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     MessageTableViewCell *cell = (MessageTableViewCell *)[self.autoCompletionView dequeueReusableCellWithIdentifier:AutoCompletionCellIdentifier];

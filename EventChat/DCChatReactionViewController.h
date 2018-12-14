@@ -29,7 +29,7 @@
 @class DCFeedItem;
 @class MessageTableViewCell;
 
-@interface DCChatReactionViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, FCAlertViewDelegate, UITextViewDelegate>
+@interface DCChatReactionViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, FCAlertViewDelegate, UITextViewDelegate, UIActionSheetDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *mImageView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
@@ -47,6 +47,9 @@
 @property (weak, nonatomic) IBOutlet IQTextView *mTextView;
 @property (weak, nonatomic) IBOutlet UIButton *postButton;
 @property (weak, nonatomic) IBOutlet UILabel *noDataAvailableLabel;
+@property (weak, nonatomic) IBOutlet UISegmentedControl *segmentControl;
+@property (weak, nonatomic) IBOutlet UIView *postCommentView;
+@property (weak, nonatomic) IBOutlet UIButton *cameraButton;
 
 @property (nonatomic, strong)DCFeedItem *selectedFeedItem;
 @property (nonatomic, strong)DCPost *dcPost;
@@ -56,6 +59,7 @@
 @property (nonatomic, retain)NSString *topicId;
 @property (nonatomic, strong) NSMutableArray *messages;
 @property (nonatomic, strong) Message *blockedMessage;
+@property (nonatomic) UIBackgroundTaskIdentifier backgroundUpdateTaskId;
 
 @property (nonatomic, strong) NSArray *attendeeList;
 @property (weak, nonatomic) IBOutlet UITableView *attendeeListTableView;

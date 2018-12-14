@@ -68,6 +68,17 @@
 @property (nonatomic, strong)NSMutableDictionary *viewReplyDict;
 @property (nonatomic, assign) AppDelegate *appDelegate;
 @property (nonatomic, assign) BOOL isParentIdPresent;
+@property (nonatomic, strong)NSMutableArray *attendanceArray;
+//
+@property (strong, nonatomic) ECFullScreenImageViewController *fullScreenImageViewController;
+@property (nonatomic, strong) NSArray *users;
+@property (nonatomic, strong) NSArray *channels;
+@property (nonatomic, strong) NSArray *emojis;
+@property (nonatomic, strong) NSArray *commands;
+@property (nonatomic, strong) NSArray *searchResult;
+@property (retain, nonatomic) UIImage *alertImage;
+@property (retain, nonatomic) NSString *alertTitle;
+@property (retain, nonatomic) NSArray *arrayOfButtonTitles;
 
 @end
 
@@ -111,8 +122,13 @@
 - (void)initialSetup{
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(replyComment) name:@"replyComment" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewReplyTap) name:@"viewReplyTap" object:nil];
-
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didTapFavImageView) name:@"didTapFavImageView" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadVideoToS3) name:@"uploadVideoToS3" object:nil];
     
+    // SLKTVC's configuration
+    videoData = [ECVideoData sharedInstance];
+    
+    [self.chatTableView registerClass:[MessageTableViewCell class] forCellReuseIdentifier:messengerMediaCellIdentifier];
     [self.chatTableView registerClass:[MessageTableViewCell class] forCellReuseIdentifier:MessengerCellIdentifier];
     
     if([self.signedInUser.favoritedFeedItemIds containsObject:_selectedFeedItem.feedItemId]){
@@ -142,14 +158,14 @@
     self.nameLabel.text = _selectedFeedItem.digital.episodeTitle;
     self.descriptionLabel.text = _selectedFeedItem.digital.episodeDescription;
     
-    _topEpisodeTitle = _selectedFeedItem.digital.episodeTitle;
-    if ([_topEpisodeTitle  isEqual: @""]){
-        _topEpisodeTitle = _selectedFeedItem.person.profession.title;
+    self.topEpisodeTitle = _selectedFeedItem.digital.episodeTitle;
+    if ([self.topEpisodeTitle  isEqual: @""]){
+        self.topEpisodeTitle = _selectedFeedItem.person.profession.title;
         self.nameLabel.text = _selectedFeedItem.person.profession.title;
     }
-    _topEpisodeDescription = _selectedFeedItem.digital.episodeDescription;
-    if ([_topEpisodeDescription  isEqual: @""]){
-        _topEpisodeDescription = _selectedFeedItem.person.blurb;
+    self.topEpisodeDescription = _selectedFeedItem.digital.episodeDescription;
+    if ([self.topEpisodeDescription  isEqual: @""]){
+        self.topEpisodeDescription = _selectedFeedItem.person.blurb;
         self.descriptionLabel.text = _selectedFeedItem.person.blurb;
     }
     
@@ -161,11 +177,15 @@
     UIImage *image = [UIImage imageWithData:data];
     self.profileImageView.layer.cornerRadius = 20.0;
     self.profileImageView.clipsToBounds = YES;
+    
+    //Add camera image to upload video or image
+    /*
     if (image != nil){
         [self.profileImageView setImage:image];
     }else{
         self.profileImageView.image = [UIImage imageNamed:@"missing-profile.png"];
     }
+    */
     
     self.inverted = YES;
     
@@ -243,6 +263,347 @@
     }
 }
 
+/*
+- (void)didPressLeftButton:(id)sender
+{
+    // Notifies the view controller when the left button's action has been triggered, manually.
+    
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Image",@"Video",nil];
+    [actionSheet showInView:self.view];
+    
+//    [super didPressLeftButton:sender];
+}
+*/
+
+-(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
+    
+    if (buttonIndex == 0) {
+        
+        // Method to get images from camera or phone gallery.
+        
+        [[ECCommonClass sharedManager]showActionSheetToSelectMediaFromGalleryOrCamFromController:self andMediaType:@"Image" andResult:^(bool flag) {
+            if (flag) {
+                [self uploadImageToS3];
+            }
+        }];
+        
+    }else if(buttonIndex == 1){
+        [[ECCommonClass sharedManager] showActionSheetToSelectMediaFromGalleryOrCamFromController:self andMediaType:@"Video" andResult:^(bool flag) {
+            if (flag) {
+                //[self uploadVideoToS3];
+            }
+        }];
+        
+    }
+}
+
+// Handling background Image upload
+- (void) beginBackgroundUpdateTask {
+    self.backgroundUpdateTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [self endBackgroundUpdateTask];
+    }];
+}
+- (void) endBackgroundUpdateTask {
+    [[UIApplication sharedApplication] endBackgroundTask: self.backgroundUpdateTaskId];
+    self.backgroundUpdateTaskId = UIBackgroundTaskInvalid;
+}
+
+// Uploading Image On S3
+-(void)uploadImageToS3{
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+    [SVProgressHUD showWithStatus:@"Uploading Image"];
+    //    NSString *uniqId = [NSString stringWithFormat:@"%d",(int)[[NSDate date] timeIntervalSince1970]];
+    
+    NSData * thumbImageData = UIImagePNGRepresentation([[ECSharedmedia sharedManager] mediaThumbImage]);
+    [self beginBackgroundUpdateTask];
+    NSLog(@"%@",[[NSUserDefaults standardUserDefaults] valueForKey:@"parantId"]);
+    [[S3UploadImage sharedManager] uploadImageForData:thumbImageData forFileName:[[ECSharedmedia sharedManager]mediaImageThumbURL] FromController:self andResult:^(bool flag) {
+        
+        if (flag) {
+            
+            NSData * imgData = [[ECSharedmedia sharedManager] imageData];
+            [[S3UploadImage sharedManager]uploadImageForData:imgData forFileName:[[ECSharedmedia sharedManager] mediaImageURL] FromController:self andResult:^(bool flag) {
+                
+                if (flag) {
+                    [self endBackgroundUpdateTask];
+                    [SVProgressHUD dismiss];
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+                    //                    NSDate *created_atFromString = [[NSDate alloc] init];
+                    
+                    NSString * imageURL = [NSString stringWithFormat:@"%@Images/%@",awsURL,[[ECSharedmedia sharedManager]mediaImageURL]];
+                    
+                    NSString * thumbImageURL = [NSString stringWithFormat:@"%@Images/%@",awsURL,[[ECSharedmedia sharedManager]mediaImageThumbURL]];
+                    
+                    // Hit API for new image comment
+                    [[ECAPI sharedManager] postImageComment:self.topicId feedItemId:self.selectedFeedItem.feedItemId userId:self.signedInUser.userId displayName:self.signedInUser.firstName imageSizeInBytes:[[ECSharedmedia sharedManager] imageSizeInBytes] thumbnailURL:thumbImageURL  imageURL:imageURL commentType:@"image" parentId:[[NSUserDefaults standardUserDefaults] valueForKey:@"parantId"] postId:self.dcPost.postId callback:^(NSDictionary *jsonDictionary, NSError *error) {
+                        if (!error) {
+                            if (jsonDictionary != nil && ([jsonDictionary[@"statusCode"] integerValue] == 200)) {
+                                
+                                Message *message = [Message new];
+                                
+                                message.displayName      = jsonDictionary [ECdata][ECDisplayName];
+                                message.user             = self.signedInUser;
+                                message.likeCount        = 0;
+                                message.commentType      = jsonDictionary[ECdata][ECCommentType];
+                                message.imageUrl         = jsonDictionary[ECdata][ECImageUrl];
+                                message.imageSizeInBytes = [jsonDictionary[ECdata][ECImageSizeInBytes] integerValue];
+                                message.thumbnailUrl     = jsonDictionary[ECdata][ECThumbnailUrl];
+                                message.parantId         = jsonDictionary[ECdata][ECParantId];
+                                message.created_at       = jsonDictionary[ECdata][ECCreated_at];
+                                message.commentId        = jsonDictionary[ECdata][ECCommentId];
+                                
+                                int index = 1;
+                                NSLog(@"%@",jsonDictionary[ECdata][ECParantId]);
+                                for (int i = 0; i < [self.messages count]; i++) {
+                                    Message *checkIndex = [self.messages objectAtIndex:i];
+                                    if (![jsonDictionary[ECdata][ECParantId] isEqualToString:@"0"] && [checkIndex.commentId isEqualToString:jsonDictionary[ECdata][ECParantId]]) {
+                                        index = i;
+                                        for (int j = 0; j < [self.messages count]; j++) {
+                                            Message *newcheckIndex = [self.messages objectAtIndex:j];
+                                            if ([jsonDictionary[ECdata][ECParantId] isEqualToString:newcheckIndex.parantId]) {
+                                                index = j;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                if (index == 0) {
+                                    index = 0;
+                                }
+                                else{
+                                    index = index - 1;
+                                }
+                                
+                                
+                                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                                UITableViewRowAnimation rowAnimation = self.inverted ? UITableViewRowAnimationBottom : UITableViewRowAnimationTop;
+                                UITableViewScrollPosition scrollPosition = self.inverted ? UITableViewScrollPositionBottom : UITableViewScrollPositionTop;
+                                
+                                [self.chatTableView beginUpdates];
+                                [self.messages insertObject:message atIndex:index];
+                                [self.chatTableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:rowAnimation];
+                                [self.chatTableView endUpdates];
+                                
+                                [self.chatTableView scrollToRowAtIndexPath:indexPath atScrollPosition:scrollPosition animated:YES];
+                                
+                                // Fixes the cell from blinking (because of the transform, when using translucent cells)
+                                // See https://github.com/slackhq/SlackTextViewController/issues/94#issuecomment-69929927
+                                [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                [self.chatTableView resignFirstResponder];
+                                [self.chatTableView reloadData];
+                                [self.chatTableView scrollToRowAtIndexPath:indexPath atScrollPosition:scrollPosition animated:YES];
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"closeComment" object:nil];
+                                NSLog(@"Success uploading Comment:%@",jsonDictionary);
+                                [[NSUserDefaults standardUserDefaults] setValue:@"0" forKey:@"parantId"];
+                            }
+                        }
+                        if (error) {
+                            NSLog(@"Error :%@",error.localizedDescription);
+                            [self endBackgroundUpdateTask];
+                            
+                        }
+                    }];
+                    
+                } else{
+                    // Fail Condition ask for retry and cancel through alertView
+                    [self showFailureOfS3:@"Image"];
+                    [SVProgressHUD dismiss];
+                    [self endBackgroundUpdateTask];
+                    
+                }
+            }];
+        } else{
+            // Fail Condition ask for retry and cancel through alertView
+            [self showFailureOfS3:@"Image"];
+            [SVProgressHUD dismiss];
+            [self endBackgroundUpdateTask];
+            
+        }
+    }];
+}
+
+// Uploading Video On S3
+- (void) uploadVideoToS3
+{
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+    [SVProgressHUD showWithStatus:@"Uploading Video"];
+    
+    //Uploading Thumbnail image
+    NSData * thumbImageData = UIImagePNGRepresentation(videoData.mediaThumbImage);
+    [self beginBackgroundUpdateTask];
+    
+    [[S3UploadVideo sharedManager] uploadImageForData:thumbImageData forFileName:videoData.mediaThumbImageURL FromController:self andResult:^(bool flag) {
+        
+        if (flag) {
+            //Uploading Video
+            NSError* error = nil;
+            NSData * videoDatas = [NSData dataWithContentsOfURL:videoData.videoURL options:NSDataReadingUncached error:&error];
+            [[S3UploadVideo sharedManager] uploadVideoForData:videoDatas forFileName:[[ECVideoData sharedInstance] mediaURL] FromController:self andResult:^(bool flag) {
+                
+                if (flag) {
+                    [self endBackgroundUpdateTask];
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        [SVProgressHUD dismiss];
+                    });
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+                    //                    NSDate *created_atFromString = [[NSDate alloc] init];
+                    
+                    NSString * imageURL = [NSString stringWithFormat:@"%@Videos/%@",awsURL,videoData.mediaURL];
+                    
+                    NSString * thumbImageURL = [NSString stringWithFormat:@"%@Videos/%@",awsURL,videoData.mediaThumbImageURL];
+                    NSInteger videoBytes = (long)[videoDatas bytes];
+                    
+                    // Hit API for new video comment
+                    [[ECAPI sharedManager] postImageComment:self.topicId feedItemId:self.selectedFeedItem.feedItemId userId:self.signedInUser.userId displayName:self.signedInUser.firstName imageSizeInBytes:videoBytes thumbnailURL:thumbImageURL  imageURL:imageURL commentType:@"video" parentId:[[NSUserDefaults standardUserDefaults] valueForKey:@"parantId"] postId:self.dcPost.postId callback:^(NSDictionary *jsonDictionary, NSError *error) {
+                        if (!error) {
+                            if (jsonDictionary != nil && ([jsonDictionary[@"statusCode"] integerValue] == 200)) {
+                                
+                                Message *message = [Message new];
+                                
+                                message.displayName      = jsonDictionary [ECdata][ECDisplayName];
+                                message.user             = self.signedInUser;
+                                message.likeCount        = 0;
+                                message.commentType      = jsonDictionary[ECdata][ECCommentType];
+                                message.imageUrl         = jsonDictionary[ECdata][ECImageUrl];
+                                message.videoUrl         = jsonDictionary[ECdata][ECVideoUrl];
+                                message.imageSizeInBytes = [jsonDictionary[ECdata][ECImageSizeInBytes] integerValue];
+                                message.thumbnailUrl     = jsonDictionary[ECdata][ECThumbnailUrl];
+                                message.created_at       = jsonDictionary[ECdata][ECCreated_at];
+                                message.parantId         = jsonDictionary[ECdata][ECParantId];
+                                message.commentId        = jsonDictionary[ECdata][ECCommentId];
+                                
+                                int index = 1;
+                                NSLog(@"%@",jsonDictionary[ECdata][ECParantId]);
+                                for (int i = 0; i < [self.messages count]; i++) {
+                                    Message *checkIndex = [self.messages objectAtIndex:i];
+                                    if (![jsonDictionary[ECdata][ECParantId] isEqualToString:@"0"] && [checkIndex.commentId isEqualToString:jsonDictionary[ECdata][ECParantId]]) {
+                                        index = i;
+                                        for (int j = 0; j < [self.messages count]; j++) {
+                                            Message *newcheckIndex = [self.messages objectAtIndex:j];
+                                            if ([jsonDictionary[ECdata][ECParantId] isEqualToString:newcheckIndex.parantId]) {
+                                                index = j;
+                                                break;
+                                            }
+                                        }
+                                        
+                                    }
+                                }
+                                if (index == 0) {
+                                    index = 0;
+                                }
+                                else{
+                                    index = index - 1;
+                                }
+                                
+                                
+                                NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
+                                UITableViewRowAnimation rowAnimation = self.inverted ? UITableViewRowAnimationBottom : UITableViewRowAnimationTop;
+                                UITableViewScrollPosition scrollPosition = self.inverted ? UITableViewScrollPositionBottom : UITableViewScrollPositionTop;
+                                
+                                [self.chatTableView beginUpdates];
+                                [self.messages insertObject:message atIndex:index];
+                                [self.chatTableView resignFirstResponder];
+                                [self.chatTableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:rowAnimation];
+                                [self.chatTableView endUpdates];
+                                
+                                [self.chatTableView scrollToRowAtIndexPath:indexPath atScrollPosition:scrollPosition animated:YES];
+                                
+                                //                                 Fixes the cell from blinking (because of the transform, when using translucent cells)
+                                //                              See https:
+                                //github.com/slackhq/SlackTextViewController/issues/94#issuecomment-69929927
+                                [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+                                [self.chatTableView reloadData];
+                                [self.chatTableView scrollToRowAtIndexPath:indexPath atScrollPosition:scrollPosition animated:YES];
+                                
+                                
+                                NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
+                                for (UIViewController *aViewController in allViewControllers) {
+                                    if ([aViewController isKindOfClass:[DCChatReactionViewController class]]) {
+                                        [self.navigationController popToViewController:aViewController animated:YES];
+                                    }
+                                }
+                                
+                                //Removing view of replying.
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"closeComment" object:nil];
+                                NSLog(@"Success uploading Comment:%@",jsonDictionary);
+                                [[NSUserDefaults standardUserDefaults] setValue:@"0" forKey:@"parantId"];
+                            }
+                        }
+                        if (error) {
+                            NSLog(@"Error :%@",error.localizedDescription);
+                            [self endBackgroundUpdateTask];
+                            
+                        }
+                    }];
+                    
+                } else{
+                    // Fail Condition ask for retry and cancel through alertView
+                    [self showFailureOfS3:@"Video"];
+                    [SVProgressHUD dismiss];
+                    [self endBackgroundUpdateTask];
+                }
+            }];
+        } else{
+            // Fail Condition ask for retry and cancel through alertView
+            [self showFailureOfS3:@"Video"];
+            [SVProgressHUD dismiss];
+            [self endBackgroundUpdateTask];
+            
+        }
+    }];
+}
+
+//Show Alert based on media type.
+-(void)showFailureOfS3:(NSString *)mediaType{
+    UIAlertController *alertController = [UIAlertController
+                                          alertControllerWithTitle:@"Evnet Chat"
+                                          message:[NSString stringWithFormat:@"%@ uploading Failed! \n Do you want to Retry?",mediaType]
+                                          preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *cancelAction = [UIAlertAction
+                                   actionWithTitle:NSLocalizedString(@"Cancel", @"Cancel action")
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction *action)
+                                   {
+                                       NSLog(@"Cancel action");
+                                   }];
+    
+    UIAlertAction *okAction = [UIAlertAction
+                               actionWithTitle:NSLocalizedString(@"Retry", @"OK action")
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction *action)
+                               {
+                                   NSLog(@"OK action");
+                                   // Re uploading if fail condition arises
+                                   if ([mediaType isEqualToString:@"Image"]) {
+                                       [self uploadImageToS3];
+                                   }
+                                   else{
+                                       [self uploadVideoToS3];
+                                   }
+                               }];
+    
+    [alertController addAction:cancelAction];
+    [alertController addAction:okAction];
+    [self presentViewController:alertController animated:YES completion:nil];
+}
+
+#pragma mark:- Segment Control Action Methods
+
+- (IBAction)actionOnSegmentControl:(id)sender {
+    if (self.segmentControl.selectedSegmentIndex == 0) {
+        [self setUserAttendanceResponse:@"Going"];
+    } else if(self.segmentControl.selectedSegmentIndex == 1) {
+        [self setUserAttendanceResponse:@"Maybe"];
+    } else if(self.segmentControl.selectedSegmentIndex == 2) {
+        [self setUserAttendanceResponse:@"Can't go"];
+    }
+}
+
 #pragma mark:- Notification fire methods
 
 -(void)replyComment {
@@ -253,6 +614,10 @@
 -(void)viewReplyTap {
     //    NSString *mCommentID = [[NSUserDefaults standardUserDefaults] valueForKey:@"commentIdForChat"];
     [self.chatTableView reloadData];
+}
+
+-(void)didTapFavImageView {
+    [self configureDataSource];
 }
 
 - (void)configureDataSource {
@@ -372,6 +737,8 @@
     self.reactionBottomLabel.backgroundColor = [UIColor whiteColor];
     self.commentsBottomLabel.backgroundColor = [UIColor colorWithRed:160.0/255.0 green:82.0/255.0 blue:45.0/255.0 alpha:0.75];
     [self.attendeeListTableView setHidden:true];
+    [self.segmentControl setHidden:true];
+    [self.postCommentView setHidden:false];
     [self.chatTableView setHidden:false];
     self.attendeeList = nil;
     self.attendeeList = [[NSArray alloc] initWithArray:self.attendeeList];
@@ -382,6 +749,7 @@
     [self.view endEditing:YES];
     self.commentsBottomLabel.backgroundColor = [UIColor whiteColor];
     self.reactionBottomLabel.backgroundColor = [UIColor colorWithRed:160.0/255.0 green:82.0/255.0 blue:45.0/255.0 alpha:0.75];
+    [self.postCommentView setHidden:true];
     [self.chatTableView setHidden:true];
     [self.attendeeListTableView setHidden:false];
     [self.messages removeAllObjects];
@@ -397,6 +765,11 @@
     dcPlaylistsTableViewController.isFeedMode = false;
     dcPlaylistsTableViewController.isSignedInUser = true;
     [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+}
+
+- (IBAction)actionOnCameraButton:(id)sender {
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Image",@"Video",nil];
+    [actionSheet showInView:self.view];
 }
 
 #pragma mark:- Message TableView Cell Delegate Methods
@@ -461,20 +834,41 @@
     MessageTableViewCell *cell;
     Message *message = self.messages[(self.messages.count - 1) - indexPath.row];
     
-    cell = (MessageTableViewCell *)[self.chatTableView dequeueReusableCellWithIdentifier:MessengerCellIdentifier forIndexPath:indexPath];
-    
-    //Removing subviews of cell because it was taking previous contents after scroll
-    if ([cell.contentView subviews]) {
-        for (UIView *subview in [cell.contentView subviews]) {
-            [subview removeFromSuperview];
+    //Loading MediaCell
+    if ([message.commentType isEqualToString:@"image"] || [message.commentType isEqualToString:@"video"]) {
+        cell = (MessageTableViewCell *)[self.chatTableView dequeueReusableCellWithIdentifier:messengerMediaCellIdentifier forIndexPath:indexPath];
+        
+        //Removing subviews of cell because it was taking previous contents after scroll
+        if ([cell.contentView subviews])
+        {
+            for (UIView *subview in [cell.contentView subviews]) {
+                [subview removeFromSuperview];
+            }
         }
+        
+        cell.message = message;
+        [cell configureSubviewsForMediaCell];
+        cell.delegate = self;
+        cell.downloadButton.tag = indexPath.row;
     }
-    ECCommonClass *instance = [ECCommonClass sharedManager];
-    instance.isFromChatVC = true;
+    //Loading TextCell.
+    else{
+        cell = (MessageTableViewCell *)[self.chatTableView dequeueReusableCellWithIdentifier:MessengerCellIdentifier forIndexPath:indexPath];
+        
+        //Removing subviews of cell because it was taking previous contents after scroll
+        if ([cell.contentView subviews]) {
+            for (UIView *subview in [cell.contentView subviews]) {
+                [subview removeFromSuperview];
+            }
+        }
+        ECCommonClass *instance = [ECCommonClass sharedManager];
+        instance.isFromChatVC = true;
+        
+        cell.message = message;
+        [cell configureSubviewsForChatReaction];
+        cell.delegate = self;
+    }
     
-    cell.message = message;
-    [cell configureSubviewsForChatReaction];
-    cell.delegate = self;
     cell.cellIndexPath = indexPath;
     
     cell.titleLabel.text = [NSString stringWithFormat:@"%@ %@", message.user.firstName, message.user.lastName];
@@ -511,10 +905,13 @@
     else{
         cell.likeCountLabel.textColor = [UIColor lightGrayColor];
     }
-    if(message.likeCount != nil){
+    
+    if(message.likeCount != nil && ![message.likeCount  isEqual: @"0"]){
         NSString *mLikeCount = [NSString stringWithFormat:@"%@, Like(%@", ago, message.likeCount];
         mLikeCount = [mLikeCount stringByAppendingString:@")"];
         cell.likeCountLabel.text = mLikeCount;
+        [cell.favImageView setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]]];
+        [cell.favImageView setUserInteractionEnabled:false];
 //        cell.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Like", ago, message.likeCount];
     }
     else{
@@ -522,10 +919,75 @@
         mLikeCount = [mLikeCount stringByAppendingString:@")"];
         cell.likeCountLabel.text = mLikeCount;
 //        cell.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Like", ago, @"0"];
+        [cell.favImageView setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]]];
+        [cell.favImageView setUserInteractionEnabled:true];
     }
     
-    cell.bodyLabel.text = message.content;
-    cell.bodyLabel.textColor = [UIColor lightGrayColor];
+    // Configure cell if not flagged for offensive content
+    if(![_signedInUser.blockedPostByUserId containsObject:message.userId]){
+        //Configuring cell for image.
+        if ([message.commentType isEqualToString:@"image"])
+        {
+            if (message.imageSizeInBytes < 1048576) {
+                // show image without download option.
+                [self showImageOnTheCell:cell ForImageUrl:message.imageUrl isFromDownloadButton:NO];
+                cell.downloadButton.hidden = YES;
+                cell.mediaImageView.userInteractionEnabled = YES;
+                
+            } else
+                // Image size is less than 1 Mb
+            {
+                // Checking if Image is already in the Cache.
+                BOOL imageContains = [[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:message.imageUrl]];
+                if (imageContains) {
+                    cell.mediaImageView.userInteractionEnabled = YES;
+                    [self showImageOnTheCell:cell ForImageUrl:message.imageUrl isFromDownloadButton:NO];
+                    cell.downloadButton.hidden = YES;
+                } else{
+                    NSLog(@"Thumb image with download Icon");
+                    [self showImageOnTheCell:cell ForImageUrl:message.thumbnailUrl isFromDownloadButton:NO];
+                    [cell.downloadButton setImage:[UIImage imageNamed:@"download"] forState:UIControlStateNormal];
+                    cell.downloadButton.hidden = NO;
+                }
+            }
+            // Adding gesture to image to open in another view
+            UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleImageTap:)];
+            tapGestureRecognizer.numberOfTapsRequired = 1;
+            tapGestureRecognizer.numberOfTouchesRequired = 1;
+            cell.mediaImageView.userInteractionEnabled = YES;
+            [cell.mediaImageView addGestureRecognizer:tapGestureRecognizer];
+            
+        }
+        //Configuring cell for Video
+        else if ([message.commentType isEqualToString:@"video"])
+        {
+            //Showing Thumbimage of video and adding play button.
+            NSLog(@"Thumb image with download Icon");
+            [self.view bringSubviewToFront:cell.mediaImageView];
+            [self showImageOnTheCell:cell ForImageUrl:message.thumbnailUrl isFromDownloadButton:NO];
+            [cell.downloadButton setBackgroundImage:[UIImage imageNamed:@"play-button"] forState:UIControlStateNormal];
+            cell.downloadButton.hidden = NO;
+            
+//            // Adding gesture to video to open in another view
+//            UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleVideoTap:)];
+//            tapGestureRecognizer.numberOfTapsRequired = 1;
+//            tapGestureRecognizer.numberOfTouchesRequired = 1;
+//            cell.mediaImageView.userInteractionEnabled = YES;
+//            [cell.mediaImageView addGestureRecognizer:tapGestureRecognizer];
+        }
+        //Displaying comment text.
+        else
+        {
+            cell.bodyLabel.text = message.content;
+            cell.bodyLabel.textColor = [UIColor lightGrayColor];
+        }
+    }
+    else{
+        cell.bodyLabel.text = @"[Removed due to offensive content]";
+    }
+    
+//    cell.bodyLabel.text = message.content;
+//    cell.bodyLabel.textColor = [UIColor lightGrayColor];
     
     // Set profile pic
     [cell.thumbnailView sd_setImageWithURL:[NSURL URLWithString:message.user.profilePicUrl] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {}];
@@ -611,7 +1073,215 @@
     }
 }
 
-//- (NSDictionary)getViewReplyCount:
+// Displaying Image on Cell
+-(void)showImageOnTheCell:(MessageTableViewCell *)cell ForImageUrl:(NSString *)url isFromDownloadButton:(BOOL)downloadFlag{
+    
+    
+    UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+    indicator.color = [UIColor colorWithRed:171.0/255.0 green:57.0/255.0 blue:158.0/255.0 alpha:1.0];
+    [indicator startAnimating];
+    [indicator setCenter: CGPointMake(170, 160)];
+    
+    [cell.contentView addSubview:indicator];
+    [cell.contentView bringSubviewToFront:indicator];
+    [indicator setCenter: CGPointMake(170, 160)];
+    
+    SDImageCache *cache = [SDImageCache sharedImageCache];
+    UIImage *inMemoryImage = [cache imageFromMemoryCacheForKey:url];
+    // resolves the SDWebImage issue of image missing
+    if (inMemoryImage)
+    {
+        cell.mediaImageView.image = inMemoryImage;
+        [indicator removeFromSuperview];
+        
+    }
+    else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
+        UIImage *image = [cache imageFromDiskCacheForKey:url];
+        cell.mediaImageView.image = image;
+        [indicator removeFromSuperview];
+        
+    }else{
+        NSURL *urL = [NSURL URLWithString:url];
+        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+        [manager.imageDownloader setDownloadTimeout:20];
+        [manager downloadImageWithURL:urL
+                              options:0
+                             progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                                 // progression tracking code
+                             }
+                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                [indicator removeFromSuperview];
+                                if (image) {
+                                    cell.mediaImageView.image = image;
+                                    cell.mediaImageView.layer.borderWidth = 1.0;
+                                    cell.mediaImageView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor redColor]);
+                                }
+                                else {
+                                    if(error){
+                                        NSLog(@"Problem downloading Image, play try again")
+                                        ;
+                                        if (downloadFlag) {
+                                            cell.downloadButton.hidden = NO;
+                                        }
+                                        return;
+                                    }
+                                }
+                            }];
+    }
+}
+
+-(void)playButtonPressed:(Message *)message
+{
+    BOOL isInternetAvailable = [[ECCommonClass sharedManager]isInternetAvailabel];
+    if (isInternetAvailable) {
+//        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:message.videoUrl]];
+         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:message.content]];
+        AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
+        AVPlayerViewController *avvc = [AVPlayerViewController new];
+        avvc.player = player;
+        [player play];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(didFinishVideoPlay)
+                                                     name:AVPlayerItemDidPlayToEndTimeNotification
+                                                   object:nil];
+        
+        //mpvc.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
+        //[self presentMoviePlayerViewControllerAnimated:mpvc];
+        [self presentViewController:avvc animated:YES completion:nil];
+        
+        
+    } else {
+        [[ECCommonClass sharedManager] alertViewTitle:@"Network Error" message:@"No internet connection available"];
+    }
+}
+
+-(void)didFinishVideoPlay{
+    [self.navigationController dismissViewControllerAnimated:false completion:nil];
+}
+
+// Clicking Downolad Button on Image
+-(void)downloadButtonClickedForImage:(NSInteger)imageIndex forCell:(MessageTableViewCell *)cell{
+    
+    BOOL isInternetAvailable = [[ECCommonClass sharedManager]isInternetAvailabel];
+    if (isInternetAvailable) {
+        NSLog(@"Button clicked tag :%ld",(long)imageIndex);
+        Message *message = self.messages[imageIndex];
+        UIActivityIndicatorView *indicator = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+        indicator.color = [UIColor colorWithRed:171.0/255.0 green:57.0/255.0 blue:158.0/255.0 alpha:1.0];
+        [indicator startAnimating];
+        [indicator setCenter: CGPointMake(170, 160)];
+        [cell.contentView addSubview:indicator];
+        [cell.contentView bringSubviewToFront:indicator];
+        [indicator setCenter: CGPointMake(170, 160)];
+        
+        if (cell.downloadButton.tag == imageIndex) {
+            cell.downloadButton.hidden = YES;
+        }
+        
+        SDImageCache *cache = [SDImageCache sharedImageCache];
+        UIImage *inMemoryImage = [cache imageFromMemoryCacheForKey:message.imageUrl];
+        // resolves the SDWebImage issue of image missing
+        if (inMemoryImage)
+        {
+            cell.mediaImageView.image = inMemoryImage;
+            [indicator removeFromSuperview];
+            if (cell.downloadButton.tag == imageIndex) {
+                cell.downloadButton.hidden = YES;
+            }
+            
+        }
+        else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:message.imageUrl]]){
+            UIImage *image = [cache imageFromDiskCacheForKey:message.imageUrl];
+            cell.mediaImageView.image = image;
+            [indicator removeFromSuperview];
+            if (cell.downloadButton.tag == imageIndex) {
+                cell.downloadButton.hidden = YES;
+            }
+            
+        }else{
+            NSURL *url = [NSURL URLWithString:message.imageUrl];
+            SDWebImageManager *manager = [SDWebImageManager sharedManager];
+            [manager.imageDownloader setDownloadTimeout:20];
+            [manager downloadImageWithURL:url
+                                  options:0
+                                 progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                                     // progression tracking code
+                                 }
+                                completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                    [indicator removeFromSuperview];
+                                    
+                                    if (image) {
+                                        if (cell.downloadButton.tag == imageIndex) {
+                                            cell.downloadButton.hidden = YES;
+                                        }
+                                        cell.mediaImageView.image = image;
+                                        cell.mediaImageView.layer.borderWidth = 1.0;
+                                        cell.mediaImageView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor redColor]);
+                                    }
+                                    else {
+                                        if (cell.downloadButton.tag == imageIndex) {
+                                            cell.downloadButton.hidden = NO;
+                                        }
+                                    }
+                                }];
+        }
+    }else{
+        [[ECCommonClass sharedManager] alertViewTitle:@"Network Error" message:@"No internet connection available"];
+    }
+}
+
+// Handling image tap which will open image in another larger view
+
+- (void)handleImageTap:(UIGestureRecognizer *)sender {
+    
+    CGPoint location = [sender locationInView:self.view];
+    if (CGRectContainsPoint([self.view convertRect:self.chatTableView.frame fromView:self.chatTableView.superview], location))
+    {
+        CGPoint locationInTableview = [self.chatTableView convertPoint:location fromView:self.view];
+        NSIndexPath *indexPath = [self.chatTableView indexPathForRowAtPoint:locationInTableview];
+        if (indexPath){
+            
+            Message *message = [Message new];
+//            message = [self.messages objectAtIndex:indexPath.row];
+            message = self.messages[(self.messages.count - 1) - indexPath.row];
+            
+            BOOL imageContains = [[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:message.imageUrl]];
+            if (imageContains) {
+                self.fullScreenImageViewController = [[ECFullScreenImageViewController alloc] initWithNibName:@"ECFullScreenImageViewController" bundle:nil];
+                self.fullScreenImageViewController.imagePath = message.imageUrl;
+                [self presentViewController:self.fullScreenImageViewController animated:YES completion:nil];
+            }
+        }
+    }
+}
+
+- (void)handleVideoTap:(UIGestureRecognizer *)sender {
+    CGPoint location = [sender locationInView:self.view];
+    if (CGRectContainsPoint([self.view convertRect:self.chatTableView.frame fromView:self.chatTableView.superview], location))
+    {
+        CGPoint locationInTableview = [self.chatTableView convertPoint:location fromView:self.view];
+        NSIndexPath *indexPath = [self.chatTableView indexPathForRowAtPoint:locationInTableview];
+        if (indexPath){
+            BOOL isInternetAvailable = [[ECCommonClass sharedManager]isInternetAvailabel];
+            if (isInternetAvailable) {
+                Message *message = [Message new];
+//                message = [self.messages objectAtIndex:indexPath.row];
+                message = self.messages[(self.messages.count - 1) - indexPath.row];
+                MPMoviePlayerViewController *mpvc = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:message.videoUrl]];
+                
+                [[NSNotificationCenter defaultCenter] addObserver:self
+                                                         selector:@selector(didFinishVideoPlay)
+                                                             name:MPMoviePlayerPlaybackDidFinishNotification
+                                                           object:nil];
+                
+                mpvc.moviePlayer.movieSourceType = MPMovieSourceTypeStreaming;
+                [self presentMoviePlayerViewControllerAnimated:mpvc];
+            } else {
+                [[ECCommonClass sharedManager] alertViewTitle:@"Network Error" message:@"No internet connection available"];
+            }
+        }
+    }
+}
 
 #pragma mark - API Methods
 
@@ -626,7 +1296,29 @@
             NSLog(@"Error saving response: getFeedItemAttendeeList: %@", error);
         } else {
             self.attendeeList = [[NSArray alloc] initWithArray:attendees copyItems:true];
+            self.attendanceArray = [[NSMutableArray alloc] init];
+            
+            for (int i = 0; i < [self.attendeeList count]; i++){
+                ECAttendee *attList = [self.attendeeList objectAtIndex:i];
+                [self.attendanceArray addObject:attList.userId];
+            }
+            
+            if ([self.attendanceArray containsObject:self.signedInUser.userId]){
+                [self.segmentControl setHidden:false];
+            }else{
+                [self.segmentControl setHidden:true];
+            }
             [self.attendeeListTableView reloadData];
+        }
+    }];
+}
+
+-(void)setUserAttendanceResponse:(NSString *)selectedResponseStr{
+    [[ECAPI sharedManager] setAttendeeResponse:self.signedInUser.userId feedItemId:self.selectedFeedItem.feedItemId response:selectedResponseStr callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error saving response: ChatReaction: %@", error);
+        } else {
+           [self getFeedItemAttendeeList];
         }
     }];
 }
@@ -876,6 +1568,72 @@
     [alertController addAction:moreOptionsAction];
     
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+#pragma mark - Helper Methods
+
+- (void)FCAlertView:(FCAlertView *)alertView clickedButtonIndex:(NSInteger)index buttonTitle:(NSString *)title {
+    NSLog(@"Button Clicked: %ld Title:%@", (long)index, title);
+}
+
+- (void)FCAlertDoneButtonClicked:(FCAlertView *)alertView {
+    NSLog(@"Done Button Clicked");
+    if(alertView.tag == 1){
+        if(![_signedInUser.blockedPostByUserId containsObject:_blockedMessage.userId]){
+            [_signedInUser.blockedPostByUserId addObject:_blockedMessage.userId];
+            //Sync user to DB
+            [[ECAPI sharedManager] updateUser:self.signedInUser callback:^(ECUser *ecUser, NSError *error) {
+                if (error) {
+                    NSLog(@"Error adding user: %@", error);
+                    NSLog(@"%@", error);
+                }
+                FCAlertView *alert = [[FCAlertView alloc] init];
+                alert.delegate = self;
+                alert.tag = 2;
+                [alert makeAlertTypeWarning];
+                [alert showAlertInView:self
+                             withTitle:nil
+                          withSubtitle:@"Would also like to report this user to EdgeChat?"
+                       withCustomImage:_alertImage
+                   withDoneButtonTitle:@"YES"
+                            andButtons:self.arrayOfButtonTitles];
+                
+                [self.chatTableView reloadData];
+            }];
+        }
+    }else if (alertView.tag == 2){
+        //
+        NSLog(@"Report Tapped");
+        NSLog(@"CommentId: %@ - UserId: %@", _blockedMessage.commentId, self.signedInUser.userId);
+        [[ECAPI sharedManager] reportComment:_blockedMessage.commentId userId:self.signedInUser.userId callback:^(NSDictionary *jsonDictionarty, NSError *error){
+            
+            if (error) {
+                NSLog(@"Error adding user: %@", error);
+                NSLog(@"%@", error);
+            } else {
+                FCAlertView *alert = [[FCAlertView alloc] init];
+                [alert makeAlertTypeSuccess];
+                [alert showAlertInView:self
+                             withTitle:nil
+                          withSubtitle:[NSString stringWithFormat:@"%@ has been reported to EdgeChat.", _blockedMessage.displayName]
+                       withCustomImage:nil
+                   withDoneButtonTitle:nil
+                            andButtons:nil];
+                NSLog(@"%@",jsonDictionarty);
+            }
+        }];
+    }
+    else if (alertView.tag == 3){
+        
+    }
+}
+
+- (void)FCAlertViewDismissed:(FCAlertView *)alertView {
+    NSLog(@"Alert Dismissed");
+}
+
+- (void)FCAlertViewWillAppear:(FCAlertView *)alertView {
+    NSLog(@"Alert Will Appear");
 }
 
 @end
