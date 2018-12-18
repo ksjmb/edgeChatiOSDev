@@ -8,7 +8,9 @@
 
 #import <UIKit/UIKit.h>
 #import "DCEventTableViewCell.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
 
-@interface DCEventTableViewController : UITableViewController <DCEventTableViewCellDelegate>
+@interface DCEventTableViewController : UITableViewController <DCEventTableViewCellDelegate, SignUpLoginViewControllerDelegate, FBSDKSharingDelegate>
 
 @end

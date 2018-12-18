@@ -21,7 +21,7 @@
 @property (nonatomic, strong) NSMutableArray *arrContactsData;
 @property (nonatomic, strong) CNContactPickerViewController *peoplePicker;
 @property (nonatomic, assign) NSString *userEmail;
-@property(nonatomic, assign) int myValue;
+//@property(nonatomic, assign) int myValue;
 
 @end
 
@@ -31,49 +31,15 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     // Get logged in user
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
-//    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
     self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     self.navigationController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    
-//    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
-//
-//    if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
-//        self.myValue = 9;
-//    }else{
-//        self.myValue = 0;
-//        ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
-//        sharedInstance.isUserLogoutTap = true;
-//        [self pushToSignInVC:@"sameVC"];
-//    }
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-    
     self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
-    
-    if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
-        self.myValue = 9;
-    }else{
-//        [self.tabBarController setSelectedIndex:0];
-//        [[NSNotificationCenter defaultCenter] postNotificationName:@"morevctap" object:nil];
-        
-        ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
-        sharedInstance.isUserLogoutTap = true;
-        
-        if (sharedInstance.isFromMore == false){
-            self.myValue = 0;
-            sharedInstance.isFromMore = true;
-            
-            UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
-            SignUpLoginViewController *signUpVC = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
-            signUpVC.hidesBottomBarWhenPushed = YES;
-            [self.navigationController pushViewController:signUpVC animated:true];
-        }
-    }
-         
+    [self.moreTableView reloadData];
 }
 
 #pragma mark:- Table view data source
@@ -81,14 +47,13 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
     return 60.0;
 }
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    //@kj_new_change
-//    return 9;
-    return self.myValue;
+    return 9;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -99,7 +64,6 @@
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
     }
-    
 
     if (indexPath.row == 0) {
         cell.textLabel.text = @"Profile";
@@ -168,9 +132,12 @@
         }
     }
     else if(indexPath.row == 2) {
-        NotificationSettingsViewController *notificationSettingsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"NotificationSettingsViewController"];
-        
-        [self.navigationController pushViewController:notificationSettingsViewController animated:YES];
+        if (self.userEmail != nil){
+            NotificationSettingsViewController *notificationSettingsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"NotificationSettingsViewController"];
+            [self.navigationController pushViewController:notificationSettingsViewController animated:YES];
+        }else{
+            [self pushToSignInVC:@"NotificationSettingsViewController"];
+        }
     }
     else if(indexPath.row == 3) {
         [self showAddressBook];
@@ -211,8 +178,10 @@
         }
     }
     else if(indexPath.row == 8) {
+        /*
         TestTableViewController *testTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"TestTableViewController"];
         [self.navigationController pushViewController:testTableViewController animated:YES];
+         */
     }
 }
 
@@ -236,6 +205,33 @@
     signUpVC.hidesBottomBarWhenPushed = YES;
     signUpVC.storyboardIdentifierString = stbIdentifier;
     [self.navigationController pushViewController:signUpVC animated:true];
+}
+
+
+-(void)sendToSpecificVC:(NSString*)identifier{
+    if([identifier isEqualToString:@"DCProfileTableViewController"]) {
+        DCProfileTableViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCProfileTableViewController"];
+        dcProfileTableViewController.isSignedInUser = true;
+        dcProfileTableViewController.profileUser = self.signedInUser;
+        [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
+    }
+    else if([identifier isEqualToString:@"DCPlaylistsTableViewController"]) {
+        DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
+        dcPlaylistsTableViewController.isSignedInUser = true;
+        dcPlaylistsTableViewController.isFeedMode = false;
+        [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+    }
+    else if([identifier isEqualToString:@"NotificationSettingsViewController"]) {
+        NotificationSettingsViewController *notificationSettingsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"NotificationSettingsViewController"];
+        [self.navigationController pushViewController:notificationSettingsViewController animated:YES];
+    }
+}
+
+#pragma mark:- SignUpLoginDelegate Methods
+
+- (void)didTapLoginButton:(NSString *)storyboardIdentifier{
+    NSLog(@"didTapLoginButton: MoreVC: storyboardIdentifier: %@", storyboardIdentifier);
+    [self sendToSpecificVC:storyboardIdentifier];
 }
 
 //- (void)contactPicker:(CNContactPickerViewController *)picker didSelectContactProperty:(CNContactProperty *)contactProperty{

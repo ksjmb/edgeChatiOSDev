@@ -2617,6 +2617,7 @@
 		36A218FA1F2549EF00FC3380 /* FeedItem */ = {
 			isa = PBXGroup;
 			children = (
+				F9E9A89F21C7C7F0003FFAF4 /* New Group */,
 				F93BCCBE21C243350079242D /* InfluPersonDetails */,
 				F9F10D1721A2CEE0005C21FD /* DCChatAndReaction */,
 				F9BAE2F6219C1CB600921566 /* DCTVShow */,
@@ -2814,6 +2815,13 @@
 				F9940D23219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m */,
 			);
 			name = DCTVShow;
+			sourceTree = "<group>";
+		};
+		F9E9A89F21C7C7F0003FFAF4 /* New Group */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = "New Group";
 			sourceTree = "<group>";
 		};
 		F9F10D1721A2CEE0005C21FD /* DCChatAndReaction */ = {

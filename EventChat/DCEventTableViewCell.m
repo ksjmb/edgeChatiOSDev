@@ -15,12 +15,14 @@
 #import <SDWebImage/UIImageView+WebCache.h>
 #import "DCFeedItem.h"
 #import "DCEventEntityObject.h"
+#import "ECUser.h"
 
 @implementation DCEventTableViewCell
 
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
+    /*
     _shareButton.layer.cornerRadius = _shareButton.frame.size.width /2;
     _shareButton.layer.masksToBounds = YES;
     _shareButton.layer.borderWidth = 0.5;
@@ -44,6 +46,7 @@
     _favoriteButton.layer.borderWidth = 0.5;
     _favoriteButton.layer.borderColor = [UIColor lightGrayColor].CGColor;
     [_favoriteButton setImage:[IonIcons imageWithIcon:ion_heart size:25.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+    */
     
     self.container.layer.shadowOpacity = 1;
     self.container.layer.shadowRadius = 1.0;
@@ -52,11 +55,46 @@
     self.feedItemThumbnail.layer.masksToBounds = YES;
 }
 
-- (void)configureWithFeedItem:(DCFeedItem *)feedItem{
+- (void)configureWithFeedItem:(DCFeedItem *)feedItem ecUser:(ECUser *)ecUser cellIndex:(NSIndexPath *)indexPath commentCount:(int)commentCount isFavorited:(BOOL)isFavorited isAttending:(BOOL)isAttending{
     self.feedItem = feedItem;
+    
     [_feedItemTitle setText:feedItem.event.name];
     [_feedItemBottomSubText setText:[NSString stringWithFormat:@"%@, %@", feedItem.event.city, feedItem.event.state]];
     
+    if(commentCount > 0){
+        self.commentButton.enabled = FALSE;
+        self.commentButton.enabled = TRUE;
+        NSString *mCommentCount = [NSString stringWithFormat:@"%d", commentCount];
+        mCommentCount = [mCommentCount stringByAppendingString:@" comments"];
+        [self.eventCommentCount setText:mCommentCount];
+    }
+    else{
+        [self.eventCommentCount setText:@"00 comments"];
+        self.commentButton.enabled = FALSE;
+        //Remove Later
+        self.commentButton.enabled = TRUE;
+    }
+    
+    // Get favorited events:-
+    if(isFavorited){
+        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+    }
+    else{
+        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+    }
+    
+    //Get attending events:-
+    if(isAttending){
+        [self.likeButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
+    }
+    else{
+        [self.likeButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor grayColor]] forState:UIControlStateNormal];
+    }
+    
+    //share button
+    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
+    
+    /*
     // Format date
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
@@ -68,6 +106,7 @@
     [dateFormatter setDateFormat:@"dd"];
     NSLog(@"date is %@", [[dateFormatter stringFromDate:eventDate] uppercaseString]);
     [_feedItemLeftBottom setText:[[dateFormatter stringFromDate:eventDate] uppercaseString]];
+    */
     
     if(feedItem.event.mainImage != nil){
         [self showImageOnTheCell:self ForImageUrl:feedItem.event.mainImage isFromDownloadButton:NO];
@@ -109,7 +148,6 @@
                                     cell.feedItemThumbnail.image = image;
                                     cell.feedItemThumbnail.layer.borderWidth = 1.0;
                                     cell.feedItemThumbnail.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor redColor]);
-                                    
                                 }
                                 else {
                                     if(error){

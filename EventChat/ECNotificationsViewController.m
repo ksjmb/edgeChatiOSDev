@@ -24,31 +24,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    
     // Get logged in user
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     _acknowledgedNotificationIdList = [[NSMutableOrderedSet alloc] init];
-//    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
-//
-//    if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
-//        [self loadNotifications];
-//        [(AppDelegate *)[[UIApplication sharedApplication] delegate] clearNotificationCount];
-//    }else{
-//        ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
-//        sharedInstance.isUserLogoutTap = true;
-//
-//        UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
-//        SignUpLoginViewController *signUpVC = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
-//        signUpVC.hidesBottomBarWhenPushed = YES;
-//        //signUpVC.storyboardIdentifierString = @"ECNotificationsViewController";
-//        [self.navigationController pushViewController:signUpVC animated:true];
-//    }
-}
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
 }
 
 - (void)viewDidAppear:(BOOL)animated{
@@ -58,17 +36,7 @@
         [self loadNotifications];
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] clearNotificationCount];
     }else{
-        ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
-        sharedInstance.isUserLogoutTap = true;
-        
-        if (sharedInstance.isFromMore == false){
-            sharedInstance.isFromMore = true;
-            UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
-            SignUpLoginViewController *signUpVC = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
-            signUpVC.hidesBottomBarWhenPushed = YES;
-            //signUpVC.storyboardIdentifierString = @"ECNotificationsViewController";
-            [self.navigationController pushViewController:signUpVC animated:true];
-        }
+//        [self.notifications removeAllObjects];
     }
 }
 
@@ -87,6 +55,7 @@
  */
 
 #pragma mark - API calls
+
 - (void)loadNotifications{
     [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
     [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
@@ -102,7 +71,6 @@
             [self.notificationTableView reloadData];
             [SVProgressHUD dismiss];
         }
-        
     }];
 }
 

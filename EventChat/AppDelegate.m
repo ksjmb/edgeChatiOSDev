@@ -75,7 +75,7 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
         NSLog(@"Root view controller expected to be Tab Bar Controller at launch");
     }
     
-    //    @kj_undo_changes
+    //@kj_undo_changes
     
     UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
     SignUpLoginViewController *signUpLoginViewController = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];

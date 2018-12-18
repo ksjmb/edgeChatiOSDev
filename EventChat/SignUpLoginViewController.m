@@ -191,6 +191,7 @@
 #pragma mark:- IBAction Methods
 
 - (IBAction)Back{
+    /*
     ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
     if (sharedInstance.isUserLogoutTap == false){
         [self.navigationController popViewControllerAnimated:true];
@@ -198,6 +199,8 @@
         sharedInstance.isFromMore = false;
         [(AppDelegate *)[[UIApplication sharedApplication] delegate] backToMainVC];
     }
+     */
+    [self.navigationController popViewControllerAnimated:true];
 }
 
 - (IBAction)dismissKeyboaard:(id)sender{

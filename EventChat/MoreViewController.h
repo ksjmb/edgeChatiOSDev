@@ -5,6 +5,7 @@
 
 @interface MoreViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, CNContactPickerDelegate,SignUpLoginViewControllerDelegate>
 
+@property (weak, nonatomic) IBOutlet UITableView *moreTableView;
 @property (retain, nonatomic) NSString *storyBoardIdentifier;
 - (void)pushToSignInVC :(NSString*)stbIdentifier;
 
