@@ -30,7 +30,7 @@
 }
 
 - (void)viewDidAppear:(BOOL)animated{
-    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
+    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
 
     if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
         [self loadNotifications];

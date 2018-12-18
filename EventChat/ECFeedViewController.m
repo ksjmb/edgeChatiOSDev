@@ -196,7 +196,7 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
-    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
+    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     if (_userEmail != nil && ![_userEmail isEqualToString:@""]){

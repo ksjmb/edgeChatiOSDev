@@ -38,7 +38,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
+    self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
     [self.moreTableView reloadData];
 }
 

@@ -39,7 +39,7 @@
 //    self.tableView.estimatedRowHeight = 70;
 //    self.tableView.rowHeight = UITableViewAutomaticDimension;
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
-    self.mUserEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
+    self.mUserEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateEventTV) name:@"updateEventTV" object:nil];
 

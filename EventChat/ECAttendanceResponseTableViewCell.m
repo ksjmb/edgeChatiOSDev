@@ -94,28 +94,28 @@
     NSLog(@"Seg: %ld", ((UISegmentedControl *)sender).selectedSegmentIndex);
     NSInteger selectedIndex = ((UISegmentedControl *)sender).selectedSegmentIndex;
     NSString *userResponse;
-//    if(selectedIndex == 0){
-//        userResponse = [self.questionOptions objectAtIndex:0];
-//    }
-//    else if(selectedIndex == 1){
-//        userResponse = @"maybe";
-//    }
-//    else{
-//        userResponse = @"no";
-//    }
-    userResponse = [self.questionOptions objectAtIndex:((UISegmentedControl *)sender).selectedSegmentIndex];
+    
+    if(selectedIndex == 0){
+        userResponse = @"Going";
+    }
+    else if(selectedIndex == 1){
+        userResponse = @"Maybe";
+    }
+    else{
+        userResponse = @"Can't go";
+    }
+    //@kj_change
+//    userResponse = [self.questionOptions objectAtIndex:((UISegmentedControl *)sender).selectedSegmentIndex];
+    
     [[ECAPI sharedManager] setAttendeeResponse:self.signedInUser.userId feedItemId:self.selectedFeedItem.feedItemId response:userResponse callback:^(NSError *error) {
         if (error) {
             NSLog(@"Error saving response: %@", error);
-            NSLog(@"%@", error);
         } else {
-            // code
             if([self.delegate respondsToSelector:@selector(attendListDidUpdateAttendanceReponse:)]){
                 [self.delegate attendListDidUpdateAttendanceReponse:self];
             }
         }
     }];
-    
 }
 
 -(void)getUserAttendanceResponse{

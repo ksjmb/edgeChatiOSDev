@@ -60,7 +60,8 @@
 		</dict>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>com.diddychat.EdgeTVChat</string>
+<!--            <string>com.diddychat.EdgeTVChat</string>-->
+            <string>com.eventChat.Mb</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>EdgeTVChat</string>
@@ -71,7 +72,8 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.diddychat.EdgeTVChat</string>
+<!--                <string>com.diddychat.EdgeTVChat</string>-->
+                <string>com.eventChat.Mb</string>
 			</array>
 		</dict>
 	</array>

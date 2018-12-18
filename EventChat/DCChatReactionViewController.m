@@ -767,7 +767,6 @@
 
 - (IBAction)actionOnCommentsButton:(id)sender {
     self.reactionBottomLabel.backgroundColor = [UIColor whiteColor];
-//    self.commentsBottomLabel.backgroundColor = [UIColor colorWithRed:160.0/255.0 green:82.0/255.0 blue:45.0/255.0 alpha:0.75];
     self.commentsBottomLabel.backgroundColor = [UIColor colorWithRed:0.0/255.0 green:112.0/255.0 blue:169.0/255.0 alpha:0.75];
     [self.attendeeListTableView setHidden:true];
     [self.segmentControl setHidden:true];
@@ -781,7 +780,6 @@
 - (IBAction)actionOnReactionsButton:(id)sender {
     [self.view endEditing:YES];
     self.commentsBottomLabel.backgroundColor = [UIColor whiteColor];
-//    self.reactionBottomLabel.backgroundColor = [UIColor colorWithRed:160.0/255.0 green:82.0/255.0 blue:45.0/255.0 alpha:0.75];
     self.reactionBottomLabel.backgroundColor = [UIColor colorWithRed:0.0/255.0 green:113.0/255.0 blue:169.0/255.0 alpha:0.75];
     [self.postCommentView setHidden:true];
     [self.chatTableView setHidden:true];

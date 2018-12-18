@@ -634,14 +634,11 @@ dismissViewController:(UIViewController *)viewController {
 #pragma mark - Helper Methods
 
 - (void)FCAlertView:(FCAlertView *)alertView clickedButtonIndex:(NSInteger)index buttonTitle:(NSString *)title {
-    
-    NSLog(@"Button Clicked: %ld Title:%@", (long)index, title);
-    
+    NSLog(@"FCAlertView: Button Clicked: %ld Title:%@", (long)index, title);
 }
 
 - (void)FCAlertDoneButtonClicked:(FCAlertView *)alertView {
-    
-    NSLog(@"Done Button Clicked");
+    NSLog(@"FCAlertDoneButtonClicked: Done Button Clicked");
     switch (self.socialType) {
         case FacebookLogin:
             [self fbLoginButtonClicked];
@@ -652,19 +649,14 @@ dismissViewController:(UIViewController *)viewController {
         default:
             break;
     }
-    
 }
 
 - (void)FCAlertViewDismissed:(FCAlertView *)alertView {
-    
-    NSLog(@"Alert Dismissed");
-    
+    NSLog(@"FCAlertViewDismissed: Alert Dismissed");
 }
 
 - (void)FCAlertViewWillAppear:(FCAlertView *)alertView {
-    
-    NSLog(@"Alert Will Appear");
-    
+    NSLog(@"FCAlertViewWillAppear: Alert Will Appear");
 }
 
 @end

@@ -102,7 +102,7 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
     if(username != nil && ![username isEqual:@""]){
         [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
         [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
-        [SVProgressHUD showWithStatus:@"Authenticating..."];
+//        [SVProgressHUD showWithStatus:@"Authenticating..."];
         [[ECAuthAPI sharedClient] signInWithUsernameAndPassword:username
                                                        password:password
                                                         success:^(AFOAuthCredential *credential) {
@@ -147,7 +147,7 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
          */
         [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
         [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
-        [SVProgressHUD showWithStatus:@"Authenticating..."];
+//        [SVProgressHUD showWithStatus:@"Authenticating..."];
         [[ECAuthAPI sharedClient] signInWithUsernameAndPassword:@"jigish"
                                                        password:@"test1234"
                                                         success:^(AFOAuthCredential *credential) {
@@ -401,7 +401,7 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
     //
-    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"SignedInUserEmail"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"username"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     self.signedInUser = nil; // New Change
     

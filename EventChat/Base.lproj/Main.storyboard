@@ -1464,9 +1464,9 @@ Cg
                                 </connections>
                             </tableView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="CVA-A5-qWt">
-                                <rect key="frame" x="16" y="627" width="343" height="41"/>
+                                <rect key="frame" x="16" y="629" width="343" height="31"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="40" id="TVY-pT-cbT"/>
+                                    <constraint firstAttribute="height" constant="30" id="TVY-pT-cbT"/>
                                 </constraints>
                                 <segments>
                                     <segment title="Going"/>
@@ -1558,7 +1558,7 @@ Cg
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="oTK-gW-6zD" secondAttribute="trailing" id="0JC-pG-HWM"/>
                             <constraint firstAttribute="trailing" secondItem="bHb-5L-fZX" secondAttribute="trailing" constant="12" id="1Oe-B2-C1X"/>
-                            <constraint firstAttribute="bottom" secondItem="CVA-A5-qWt" secondAttribute="bottom" id="1om-Jg-5pv"/>
+                            <constraint firstAttribute="bottom" secondItem="CVA-A5-qWt" secondAttribute="bottom" constant="8" id="1om-Jg-5pv"/>
                             <constraint firstItem="52Z-8o-y7l" firstAttribute="top" secondItem="8uo-hh-Jhs" secondAttribute="bottom" constant="4" id="5Nf-pk-GFd"/>
                             <constraint firstAttribute="trailing" secondItem="J80-YR-R6O" secondAttribute="trailing" id="7nG-9c-pbf"/>
                             <constraint firstItem="bHb-5L-fZX" firstAttribute="top" secondItem="Sgi-YP-1Bf" secondAttribute="bottom" constant="21" id="7t5-EO-y6u"/>
