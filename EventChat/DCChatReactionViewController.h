@@ -52,6 +52,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *cameraButton;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *monthNameLabelWidthConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *monthDayLabelWidthConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *descriptionLabelHeightConstraint;
 
 @property (nonatomic, strong)DCFeedItem *selectedFeedItem;
 @property (nonatomic, strong)DCPost *dcPost;

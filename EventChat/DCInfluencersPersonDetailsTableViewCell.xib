@@ -48,7 +48,7 @@
                             <action selector="actionOnPlayVideoBtn:" destination="VmD-Vz-Fpt" eventType="touchUpInside" id="sth-P0-qvo"/>
                         </connections>
                     </button>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ftZ-hf-lnV">
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="title label" textAlignment="justified" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ftZ-hf-lnV">
                         <rect key="frame" x="20" y="164.5" width="335" height="21"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="myG-bz-liY"/>

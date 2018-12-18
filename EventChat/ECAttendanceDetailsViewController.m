@@ -24,24 +24,8 @@
     // Do any additional setup after loading the view.
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    NSLog(@"SignedInUser: %@", self.signedInUser);
     [self getFeedItemAttendeeList];
 }
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 #pragma mark - Table view data source
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -108,7 +92,6 @@
     [[ECAPI sharedManager] getAttendeeList:self.selectedFeedItem.feedItemId callback:^(NSArray *attendees, NSError *error) {
         if (error) {
             NSLog(@"Error saving response: %@", error);
-            NSLog(@"%@", error);
         } else {
             // code
             self.attendeeList = [[NSArray alloc] initWithArray:attendees copyItems:true];

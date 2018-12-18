@@ -58,6 +58,7 @@
 - (void)configureWithFeedItem:(DCFeedItem *)feedItem ecUser:(ECUser *)ecUser cellIndex:(NSIndexPath *)indexPath commentCount:(int)commentCount isFavorited:(BOOL)isFavorited isAttending:(BOOL)isAttending{
     self.feedItem = feedItem;
     
+//    [_feedItemTitle setTextAlignment:NSTextAlignmentJustified];
     [_feedItemTitle setText:feedItem.event.name];
     [_feedItemBottomSubText setText:[NSString stringWithFormat:@"%@, %@", feedItem.event.city, feedItem.event.state]];
     

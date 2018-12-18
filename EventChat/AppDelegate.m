@@ -58,7 +58,6 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
     NSLog(@"BaseDB: %@" , [[[NSBundle mainBundle] infoDictionary] valueForKey: @"DBName"]);
     NSLog(@"APIVersion: %@", [[[NSBundle mainBundle] infoDictionary] valueForKey: @"APIVersion"]);
     
-    
     //register notification
     UIUserNotificationType userNotificationTypes = (UIUserNotificationTypeAlert |
                                                     UIUserNotificationTypeBadge |
@@ -76,7 +75,6 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
     }
     
     //@kj_undo_changes
-    
     UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
     SignUpLoginViewController *signUpLoginViewController = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
     self.window.rootViewController = signUpLoginViewController;

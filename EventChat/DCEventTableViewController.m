@@ -17,6 +17,8 @@
 #import "ECAttendanceDetailsViewController.h"
 #import "SignUpLoginViewController.h"
 #import "ECCommonClass.h"
+#import "DCFeedItem.h"
+#import "DCEventEntityObject.h"
 
 @interface DCEventTableViewController ()
 @property (nonatomic, strong) ECUser *signedInUser;
@@ -39,6 +41,7 @@
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.mUserEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"SignedInUserEmail"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateEventTV) name:@"updateEventTV" object:nil];
 
     [[ECAPI sharedManager] getFeedItemFilters:^(NSArray *results, NSError *error){
         self.feedItemFilters = [[NSMutableArray alloc] initWithArray:results];
@@ -66,6 +69,13 @@
             [SVProgressHUD dismiss];
         }
     }];
+}
+
+#pragma mark:- Post Notification Methods
+
+-(void)updateEventTV {
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    [self.eventTableView reloadData];
 }
 
 #pragma mark - Table view data source
@@ -119,6 +129,7 @@
 #pragma mark - DCEventTableViewCell Delegate methods
 
 - (void)eventFeedDidTapFeedITemThumbnail:(DCEventTableViewCell *)dcEventTableViewCell index:(NSInteger)index{
+    NSLog(@"eventFeedDidTapFeedITemThumbnail...");
 }
 
 - (void)eventFeedDidTapCommentsButton:(DCEventTableViewCell *)dcEventTableViewCell index:(NSInteger)index{
@@ -149,7 +160,9 @@
             }
         }];
     }else{
-        // push to signIn vc
+        self.saveEventFeedItem = dcEventTableViewCell.feedItem;
+        [[NSUserDefaults standardUserDefaults] setObject:dcEventTableViewCell.feedItem.feedItemId forKey:@"feedItemId"];
+        [self pushToSignInVC:@"DCChatReactionViewController"];
     }
 }
 
@@ -163,7 +176,8 @@
         [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
         [self presentViewController:navigationController animated:YES completion:nil];
     }else{
-        // push to sign in vc
+        [[NSUserDefaults standardUserDefaults] setObject:dcEventTableViewCell.feedItem.feedItemId forKey:@"feedItemId"];
+        [self pushToSignInVC:@"DCPlaylistsTableViewController"];
     }
 }
 
@@ -173,14 +187,15 @@
         ecAttendanceDetailsViewController.selectedFeedItem = dcEventTableViewCell.feedItem;
         [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
     }else{
-        // push to sign in vc
+        self.saveEventFeedItem = dcEventTableViewCell.feedItem;
+        [self pushToSignInVC:@"ECAttendanceDetailsViewController"];
     }
 }
 
 - (void)eventFeedDidTapShareButton:(DCEventTableViewCell *)dcEventTableViewCell index:(NSInteger)index{
     if (_mUserEmail != nil && ![_mUserEmail isEqualToString:@""]){
-        NSString* title = dcEventTableViewCell.feedItem.digital.episodeTitle;
-        NSString* link = dcEventTableViewCell.feedItem.digital.imageUrl;
+        NSString* title = dcEventTableViewCell.feedItem.event.name;
+        NSString* link = dcEventTableViewCell.feedItem.event.mainImage;
         NSArray* dataToShare = @[title, link];
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
                                                                                  message:nil
@@ -201,9 +216,10 @@
                                              NSLog(@"Share to Facebook");
                                              self.shareDialog = [[FBSDKShareDialog alloc] init];
                                              self.content = [[FBSDKShareLinkContent alloc] init];
-                                             self.content.contentURL = [NSURL URLWithString:dcEventTableViewCell.feedItem.digital.imageUrl];
+                                             self.content.contentURL = [NSURL URLWithString:dcEventTableViewCell.feedItem.event.mainImage];
                                              self.content.contentTitle = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"Bundle display name"];
-                                             self.content.contentDescription = dcEventTableViewCell.feedItem.digital.episodeDescription;
+                                             NSString *strDescription = [NSString stringWithFormat:@"%@, %@", dcEventTableViewCell.feedItem.event.city, dcEventTableViewCell.feedItem.event.state];
+                                             self.content.contentDescription = strDescription;
                                              
                                              if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fbauth2://"]]){
                                                  [self.shareDialog setMode:FBSDKShareDialogModeNative];
@@ -259,8 +275,62 @@
         
         [self presentViewController:alertController animated:YES completion:nil];
     }else{
-        // push to sign in vc
+        [self pushToSignInVC:@"sameVC"];
     }
+}
+
+#pragma mark:- Instance Method
+
+- (void)pushToSignInVC :(NSString*)stbIdentifier{
+    UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
+    SignUpLoginViewController *signUpVC = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];
+    signUpVC.delegate = self;
+    signUpVC.hidesBottomBarWhenPushed = YES;
+    signUpVC.storyboardIdentifierString = stbIdentifier;
+    [self.navigationController pushViewController:signUpVC animated:true];
+}
+
+-(void)sendToSpecificVC:(NSString*)identifier{
+    NSString *feedItemId = [[NSUserDefaults standardUserDefaults] valueForKey:@"feedItemId"];
+    
+    if([identifier isEqualToString:@"ECAttendanceDetailsViewController"]) {
+        ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
+        ecAttendanceDetailsViewController.selectedFeedItem = self.saveEventFeedItem;
+        [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+    }
+    else if([identifier isEqualToString:@"DCPlaylistsTableViewController"]) {
+        DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
+        dcPlaylistsTableViewController.isFeedMode = true;
+        dcPlaylistsTableViewController.isSignedInUser = true;
+        dcPlaylistsTableViewController.feedItemId = feedItemId;
+        UINavigationController *navigationController =
+        [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
+        [self presentViewController:navigationController animated:YES completion:nil];
+//        [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+    }
+    if([identifier isEqualToString:@"DCChatReactionViewController"]) {
+        [[ECAPI sharedManager] fetchTopicsByFeedItemId:feedItemId callback:^(NSArray *topics, NSError *error)  {
+            if(error){
+                NSLog(@"Error: %@", error);
+            }
+            else{
+                ECTopic *topic = [topics objectAtIndex:1];
+                DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
+                dcChat.selectedFeedItem = self.saveEventFeedItem;
+                dcChat.selectedTopic = topic;
+                dcChat.topicId = topic.topicId;
+                dcChat.isCommingFromEvent = true;
+                [self.navigationController pushViewController:dcChat animated:NO];
+            }
+        }];
+    }
+}
+
+#pragma mark:- SignUpLoginDelegate Methods
+
+- (void)didTapLoginButton:(NSString *)storyboardIdentifier{
+    NSLog(@"didTapLoginButton: EventTableVC: storyboardIdentifier: %@", storyboardIdentifier);
+    [self sendToSpecificVC:storyboardIdentifier];
 }
 
 @end

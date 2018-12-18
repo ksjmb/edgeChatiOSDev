@@ -10,7 +10,11 @@
 #import "DCEventTableViewCell.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
+#import "SignUpLoginViewController.h"
 
 @interface DCEventTableViewController : UITableViewController <DCEventTableViewCellDelegate, SignUpLoginViewControllerDelegate, FBSDKSharingDelegate>
+
+@property (strong, nonatomic) IBOutlet UITableView *eventTableView;
+@property (nonatomic, strong) DCFeedItem *saveEventFeedItem;
 
 @end

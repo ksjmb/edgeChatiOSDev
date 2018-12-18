@@ -189,6 +189,7 @@
                     } else {
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdated" object:nil];
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdatedNew" object:nil];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateEventTV" object:nil];
                         [self dismissViewControllerAnimated:YES completion:nil];
                     }
                 }];

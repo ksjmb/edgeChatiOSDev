@@ -23,10 +23,12 @@
 
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.questionOptions = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"AttendanceQuestionOptions"];
-    
+    //@kj_NewChange
+    /*
     for(int i = 0; i < [self.questionOptions count]; i++){
         [self.attendanceResponse setTitle:[self.questionOptions objectAtIndex:i] forSegmentAtIndex:i];
     }
+     */
     [self getUserAttendanceResponse];
 }
 
@@ -120,7 +122,6 @@
     [[ECAPI sharedManager] getAttendeeResponse:self.signedInUser.userId feedItemId:self.selectedFeedItem.feedItemId callback:^(ECAttendee *attendance, NSError *error) {
         if (error) {
             NSLog(@"Error saving response: %@", error);
-            NSLog(@"%@", error);
         } else {
             // code
             //            if([attendances count] > 0){

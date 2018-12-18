@@ -207,7 +207,6 @@
     [self.navigationController pushViewController:signUpVC animated:true];
 }
 
-
 -(void)sendToSpecificVC:(NSString*)identifier{
     if([identifier isEqualToString:@"DCProfileTableViewController"]) {
         DCProfileTableViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCProfileTableViewController"];

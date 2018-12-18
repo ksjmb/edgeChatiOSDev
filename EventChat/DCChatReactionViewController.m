@@ -137,7 +137,7 @@
         [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
     
-//    [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+    //    [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
     [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
     
     // Format date
@@ -169,10 +169,10 @@
         self.descriptionLabel.text = _selectedFeedItem.person.blurb;
     }
     
-//    self.nameLabel.text = _selectedFeedItem.digital.episodeTitle;
-//    self.descriptionLabel.text = _selectedFeedItem.digital.episodeDescription;
-
-        if (self.isCommingFromEvent == false){
+    //    self.nameLabel.text = _selectedFeedItem.digital.episodeTitle;
+    //    self.descriptionLabel.text = _selectedFeedItem.digital.episodeDescription;
+    
+    if (self.isCommingFromEvent == false){
         // No need to set date
         self.monthNameLabelWidthConstraint.constant = 0.0;
         self.monthDayLabelWidthConstraint.constant = 0.0;
@@ -181,6 +181,9 @@
         self.monthNameLabelWidthConstraint.constant = 60.0;
         self.monthDayLabelWidthConstraint.constant = 60.0;
         [self setEventDate];
+        self.descriptionLabelHeightConstraint.constant = 21.0;
+        [self.descriptionLabel setFont:[UIFont systemFontOfSize:14]];
+
         [self.nameLabel setText:self.selectedFeedItem.event.name];
         [self.descriptionLabel setText:[NSString stringWithFormat:@"%@, %@", self.selectedFeedItem.event.city, self.selectedFeedItem.event.state]];
         if(self.selectedFeedItem.event.mainImage != nil){
@@ -191,17 +194,17 @@
     
     //Add camera image to upload video or image
     /*
-    NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.signedInUser.profilePicUrl]];
-    UIImage *image = [UIImage imageWithData:data];
-    self.profileImageView.layer.cornerRadius = 20.0;
-    self.profileImageView.clipsToBounds = YES;
+     NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.signedInUser.profilePicUrl]];
+     UIImage *image = [UIImage imageWithData:data];
+     self.profileImageView.layer.cornerRadius = 20.0;
+     self.profileImageView.clipsToBounds = YES;
      
-    if (image != nil){
-        [self.profileImageView setImage:image];
-    }else{
-        self.profileImageView.image = [UIImage imageNamed:@"missing-profile.png"];
-    }
-    */
+     if (image != nil){
+     [self.profileImageView setImage:image];
+     }else{
+     self.profileImageView.image = [UIImage imageNamed:@"missing-profile.png"];
+     }
+     */
     
     self.inverted = YES;
     
@@ -252,10 +255,10 @@
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
     NSDate *eventDate = [dateFormatter dateFromString:self.selectedFeedItem.event.startDate];
     [dateFormatter setDateFormat:@"MMM"];
-//    NSLog(@"month is %@", [[dateFormatter stringFromDate:eventDate] uppercaseString]);
+    //    NSLog(@"month is %@", [[dateFormatter stringFromDate:eventDate] uppercaseString]);
     [self.monthNameLabel setText:[[dateFormatter stringFromDate:eventDate] uppercaseString]];
     [dateFormatter setDateFormat:@"dd"];
-//    NSLog(@"date is %@", [[dateFormatter stringFromDate:eventDate] uppercaseString]);
+    //    NSLog(@"date is %@", [[dateFormatter stringFromDate:eventDate] uppercaseString]);
     [self.monthDayLabel setText:[[dateFormatter stringFromDate:eventDate] uppercaseString]];
 }
 
@@ -293,16 +296,16 @@
 }
 
 /*
-- (void)didPressLeftButton:(id)sender
-{
-    // Notifies the view controller when the left button's action has been triggered, manually.
-    
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Image",@"Video",nil];
-    [actionSheet showInView:self.view];
-    
-//    [super didPressLeftButton:sender];
-}
-*/
+ - (void)didPressLeftButton:(id)sender
+ {
+ // Notifies the view controller when the left button's action has been triggered, manually.
+ 
+ UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:@"Image",@"Video",nil];
+ [actionSheet showInView:self.view];
+ 
+ //    [super didPressLeftButton:sender];
+ }
+ */
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
     
@@ -764,7 +767,8 @@
 
 - (IBAction)actionOnCommentsButton:(id)sender {
     self.reactionBottomLabel.backgroundColor = [UIColor whiteColor];
-    self.commentsBottomLabel.backgroundColor = [UIColor colorWithRed:160.0/255.0 green:82.0/255.0 blue:45.0/255.0 alpha:0.75];
+//    self.commentsBottomLabel.backgroundColor = [UIColor colorWithRed:160.0/255.0 green:82.0/255.0 blue:45.0/255.0 alpha:0.75];
+    self.commentsBottomLabel.backgroundColor = [UIColor colorWithRed:0.0/255.0 green:112.0/255.0 blue:169.0/255.0 alpha:0.75];
     [self.attendeeListTableView setHidden:true];
     [self.segmentControl setHidden:true];
     [self.postCommentView setHidden:false];
@@ -777,7 +781,8 @@
 - (IBAction)actionOnReactionsButton:(id)sender {
     [self.view endEditing:YES];
     self.commentsBottomLabel.backgroundColor = [UIColor whiteColor];
-    self.reactionBottomLabel.backgroundColor = [UIColor colorWithRed:160.0/255.0 green:82.0/255.0 blue:45.0/255.0 alpha:0.75];
+//    self.reactionBottomLabel.backgroundColor = [UIColor colorWithRed:160.0/255.0 green:82.0/255.0 blue:45.0/255.0 alpha:0.75];
+    self.reactionBottomLabel.backgroundColor = [UIColor colorWithRed:0.0/255.0 green:113.0/255.0 blue:169.0/255.0 alpha:0.75];
     [self.postCommentView setHidden:true];
     [self.chatTableView setHidden:true];
     [self.attendeeListTableView setHidden:false];
@@ -832,8 +837,8 @@
             NSString *mReactionCount = [NSString stringWithFormat:@"(%lu", (unsigned long)self.attendeeList.count];
             mReactionCount = [mReactionCount stringByAppendingString:@")"];
             [self.reactionsCountLabel setText:mReactionCount];
-//            [self.noDataAvailableLabel setHidden:true];
-//            [self.attendeeListTableView setHidden:false];
+            //            [self.noDataAvailableLabel setHidden:true];
+            //            [self.attendeeListTableView setHidden:false];
         }else{
             [self.attendeeListTableView setHidden:true];
             [self.noDataAvailableLabel setHidden:false];
@@ -904,7 +909,7 @@
     cell.titleLabel.textColor = [UIColor darkGrayColor];
     cell.replyLabel.text = @"\u2022 Reply";
     [cell.viewReplyLabel setHidden:YES];
-
+    
     if ([message.parantId isEqualToString:@"0"]){
         for (NSString* key in self.viewReplyDict) {
             id value = [self.viewReplyDict objectForKey:key];
@@ -941,13 +946,13 @@
         cell.likeCountLabel.text = mLikeCount;
         [cell.favImageView setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]]];
         [cell.favImageView setUserInteractionEnabled:false];
-//        cell.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Like", ago, message.likeCount];
+        //        cell.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Like", ago, message.likeCount];
     }
     else{
         NSString *mLikeCount = [NSString stringWithFormat:@"%@, Like(%@", ago, @"0"];
         mLikeCount = [mLikeCount stringByAppendingString:@")"];
         cell.likeCountLabel.text = mLikeCount;
-//        cell.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Like", ago, @"0"];
+        //        cell.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Like", ago, @"0"];
         [cell.favImageView setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]]];
         [cell.favImageView setUserInteractionEnabled:true];
     }
@@ -997,12 +1002,12 @@
             [cell.downloadButton setBackgroundImage:[UIImage imageNamed:@"play-button"] forState:UIControlStateNormal];
             cell.downloadButton.hidden = NO;
             
-//            // Adding gesture to video to open in another view
-//            UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleVideoTap:)];
-//            tapGestureRecognizer.numberOfTapsRequired = 1;
-//            tapGestureRecognizer.numberOfTouchesRequired = 1;
-//            cell.mediaImageView.userInteractionEnabled = YES;
-//            [cell.mediaImageView addGestureRecognizer:tapGestureRecognizer];
+            //            // Adding gesture to video to open in another view
+            //            UITapGestureRecognizer *tapGestureRecognizer = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleVideoTap:)];
+            //            tapGestureRecognizer.numberOfTapsRequired = 1;
+            //            tapGestureRecognizer.numberOfTouchesRequired = 1;
+            //            cell.mediaImageView.userInteractionEnabled = YES;
+            //            [cell.mediaImageView addGestureRecognizer:tapGestureRecognizer];
         }
         //Displaying comment text.
         else
@@ -1015,8 +1020,8 @@
         cell.bodyLabel.text = @"[Removed due to offensive content]";
     }
     
-//    cell.bodyLabel.text = message.content;
-//    cell.bodyLabel.textColor = [UIColor lightGrayColor];
+    //    cell.bodyLabel.text = message.content;
+    //    cell.bodyLabel.textColor = [UIColor lightGrayColor];
     
     // Set profile pic
     [cell.thumbnailView sd_setImageWithURL:[NSURL URLWithString:message.user.profilePicUrl] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {}];
@@ -1162,8 +1167,8 @@
 {
     BOOL isInternetAvailable = [[ECCommonClass sharedManager]isInternetAvailabel];
     if (isInternetAvailable) {
-//        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:message.videoUrl]];
-         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:message.content]];
+        //        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:message.videoUrl]];
+        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:message.content]];
         AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
         AVPlayerViewController *avvc = [AVPlayerViewController new];
         avvc.player = player;
@@ -1270,7 +1275,7 @@
         if (indexPath){
             
             Message *message = [Message new];
-//            message = [self.messages objectAtIndex:indexPath.row];
+            //            message = [self.messages objectAtIndex:indexPath.row];
             message = self.messages[(self.messages.count - 1) - indexPath.row];
             
             BOOL imageContains = [[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:message.imageUrl]];
@@ -1293,7 +1298,7 @@
             BOOL isInternetAvailable = [[ECCommonClass sharedManager]isInternetAvailabel];
             if (isInternetAvailable) {
                 Message *message = [Message new];
-//                message = [self.messages objectAtIndex:indexPath.row];
+                //                message = [self.messages objectAtIndex:indexPath.row];
                 message = self.messages[(self.messages.count - 1) - indexPath.row];
                 MPMoviePlayerViewController *mpvc = [[MPMoviePlayerViewController alloc] initWithContentURL:[NSURL URLWithString:message.videoUrl]];
                 
@@ -1346,7 +1351,7 @@
         if (error) {
             NSLog(@"Error saving response: ChatReaction: %@", error);
         } else {
-           [self getFeedItemAttendeeList];
+            [self getFeedItemAttendeeList];
         }
     }];
 }
@@ -1434,7 +1439,7 @@
                 }
                 
                 NSLog(@"[self.messages count]: %lu",(unsigned long)[self.messages count]);
-//                NSLog(@"jsonDictionary[ECdata][ECParantId]: %@",jsonDictionary[ECdata][ECParantId]);
+                //                NSLog(@"jsonDictionary[ECdata][ECParantId]: %@",jsonDictionary[ECdata][ECParantId]);
                 
                 int index = 0;
                 for (int i = 0; i < [self.messages count]; i++) {
