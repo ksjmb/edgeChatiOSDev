@@ -40,6 +40,7 @@
 #import "MessageTableViewCell.h"
 #import "DCReactionTableViewCell.h"
 #import "AppDelegate.h"
+#import <Social/Social.h>
 
 #define DEBUG_CUSTOM_TYPING_INDICATOR 0
 
@@ -1577,7 +1578,8 @@
                                                             style:UIAlertActionStyleDefault
                                                           handler:^(UIAlertAction *action)
                                     {
-                                        NSLog(@"Twitter action");
+                                        NSLog(@"Twitter action...");
+                                        [self shareViaTwitter:[NSURL URLWithString:_topEpisodeImageURL] :_topEpisodeTitle];
                                     }];
     
     UIAlertAction *moreOptionsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"More Options...", @"More Options... action")
@@ -1597,8 +1599,49 @@
     [alertController addAction:facebookAction];
     [alertController addAction:twitterAction];
     [alertController addAction:moreOptionsAction];
-    
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+- (void)shareViaTwitter:(NSURL *)mURL :(NSString *)mTitle{
+    SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+    UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:mURL]];
+    [tweetSheet addImage:mImage];
+    [tweetSheet setInitialText:mTitle];
+    
+    [tweetSheet setCompletionHandler:^(SLComposeViewControllerResult result) {
+        switch (result) {
+            case SLComposeViewControllerResultCancelled:
+            {
+                NSLog(@"Post Failed");
+                UIAlertController* alert;
+                alert = [UIAlertController alertControllerWithTitle:@"Failed" message:@"Something went wrong while sharing on Twitter, Please try again later." preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+                    
+                }];
+                [alert addAction:defaultAction];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self presentViewController:alert animated:YES completion:nil];
+                });
+                
+                break;
+            }
+            case SLComposeViewControllerResultDone:
+            {
+                NSLog(@"Post Sucessful");
+                UIAlertController* alert;
+                alert = [UIAlertController alertControllerWithTitle:@"Success" message:@"Your post has been successfully shared." preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+                [alert addAction:defaultAction];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self presentViewController:alert animated:YES completion:nil];
+                });
+                break;
+            }
+            default:
+                break;
+        }
+    }];
+    [self presentViewController:tweetSheet animated:YES completion:Nil];
 }
 
 #pragma mark - Helper Methods

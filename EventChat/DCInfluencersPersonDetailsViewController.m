@@ -31,7 +31,6 @@
 @property (nonatomic, strong) NSMutableArray *topicsArray;
 @property (nonatomic, strong) NSMutableArray *videoArray;
 
-
 @property (nonatomic, strong) FBSDKShareDialog *fbShareDialog;
 @property (nonatomic, strong) FBSDKShareLinkContent *fbContent;
 
@@ -270,7 +269,8 @@
                                                                 style:UIAlertActionStyleDefault
                                                               handler:^(UIAlertAction *action)
                                         {
-                                            NSLog(@"Twitter action");
+                                            NSLog(@"Twitter action...");
+                                            [self shareViaTwitter:[NSURL URLWithString:self.mSelectedDCFeedItem.person.profilePic_url] :self.mSelectedDCFeedItem.person.name];
                                         }];
         
         UIAlertAction *moreOptionsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"More Options...", @"More Options... action")
@@ -296,6 +296,7 @@
         [alertController addAction:facebookAction];
         [alertController addAction:twitterAction];
         [alertController addAction:moreOptionsAction];
+        [self presentViewController:alertController animated:YES completion:nil];
     }else{
         [self pushToSignInViewController:@"sameVC"];
     }
@@ -348,6 +349,37 @@
 //        self.saveFeedItem = dcTVNewShowEpisodeTableViewCell.feedItem;
         [self pushToSignInViewController:@"ECAttendanceDetailsViewController"];
     }
+}
+
+#pragma mark:- Twitter Methods
+
+- (void)shareViaTwitter:(NSURL *)mURL :(NSString *)title{
+    TWTRComposer *composer = [[TWTRComposer alloc] init];
+    
+    UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:mURL]];
+    [composer setImage:mImage];
+    [composer setText:title];
+    
+    [composer showFromViewController:self completion:^(TWTRComposerResult result) {
+        if (result == TWTRComposerResultCancelled) {
+            UIAlertController* alert;
+            alert = [UIAlertController alertControllerWithTitle:@"Failed" message:@"Something went wrong while sharing on Twitter, Please try again later." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+            [alert addAction:defaultAction];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentViewController:alert animated:YES completion:nil];
+            });
+        }
+        else {
+            UIAlertController* alert;
+            alert = [UIAlertController alertControllerWithTitle:@"Success" message:@"Your post has been successfully shared." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+            [alert addAction:defaultAction];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentViewController:alert animated:YES completion:nil];
+            });
+        }
+    }];
 }
 
 #pragma mark:- SDWebImage

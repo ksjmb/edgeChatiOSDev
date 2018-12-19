@@ -240,6 +240,7 @@
                                                               handler:^(UIAlertAction *action)
                                         {
                                             NSLog(@"Twitter action");
+                                            [self shareViaTwitter:[NSURL URLWithString:dcEventTableViewCell.feedItem.event.mainImage] :dcEventTableViewCell.feedItem.event.name];
                                         }];
         
         UIAlertAction *moreOptionsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"More Options...", @"More Options... action")
@@ -277,6 +278,35 @@
     }else{
         [self pushToSignInVC:@"sameVC"];
     }
+}
+
+- (void)shareViaTwitter:(NSURL *)mURL :(NSString *)title{
+    TWTRComposer *composer = [[TWTRComposer alloc] init];
+    
+    UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:mURL]];
+    [composer setImage:mImage];
+    [composer setText:title];
+    
+    [composer showFromViewController:self completion:^(TWTRComposerResult result) {
+        if (result == TWTRComposerResultCancelled) {
+            UIAlertController* alert;
+            alert = [UIAlertController alertControllerWithTitle:@"Failed" message:@"Something went wrong while sharing on Twitter, Please try again later." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+            [alert addAction:defaultAction];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentViewController:alert animated:YES completion:nil];
+            });
+        }
+        else {
+            UIAlertController* alert;
+            alert = [UIAlertController alertControllerWithTitle:@"Success" message:@"Your post has been successfully shared." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+            [alert addAction:defaultAction];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentViewController:alert animated:YES completion:nil];
+            });
+        }
+    }];
 }
 
 #pragma mark:- Instance Method

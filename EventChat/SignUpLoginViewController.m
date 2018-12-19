@@ -28,7 +28,8 @@
 @property (nonatomic, strong)ECUser *signedInUser;
 @property (nonatomic, weak) IBOutlet UIImageView *backgroundImageView;
 @property (nonatomic, weak) IBOutlet UIButton *facebookButton;
-@property (nonatomic, weak) IBOutlet UIButton *twitterButton;
+@property (weak, nonatomic) IBOutlet UIButton *twitterButton;
+
 @property (nonatomic, weak) IBOutlet UIButton *googleButton;
 @property (nonatomic, weak) IBOutlet UIButton *emailButton;
 @property (nonatomic, weak) IBOutlet UIStackView *buttonStackView;
@@ -72,7 +73,8 @@
 //    // Twitter
     self.twtrLogInButton = [[TWTRLogInButton alloc] init];
     self.twtrLogInButton.loginMethods = TWTRLoginMethodWebBased;
-    [self.twtrLogInButton addTarget:self action:@selector(twitterLogin:) forControlEvents:UIControlEventTouchUpInside];
+    //@kj_change
+//    [self.twtrLogInButton addTarget:self action:@selector(twitterLogin:) forControlEvents:UIControlEventTouchUpInside];
     
 //    // Google
     self.gidSignInButton = [[GIDSignInButton alloc] init];
@@ -163,6 +165,14 @@
     
     [_twitterButton setImage:[[UIImage imageNamed:@"twitterIcon"] imageWithRenderingMode:UIImageRenderingModeAlwaysTemplate] forState:UIControlStateNormal];
     [_twitterButton  setTintColor:[UIColor whiteColor]];
+//    _twitterButton.layer.cornerRadius = 5.0;
+//    _twitterButton.layer.masksToBounds = YES;
+//    _twitterButton.layer.borderWidth = 1.0;
+//    _twitterButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    [_twitterButton
+     addTarget:self
+     action:@selector(didTapLoginWithSocial:) forControlEvents:UIControlEventTouchUpInside];
+    
     [_googleButton setImage:[IonIcons imageWithIcon:ion_social_google size:50.0 color:[UIColor whiteColor]] forState:UIControlStateNormal];
     [_googleButton setTintColor:[UIColor whiteColor]];
     _googleButton.layer.cornerRadius = 5.0;
@@ -172,6 +182,7 @@
     [_googleButton
      addTarget:self
      action:@selector(didTapLoginWithSocial:) forControlEvents:UIControlEventTouchUpInside];
+    
     [_emailButton setImage:[IonIcons imageWithIcon:ion_ios_email size:50.0 color:[UIColor whiteColor]] forState:UIControlStateNormal];
     [_emailButton  setTintColor:[UIColor whiteColor]];
     _emailButton.layer.cornerRadius = 5.0;
@@ -208,6 +219,7 @@
 }
 
 #pragma mark - Twitter Login methods
+/*
 -(IBAction)twitterLogin:(id)sender{
     // If using the log in methods on the Twitter instance
     [[Twitter sharedInstance] logInWithMethods:TWTRLoginMethodWebBased completion:^(TWTRSession *session, NSError *error) {
@@ -296,11 +308,104 @@
                     }
     }];
 }
+ */
+
+- (void)didTapTwitterLoginButton{
+//    [[Twitter sharedInstance] logInWithViewController:self completion:^(TWTRSession *session, NSError *error){
+    [[Twitter sharedInstance] logInWithMethods:TWTRLoginMethodWebBased completion:^(TWTRSession *session, NSError *error) {
+        if(error != nil) {
+            NSLog(@"Error In Twitter Login: %@", error);
+            
+        } else {
+            TWTRAPIClient *client = [TWTRAPIClient clientWithCurrentUser];
+            NSURLRequest *request = [client URLRequestWithMethod:@"GET"
+                                                             URL:@"https://api.twitter.com/1.1/account/verify_credentials.json"
+                                                      parameters:@{@"include_email": @"true", @"skip_status": @"true"}
+                                                           error:nil];
+            
+            [client sendTwitterRequest:request completion:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                // handle the response data e.g.
+                NSError *jsonError;
+                NSDictionary *json = [NSJSONSerialization JSONObjectWithData:data options:0 error:&jsonError];
+                
+                NSString *twitterId = [json objectForKey:@"id_str"];
+                NSString *firstName = [[[json objectForKey:@"name"] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] objectAtIndex:0];
+                NSString *lastName;
+                NSString *profilePicUrl = [json objectForKey:@"profile_image_url_https"];
+                NSString *username = [NSString stringWithFormat:@"TW_%@", twitterId];
+                NSString *tempPassword = [[[NSUUID UUID] UUIDString] componentsSeparatedByString:@"-"][0];
+                if([[[json objectForKey:@"name"] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] count] > 1){
+                    lastName = [[[json objectForKey:@"name"] componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] objectAtIndex:1];
+                }
+                else {
+                    lastName = nil;
+                }
+                
+                [[ECAPI sharedManager] createUserWithSocial:nil firstName:firstName lastName:lastName deviceToken:[(AppDelegate *)[[UIApplication sharedApplication] delegate] getDeviceToken] facebookUserId:nil googleUserId:nil twitterUserId:twitterId socialConnect:@"twitter" username:username password:tempPassword callback:^(NSError *error) {
+                    
+                    if (error) {
+                        NSLog(@"Error adding user: %@", error.localizedDescription);
+                        NSLog(@"%@", error);
+                        //!!!: This is a clumsy way to handle the error
+                        //!!!: The "error" may just be that you have a nil status (which should actually be fine)
+                        UIAlertView *alertView = [[UIAlertView alloc]
+                                                  initWithTitle:@"Twitter error"
+                                                  message:[NSString stringWithFormat:@"%@", error]
+                                                  delegate:nil
+                                                  cancelButtonTitle:@"Okay"
+                                                  otherButtonTitles:nil];
+                        [alertView show];
+                    } else {
+                        self.signedInUser = [[ECAPI sharedManager] signedInUser];
+                        NSLog(@"%@", self.signedInUser.userId);
+                        [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:profilePicUrl callback:^(NSError *error) {
+                            if (error) {
+                                NSLog(@"Error adding user: %@", error);
+                                NSLog(@"%@", error);
+                            } else {
+                                // code
+                                [[NSUserDefaults standardUserDefaults] setObject:twitterId forKey:@"socialUserId"];
+                                [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
+                                [[NSUserDefaults standardUserDefaults] setObject:username forKey:@"username"];
+                                [[NSUserDefaults standardUserDefaults] setObject:tempPassword forKey:@"password"];
+                                [[NSUserDefaults standardUserDefaults] synchronize];
+                                
+                                [[ECAuthAPI sharedClient] signInWithUsernameAndPassword:username
+                                                                               password:tempPassword
+                                                                                success:^(AFOAuthCredential *credential) {
+                                                                                    //                                                                                                [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+                                                                                    ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+                                                                                    if (sharedInstance.isUserLogoutTap == false){
+                                                                                        [self.navigationController popViewControllerAnimated:false];
+                                                                                        [self.delegate didTapLoginButton:_storyboardIdentifierString];
+                                                                                    }else{
+                                                                                        [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+                                                                                    }
+                                                                                }
+                                                                                failure:^(NSError *error) {
+                                                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                        
+                                                                                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                                                                        [alert show];
+                                                                                    });
+                                                                                }];
+                            }
+                        }];
+                        
+                    }
+                }];
+            }];
+        }
+    }];
+}
 
 - (IBAction)didTapLoginWithSocial:(id)sender{
     UIButton *button = (UIButton *)sender;
     if(button.tag == 3) {
         self.socialType = FacebookLogin;
+    }
+    else if(button.tag == 4){
+        self.socialType = TwitterLogin;
     }
     else if(button.tag == 5){
         self.socialType = GoogleLogin;
@@ -645,6 +750,9 @@ dismissViewController:(UIViewController *)viewController {
             break;
         case GoogleLogin:
             [self didTapLogInWithGoogle];
+            break;
+        case TwitterLogin:
+            [self didTapTwitterLoginButton];
             break;
         default:
             break;

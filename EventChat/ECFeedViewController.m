@@ -46,6 +46,7 @@
 #import "AFOAuth2Manager.h"
 #import "ECAuthAPI.h"
 #import "DCInfluencersPersonDetailsViewController.h"
+#import <Social/Social.h>
 
 @interface ECFeedViewController () <HTHorizontalSelectionListDataSource, HTHorizontalSelectionListDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *eventFeedTableView;
@@ -993,7 +994,6 @@
 
 //** CommentTap **//
 - (void)mainFeedDidTapCommentsButton:(ECNewTableViewCell *)ecFeedCell index:(NSInteger)index{
-    //    if (self.signedInUser != nil){
     if (self.userEmail != nil){
         [[ECAPI sharedManager] fetchTopicsByFeedItemId:ecFeedCell.feedItem.feedItemId callback:^(NSArray *topics, NSError *error)  {
             if(error){
@@ -1040,7 +1040,6 @@
 
 //** FavTap **//
 - (void)mainFeedDidTapFavoriteButton:(ECNewTableViewCell *)ecFeedCell index:(NSInteger)index{
-    //    if (self.signedInUser != nil){
     if (self.userEmail != nil){
         DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
         dcPlaylistsTableViewController.isFeedMode = true;
@@ -1057,7 +1056,6 @@
 
 //** LikeTap **//
 - (void)mainFeedDidTapAttendanceButton:(ECNewTableViewCell *)ecFeedCell index:(NSInteger)index{
-    //    if (self.signedInUser != nil){
     if (self.userEmail != nil){
         ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
         ecAttendanceDetailsViewController.selectedFeedItem = ecFeedCell.feedItem;
@@ -1070,10 +1068,9 @@
 
 //** ShareTap **//
 - (void)mainFeedDidTapShareButton:(ECNewTableViewCell *)ecFeedCell index:(NSInteger)index {
-    //    if (self.signedInUser != nil){
     if (self.userEmail != nil){
-        NSString* title = ecFeedCell.feedItem.digital.episodeTitle;
-        NSString* link = ecFeedCell.feedItem.digital.imageUrl;
+        NSString* title = ecFeedCell.feedItem.person.name;
+        NSString* link = ecFeedCell.feedItem.person.profilePic_url;
         NSArray* dataToShare = @[title, link];
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
                                                                                  message:nil
@@ -1094,9 +1091,9 @@
                                              NSLog(@"Share to Facebook");
                                              self.shareDialog = [[FBSDKShareDialog alloc] init];
                                              self.content = [[FBSDKShareLinkContent alloc] init];
-                                             self.content.contentURL = [NSURL URLWithString:ecFeedCell.feedItem.digital.imageUrl];
+                                             self.content.contentURL = [NSURL URLWithString:ecFeedCell.feedItem.person.profilePic_url];
                                              self.content.contentTitle = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"Bundle display name"];
-                                             self.content.contentDescription = ecFeedCell.feedItem.digital.episodeDescription;
+                                             self.content.contentDescription = ecFeedCell.feedItem.person.blurb;
                                              
                                              if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fbauth2://"]]){
                                                  [self.shareDialog setMode:FBSDKShareDialogModeNative];
@@ -1116,7 +1113,8 @@
                                                                 style:UIAlertActionStyleDefault
                                                               handler:^(UIAlertAction *action)
                                         {
-                                            NSLog(@"Twitter action");
+                                            NSLog(@"Twitter action...");
+                                            [self shareViaTwitter:[NSURL URLWithString:ecFeedCell.feedItem.person.profilePic_url] :ecFeedCell.feedItem.person.name];
                                         }];
         
         UIAlertAction *moreOptionsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"More Options...", @"More Options... action")
@@ -1129,9 +1127,6 @@
                                                 UIActivityViewController* activityViewController =
                                                 [[UIActivityViewController alloc] initWithActivityItems:dataToShare
                                                                                   applicationActivities:nil];
-                                                
-                                                
-                                                // This is key for iOS 8+
                                                 
                                                 [self presentViewController:activityViewController
                                                                    animated:YES
@@ -1150,11 +1145,81 @@
             popover.sourceRect = ecFeedCell.bounds;
             popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
         }
-        
         [self presentViewController:alertController animated:YES completion:nil];
     }else{
         [self pushToSignInVC:@"sameFeedVC"];
     }
+}
+
+#pragma mark:- Twitter Methods
+/*
+- (void)shareViaTwitter:(NSURL *)mURL{
+    SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+    [tweetSheet addURL:mURL];
+    [tweetSheet setCompletionHandler:^(SLComposeViewControllerResult result) {
+        switch (result) {
+            case SLComposeViewControllerResultCancelled:
+            {
+                NSLog(@"Post Failed");
+                UIAlertController* alert;
+                alert = [UIAlertController alertControllerWithTitle:@"Failed" message:@"Something went wrong while sharing on Twitter, Please try again later." preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+                    
+                }];
+                [alert addAction:defaultAction];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self presentViewController:alert animated:YES completion:nil];
+                });
+                
+                break;
+            }
+            case SLComposeViewControllerResultDone:
+            {
+                NSLog(@"Post Sucessful");
+                UIAlertController* alert;
+                alert = [UIAlertController alertControllerWithTitle:@"Success" message:@"Your post has been successfully shared." preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+                [alert addAction:defaultAction];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self presentViewController:alert animated:YES completion:nil];
+                });
+                break;
+            }
+            default:
+                break;
+        }
+    }];
+    [self presentViewController:tweetSheet animated:YES completion:Nil];
+}
+*/
+
+- (void)shareViaTwitter:(NSURL *)mURL :(NSString *)title{
+    TWTRComposer *composer = [[TWTRComposer alloc] init];
+    
+    UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:mURL]];
+    [composer setImage:mImage];
+    [composer setText:title];
+    
+    [composer showFromViewController:self completion:^(TWTRComposerResult result) {
+        if (result == TWTRComposerResultCancelled) {
+            UIAlertController* alert;
+            alert = [UIAlertController alertControllerWithTitle:@"Failed" message:@"Something went wrong while sharing on Twitter, Please try again later." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+            [alert addAction:defaultAction];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentViewController:alert animated:YES completion:nil];
+            });
+        }
+        else {
+            UIAlertController* alert;
+            alert = [UIAlertController alertControllerWithTitle:@"Success" message:@"Your post has been successfully shared." preferredStyle:UIAlertControllerStyleAlert];
+            UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+            [alert addAction:defaultAction];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self presentViewController:alert animated:YES completion:nil];
+            });
+        }
+    }];
 }
 
 #pragma mark - FBSDKSharingDelegate

@@ -1395,6 +1395,7 @@
 		F93BCCCD21C248610079242D /* DCSocialTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F93BCCCB21C248610079242D /* DCSocialTableViewCell.m */; };
 		F9940D24219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9940D23219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m */; };
 		F9940D25219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9940D23219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m */; };
+		F99F0CF121CA448A00061BF7 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F99F0CF021CA448900061BF7 /* Social.framework */; };
 		F9AD5C2F21A67AD20074C43B /* DCReactionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9AD5C2E21A67AD20074C43B /* DCReactionTableViewCell.m */; };
 		F9AD5C3021A67AD20074C43B /* DCReactionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9AD5C2E21A67AD20074C43B /* DCReactionTableViewCell.m */; };
 		F9E67C1F219D5C20000081AB /* libAFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E67C1E219D5C20000081AB /* libAFNetworking.a */; };
@@ -1880,6 +1881,7 @@
 		F93BCCCB21C248610079242D /* DCSocialTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCSocialTableViewCell.m; sourceTree = "<group>"; };
 		F9940D22219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCNewTVShowEpisodeTableViewCell.h; sourceTree = "<group>"; };
 		F9940D23219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCNewTVShowEpisodeTableViewCell.m; sourceTree = "<group>"; };
+		F99F0CF021CA448900061BF7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
 		F9AD5C2D21A67AD20074C43B /* DCReactionTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCReactionTableViewCell.h; sourceTree = "<group>"; };
 		F9AD5C2E21A67AD20074C43B /* DCReactionTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCReactionTableViewCell.m; sourceTree = "<group>"; };
 		F9BAE2F7219C1CEF00921566 /* DCNewTVShowViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCNewTVShowViewController.h; sourceTree = "<group>"; };
@@ -1966,6 +1968,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F99F0CF121CA448A00061BF7 /* Social.framework in Frameworks */,
 				F9E67C25219D5CB2000081AB /* libAWSS3.a in Frameworks */,
 				F9E67C27219D5CB2000081AB /* libBolts.a in Frameworks */,
 				F9E67C29219D5CB2000081AB /* libBranch.a in Frameworks */,
@@ -2660,6 +2663,7 @@
 		475611F09FA90C5360BBDF05 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F99F0CF021CA448900061BF7 /* Social.framework */,
 				F9E67C24219D5CB2000081AB /* libAWSS3.a */,
 				F9E67C26219D5CB2000081AB /* libBolts.a */,
 				F9E67C28219D5CB2000081AB /* libBranch.a */,
