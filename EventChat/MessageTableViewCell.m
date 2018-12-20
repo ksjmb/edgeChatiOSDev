@@ -326,7 +326,7 @@
 
 - (void)configureSubviewsForMediaCell{
     // Handle touchUpInside event for Like label
-    self.likeCountLabel.userInteractionEnabled = YES;
+//    self.likeCountLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *likeLabelTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapLikeComment:)];
     [self.likeCountLabel addGestureRecognizer:likeLabelTapGesture];
     
@@ -340,10 +340,21 @@
     UITapGestureRecognizer *reportLabelTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapHideAllCommentsByUser:)];
     [self.reportLabel addGestureRecognizer:reportLabelTapGesture];
     
+    //Handle touchUpInside event for viewReply label
+    self.viewReplyLabel.userInteractionEnabled = YES;
+    UITapGestureRecognizer *viewReplyLabelTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapViewReplyByUser:)];
+    [self.viewReplyLabel addGestureRecognizer:viewReplyLabelTapGesture];
+    
+    //Handle touchUpInside event for favImageView label
+    self.favImageView.userInteractionEnabled = YES;
+    UITapGestureRecognizer *favImageViewTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapFavImageViewByUser:)];
+    [self.favImageView addGestureRecognizer:favImageViewTapGesture];
+    
     NSDictionary *metrics;
     // Disable like button if user has already liked the comment
     if([self.signedInUser.likedCommentIds containsObject:_message.commentId]){
         [self.likeCountLabel setEnabled:NO];
+        [self.favImageView setUserInteractionEnabled:NO];
     }
     
     if (![_message.parantId isEqualToString:@"0"]) {
@@ -375,30 +386,48 @@
     [self.contentView bringSubviewToFront:self.indicator];
     [self.contentView addSubview:self.reportLabel];
     [self.contentView addSubview:self.replyLabel];
+    //
+    [self.contentView addSubview:self.favImageView];
+    [self.contentView addSubview:self.viewReplyLabel];
     
     NSDictionary *views = @{@"thumbnailView": self.thumbnailView,
                             @"titleLabel": self.titleLabel,
                             @"mediaImage": self.mediaImageView,
                             @"likeCountLabel": self.likeCountLabel,
                             @"reportLabel"   : self.reportLabel,
-                            @"replyLabel"    : self.replyLabel
+                            @"replyLabel"    : self.replyLabel,
+                            @"favImageView"    : self.favImageView,
+                            @"viewReplyLabel"    : self.viewReplyLabel
                             };
     
     
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-left-[thumbnailView(tumbSize)]-right-[titleLabel(>=0)]-right-|" options:0 metrics:metrics views:views]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-left-[thumbnailView(tumbSize)]-right-[mediaImage(250)]" options:0 metrics:metrics views:views]];
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-left-[thumbnailView(tumbSize)]-right-[likeCountLabel(>=0)]-right-[replyLabel(50)]-right-[reportLabel(50)]-(>=0)-|" options:0 metrics:metrics views:views]];
+    //1.
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-left-[thumbnailView(tumbSize)]-right-[viewReplyLabel(>=0)]-right-|" options:0 metrics:metrics views:views]];
+    //
     [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-right-[thumbnailView(tumbSize)]-(>=0)-|" options:0 metrics:metrics views:views]];
+    //2.
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-right-[favImageView(tumbSize)]-(>=0)-|" options:0 metrics:metrics views:views]];
+    [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-[favImageView(tumbSize)]-right-|" options:0 metrics:metrics views:views]];
+    //
     
     if ([self.reuseIdentifier isEqualToString:messengerMediaCellIdentifier]) {
+        /*
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-right-[titleLabel(20)]-left-[mediaImage(250)]-20-[likeCountLabel(20)]-|" options:0 metrics:metrics views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-right-[titleLabel(35)]-left-[mediaImage(250)]-20-[reportLabel(20)]-|" options:0 metrics:metrics views:views]];
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-right-[titleLabel(50)]-left-[mediaImage(250)]-20-[replyLabel(20)]-|" options:0 metrics:metrics views:views]];
+         */
+        //3.
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-right-[titleLabel(20)]-left-[mediaImage(250)]-20-[likeCountLabel(20)]-(10)-[viewReplyLabel(20)]" options:0 metrics:metrics views:views]];
+        [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|-right-[titleLabel(50)]-left-[mediaImage(250)]-20-[replyLabel(20)]" options:0 metrics:metrics views:views]];
     }
     else {
         [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"V:|[titleLabel]|" options:0 metrics:metrics views:views]];
     }
     [self adjustConstraint];
+    [self layoutIfNeeded];
 }
 
 - (void)prepareForReuse {

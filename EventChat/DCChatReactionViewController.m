@@ -80,6 +80,8 @@
 @property (retain, nonatomic) UIImage *alertImage;
 @property (retain, nonatomic) NSString *alertTitle;
 @property (retain, nonatomic) NSArray *arrayOfButtonTitles;
+//
+@property (nonatomic, assign) BOOL isVideoUploadDone;
 
 @end
 
@@ -93,6 +95,8 @@
     
     [self configureDataSource];
     self.mTextView.delegate = self;
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadVideoToS3) name:@"uploadVideoToS3" object:nil];
     
     if(self.isPost){
         [self.navigationItem setTitle:[NSString stringWithFormat:@"%@", self.dcPost.content]];
@@ -124,7 +128,6 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(replyComment) name:@"replyComment" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewReplyTap) name:@"viewReplyTap" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didTapFavImageView) name:@"didTapFavImageView" object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadVideoToS3) name:@"uploadVideoToS3" object:nil];
     
     // SLKTVC's configuration
     videoData = [ECVideoData sharedInstance];
@@ -309,11 +312,8 @@
  */
 
 -(void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex{
-    
     if (buttonIndex == 0) {
-        
         // Method to get images from camera or phone gallery.
-        
         [[ECCommonClass sharedManager]showActionSheetToSelectMediaFromGalleryOrCamFromController:self andMediaType:@"Image" andResult:^(bool flag) {
             if (flag) {
                 [self uploadImageToS3];
@@ -326,7 +326,6 @@
                 //[self uploadVideoToS3];
             }
         }];
-        
     }
 }
 
@@ -336,6 +335,7 @@
         [self endBackgroundUpdateTask];
     }];
 }
+
 - (void) endBackgroundUpdateTask {
     [[UIApplication sharedApplication] endBackgroundTask: self.backgroundUpdateTaskId];
     self.backgroundUpdateTaskId = UIBackgroundTaskInvalid;
@@ -463,6 +463,7 @@
     [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
     [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
     [SVProgressHUD showWithStatus:@"Uploading Video"];
+    self.isVideoUploadDone = false;
     
     //Uploading Thumbnail image
     NSData * thumbImageData = UIImagePNGRepresentation(videoData.mediaThumbImage);
@@ -532,26 +533,26 @@
                                     index = index - 1;
                                 }
                                 
-                                
                                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
                                 UITableViewRowAnimation rowAnimation = self.inverted ? UITableViewRowAnimationBottom : UITableViewRowAnimationTop;
                                 UITableViewScrollPosition scrollPosition = self.inverted ? UITableViewScrollPositionBottom : UITableViewScrollPositionTop;
                                 
-                                [self.chatTableView beginUpdates];
-                                [self.messages insertObject:message atIndex:index];
-                                [self.chatTableView resignFirstResponder];
-                                [self.chatTableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:rowAnimation];
-                                [self.chatTableView endUpdates];
-                                
-                                [self.chatTableView scrollToRowAtIndexPath:indexPath atScrollPosition:scrollPosition animated:YES];
+                                if (_isVideoUploadDone == false){
+                                    [self.chatTableView beginUpdates];
+                                    NSLog(@"self.messages.count : %lu", (unsigned long)self.messages.count);
+                                    [self.messages insertObject:message atIndex:index];
+                                    [self.chatTableView resignFirstResponder];
+                                    [self.chatTableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:rowAnimation];
+                                    [self.chatTableView endUpdates];
+                                }
+//                                [self.chatTableView scrollToRowAtIndexPath:indexPath atScrollPosition:scrollPosition animated:YES];
                                 
                                 //                                 Fixes the cell from blinking (because of the transform, when using translucent cells)
                                 //                              See https:
                                 //github.com/slackhq/SlackTextViewController/issues/94#issuecomment-69929927
-                                [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                                [self.chatTableView reloadData];
-                                [self.chatTableView scrollToRowAtIndexPath:indexPath atScrollPosition:scrollPosition animated:YES];
-                                
+//                                [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+//                                [self.chatTableView reloadData];
+//                                [self.chatTableView scrollToRowAtIndexPath:indexPath atScrollPosition:scrollPosition animated:YES];
                                 
                                 NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
                                 for (UIViewController *aViewController in allViewControllers) {
@@ -563,6 +564,7 @@
                                 //Removing view of replying.
                                 [[NSNotificationCenter defaultCenter] postNotificationName:@"closeComment" object:nil];
                                 NSLog(@"Success uploading Comment:%@",jsonDictionary);
+                                self.isVideoUploadDone = true;
                                 [[NSUserDefaults standardUserDefaults] setValue:@"0" forKey:@"parantId"];
                             }
                         }
@@ -829,6 +831,7 @@
             [self.chatTableView setHidden:true];
             [self.noDataAvailableLabel setHidden:false];
         }
+        NSLog(@"self.messages.count tableView : %lu", (unsigned long)self.messages.count);
         return self.messages.count;
     }
     else{
@@ -1058,7 +1061,7 @@
         //Height for image or video cell.
         Message *message = self.messages[(self.messages.count - 1) - indexPath.row];
         if ([message.commentType isEqualToString:@"image"] || [message.commentType isEqualToString:@"video"]) {
-            return 330;
+            return 360;
         }
         
         // check parent commentID with child parentID
@@ -1161,13 +1164,13 @@
                             }];
     }
 }
-
+//Action on video tap
 -(void)playButtonPressed:(Message *)message
 {
     BOOL isInternetAvailable = [[ECCommonClass sharedManager]isInternetAvailabel];
     if (isInternetAvailable) {
         //        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:message.videoUrl]];
-        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:message.content]];
+        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:message.videoUrl]];
         AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
         AVPlayerViewController *avvc = [AVPlayerViewController new];
         avvc.player = player;

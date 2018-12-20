@@ -1144,7 +1144,7 @@
             popover.sourceView = ecFeedCell;
             popover.sourceRect = ecFeedCell.bounds;
             popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
-        }
+        }    
         [self presentViewController:alertController animated:YES completion:nil];
     }else{
         [self pushToSignInVC:@"sameFeedVC"];
