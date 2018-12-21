@@ -38,7 +38,9 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
     [self.moreTableView reloadData];
 }
 
@@ -230,6 +232,13 @@
 
 - (void)didTapLoginButton:(NSString *)storyboardIdentifier{
     NSLog(@"didTapLoginButton: MoreVC: storyboardIdentifier: %@", storyboardIdentifier);
+    [self sendToSpecificVC:storyboardIdentifier];
+}
+
+#pragma mark:- RegisterDelegate Methods
+
+- (void)didTapSignUpButton:(NSString *)storyboardIdentifier{
+    NSLog(@"didTapSignUpButton: MoreVC: storyboardIdentifier: %@", storyboardIdentifier);
     [self sendToSpecificVC:storyboardIdentifier];
 }
 

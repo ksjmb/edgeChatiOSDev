@@ -89,7 +89,7 @@
 
 #pragma mark:- ViewController LifeCycle Methods
 
-- (void)viewDidLoad {
+- (void)viewDidLoad { //Add a comment
     [super viewDidLoad];
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     
@@ -128,6 +128,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(replyComment) name:@"replyComment" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(viewReplyTap) name:@"viewReplyTap" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didTapFavImageView) name:@"didTapFavImageView" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateChatReaction) name:@"updateChatReaction" object:nil];
     
     // SLKTVC's configuration
     videoData = [ECVideoData sharedInstance];
@@ -797,9 +798,13 @@
 
 - (IBAction)actionOnFavButton:(id)sender {
     DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
-    dcPlaylistsTableViewController.isFeedMode = false;
+    dcPlaylistsTableViewController.isFeedMode = true;
     dcPlaylistsTableViewController.isSignedInUser = true;
-    [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+    dcPlaylistsTableViewController.feedItemId = self.selectedFeedItem.feedItemId;
+    UINavigationController *navigationController =
+    [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
+    [self presentViewController:navigationController animated:YES completion:nil];
+//    [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
 }
 
 - (IBAction)actionOnCameraButton:(id)sender {
@@ -1361,7 +1366,7 @@
 #pragma mark - UITextViewDelegate Methods
 
 - (void)textViewDidBeginEditing:(IQTextView *)textView {
-    if ([_mTextView.text  isEqual: @"Message"]) {
+    if ([_mTextView.text  isEqual: @"Add a comment"]) {
         [_mTextView setText:@""];
     }
     NSLog(@"did begin editing");
@@ -1373,7 +1378,7 @@
 
 - (BOOL)textViewShouldEndEditing:(IQTextView *)textView{
     if ([_mTextView.text  isEqual: @""]) {
-        [_mTextView setText:@"Message"];
+        [_mTextView setText:@"Add a comment"];
     }
     
     NSLog(@"did end editing");
@@ -1392,8 +1397,9 @@
 }
 
 - (IBAction)actionOnPostButton:(id)sender {
-    if ([[self.mTextView.text copy] isEqualToString:@"Message"]){
+    if ([[self.mTextView.text copy] isEqualToString:@"Add a comment"]){
         NSLog(@"enter your message...!");
+        [[ECCommonClass sharedManager] alertViewTitle:@"Alert" message:@"Add your comment...!"];
     }else{
         // Format date
         NSDateFormatter *dateFormatters = [[NSDateFormatter alloc] init];
@@ -1478,7 +1484,7 @@
                 // See https://github.com/slackhq/SlackTextViewController/issues/94#issuecomment-69929927
                 [self.chatTableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                 [self.mTextView resignFirstResponder];
-                [self.mTextView setText:@"Message"];
+                [self.mTextView setText:@"Add a comment"];
                 [[NSNotificationCenter defaultCenter] postNotificationName:@"closeComment" object:nil];
                 NSLog(@"Success uploading Comment: jsonDictionary: %@",jsonDictionary);
                 [[NSUserDefaults standardUserDefaults] setValue:@"0" forKey:@"parantId"];
@@ -1645,6 +1651,18 @@
         }
     }];
     [self presentViewController:tweetSheet animated:YES completion:Nil];
+}
+
+#pragma mark:- Post Notification Methods
+
+-(void)updateChatReaction {
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    
+    if([self.signedInUser.favoritedFeedItemIds containsObject:self.selectedFeedItem.feedItemId]){
+        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+    }else{
+        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+    }
 }
 
 #pragma mark - Helper Methods

@@ -6,6 +6,7 @@
 #import "AppDelegate.h"
 #import "ECAuthAPI.h"
 #import "TermsConditionsViewController.h"
+#import "ECCommonClass.h"
 
 #define REGEX_MANDATORY @"[A-Za-z]{1,100}"
 #define REGEX_USER_NAME_LIMIT @"^.{3,10}$"
@@ -44,7 +45,7 @@
     }
     [self.navigationController.navigationBar setBackgroundImage:[UIImage new] forBarMetrics:UIBarMetricsDefault];
     [self.navigationController.navigationBar setBackgroundColor:[UIColor clearColor]];
-    [self.navigationController.navigationBar setTranslucent:YES];
+//    [self.navigationController.navigationBar setTranslucent:YES];
     
     _emailTextField.leftViewMode = UITextFieldViewModeAlways;
     UIImageView *emailImageView = [[UIImageView alloc] initWithImage:[IonIcons imageWithIcon:ion_ios_email  size:30.0 color:[UIColor lightGrayColor]]];
@@ -80,11 +81,11 @@
     self.alertTitle = nil;
     self.alertImage = nil;
     self.arrayOfButtonTitles = @[];
-    
 }
 
 - (IBAction)didTapCancel:(id)sender{
-    [self dismissViewControllerAnimated:YES completion:nil];
+//    [self dismissViewControllerAnimated:YES completion:nil];
+    [self.navigationController popViewControllerAnimated:true];
 }
 
 - (IBAction)didTapSignUp:(id)sender{
@@ -124,6 +125,7 @@
                             [[NSUserDefaults standardUserDefaults] setObject:_passwordTextField.text forKey:@"password"];
                             [[NSUserDefaults standardUserDefaults] synchronize];
                 
+                            /*
                             [[ECAuthAPI sharedClient] signInWithUsernameAndPassword:username
                                                                            password:_passwordTextField.text
                                                                             success:^(AFOAuthCredential *credential) {
@@ -132,6 +134,26 @@
                                                                             failure:^(NSError *error) {
                                                                                 dispatch_async(dispatch_get_main_queue(), ^{
                 
+                                                                                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                                                                                    [alert show];
+                                                                                });
+                                                                            }];
+                            */
+                            
+                            [[ECAuthAPI sharedClient] signInWithUsernameAndPassword:username
+                                                                           password:_passwordTextField.text
+                                                                            success:^(AFOAuthCredential *credential) {                                                                                ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+                                                                                if (sharedInstance.isUserLogoutTap == false){                                                                                    int count = (int)self.navigationController.viewControllers.count;
+                                                                                    
+                                                                                    [self.navigationController popToViewController:[self.navigationController.viewControllers objectAtIndex:count - 3] animated:NO];
+//                                                                                    [self.mDelegate didTapSignUpButton:self.storyboardIdentifierStr];
+                                                                                }else{
+                                                                                    [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
+                                                                                }
+                                                                            }
+                                                                            failure:^(NSError *error) {
+                                                                                dispatch_async(dispatch_get_main_queue(), ^{
+                                                                                    
                                                                                     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error" message:[error localizedDescription] delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
                                                                                     [alert show];
                                                                                 });
@@ -155,7 +177,6 @@
 
 #pragma mark - UITextFieldDelegate
 - (void)textFieldDidBeginEditing:(UITextField *)textField{
-   
 }
 
 -(void)textFieldDidEndEditing:(UITextField *)textField{

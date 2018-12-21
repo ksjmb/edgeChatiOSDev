@@ -157,6 +157,8 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
                                                                            ^{
                                                                                ECCommonClass *instance = [ECCommonClass sharedManager];
                                                                                instance.isAouthToken = true;
+                                                                               [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"username"];
+                                                                               [[NSUserDefaults standardUserDefaults] synchronize];
                                                                                
                                                                                UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
                                                                                ECFeedViewController *ecFeedViewController = [mainStoryboard instantiateViewControllerWithIdentifier:@"ECFeedViewController"];

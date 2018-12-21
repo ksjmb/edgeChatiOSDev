@@ -146,6 +146,7 @@
     return cell;
 }
 
+/*
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     ECNotification *notification = [self.notifications objectAtIndex:indexPath.row];
     // JB: 01/26/18 - Commented out for now to simplify the UI. Will think about enabling in the future if a business requirement
@@ -194,6 +195,7 @@
         [self.navigationController pushViewController:ecProfileViewController animated:YES];
     }
 }
+ */
 
 - (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
     UITableViewRowAction *deleteAction = [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleDestructive title:@"Clear"  handler:^(UITableViewRowAction *action, NSIndexPath *indexPath){

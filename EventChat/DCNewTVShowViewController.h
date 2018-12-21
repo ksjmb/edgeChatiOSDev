@@ -14,10 +14,11 @@
 #import "DCSeasonSelectorTableViewController.h"
 #import "DCNewTVShowEpisodeTableViewCell.h"
 #import "SignUpLoginViewController.h"
+#import "RegisterViewController.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
 
-@interface DCNewTVShowViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, DCNewTVShowEpisodeTableViewCellDelegate, DCSeasonSelectorTableViewControllerDelegate, SignUpLoginViewControllerDelegate>
+@interface DCNewTVShowViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, DCNewTVShowEpisodeTableViewCellDelegate, DCSeasonSelectorTableViewControllerDelegate, SignUpLoginViewControllerDelegate, RegisterViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *topImageView;
 @property (weak, nonatomic) IBOutlet UILabel *topDescriptionLabel;

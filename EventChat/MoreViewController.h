@@ -2,8 +2,9 @@
 #import "AppDelegate.h"
 #import <ContactsUI/ContactsUI.h>
 #import "SignUpLoginViewController.h"
+#import "RegisterViewController.h"
 
-@interface MoreViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, CNContactPickerDelegate,SignUpLoginViewControllerDelegate>
+@interface MoreViewController : UIViewController <UITableViewDelegate, UITableViewDataSource, CNContactPickerDelegate,SignUpLoginViewControllerDelegate, RegisterViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *moreTableView;
 @property (retain, nonatomic) NSString *storyBoardIdentifier;

@@ -95,7 +95,6 @@
     //share button
     [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
     
-    /*
     // Format date
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     [dateFormatter setTimeZone:[NSTimeZone systemTimeZone]];
@@ -103,11 +102,10 @@
     NSDate *eventDate = [dateFormatter dateFromString:feedItem.event.startDate];
     [dateFormatter setDateFormat:@"MMM"];
     NSLog(@"month is %@", [[dateFormatter stringFromDate:eventDate] uppercaseString]);
-    [_feedItemLeftTop setText:[[dateFormatter stringFromDate:eventDate] uppercaseString]];
+    [self.eventMonthNameLabel setText:[[dateFormatter stringFromDate:eventDate] uppercaseString]];
     [dateFormatter setDateFormat:@"dd"];
     NSLog(@"date is %@", [[dateFormatter stringFromDate:eventDate] uppercaseString]);
-    [_feedItemLeftBottom setText:[[dateFormatter stringFromDate:eventDate] uppercaseString]];
-    */
+    [self.eventMonthDayLabel setText:[[dateFormatter stringFromDate:eventDate] uppercaseString]];
     
     if(feedItem.event.mainImage != nil){
         [self showImageOnTheCell:self ForImageUrl:feedItem.event.mainImage isFromDownloadButton:NO];
@@ -121,6 +119,7 @@
 }
 
 #pragma mark - SDWebImage
+
 // Displaying Image on Cell
 -(void)showImageOnTheCell:(DCEventTableViewCell *)cell ForImageUrl:(NSString *)url isFromDownloadButton:(BOOL)downloadFlag{
     SDImageCache *cache = [SDImageCache sharedImageCache];
@@ -163,10 +162,10 @@
                                 }
                             }];
     }
-    
 }
 
 #pragma mark - Button actions
+
 - (IBAction)didTapThumbnail:(id)sender{
     NSIndexPath *indexPath = [(UITableView *)self.superview indexPathForCell:self];
     NSLog(@"rowofthecell %ld", (long)indexPath.row);

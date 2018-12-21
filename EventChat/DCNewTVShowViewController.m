@@ -191,7 +191,7 @@
         [self presentViewController:navigationController animated:YES completion:nil];
     }else{
         [[NSUserDefaults standardUserDefaults] setObject:dcTVNewShowEpisodeTableViewCell.feedItem.feedItemId forKey:@"feedItemId"];
-        self.isTopFavButtonSelected = false;
+//        self.isTopFavButtonSelected = false;
         [self pushToSignInVC:@"DCPlaylistsTableViewController"];
     }
 }
@@ -400,8 +400,9 @@
 #pragma mark:- Post Notification Methods
 
 -(void)profileUpdatedNew {
-    [self.episodeTableView reloadData];
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    [self.episodeTableView reloadData];
+//    self.signedInUser = [[ECAPI sharedManager] signedInUser];
     
     if([self.signedInUser.favoritedFeedItemIds containsObject:_selectedFeedItemId]){
         [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
@@ -529,11 +530,16 @@
 - (void)didTapFavButton{
     if (self.userEmail != nil){
         DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
-        dcPlaylistsTableViewController.isFeedMode = false;
+        NSLog(@"self.selectedFeedItemId: %@", self.selectedFeedItemId);
+        dcPlaylistsTableViewController.isFeedMode = true;
         dcPlaylistsTableViewController.isSignedInUser = true;
-        [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+        dcPlaylistsTableViewController.feedItemId = self.selectedFeedItemId;
+        UINavigationController *navigationController =
+        [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
+        [self presentViewController:navigationController animated:YES completion:nil];
+//        [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
     }else{
-        self.isTopFavButtonSelected = true;
+//        self.isTopFavButtonSelected = false;
         [self pushToSignInVC:@"DCPlaylistsTableViewController"];
     }
 }
@@ -609,6 +615,13 @@
 
 - (void)didTapLoginButton:(NSString *)storyboardIdentifier{
     NSLog(@"didTapLoginButton: DCNewTVShowVC: storyboardIdentifier: %@", storyboardIdentifier);
+    [self sendToSpecificVC:storyboardIdentifier];
+}
+
+#pragma mark:- RegisterDelegate Methods
+
+- (void)didTapSignUpButton:(NSString *)storyboardIdentifier{
+    NSLog(@"didTapSignUpButton: DCNewTVShowVC: storyboardIdentifier: %@", storyboardIdentifier);
     [self sendToSpecificVC:storyboardIdentifier];
 }
 

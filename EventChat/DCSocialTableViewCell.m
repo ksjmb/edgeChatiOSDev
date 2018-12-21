@@ -27,12 +27,12 @@
 }
 
 -(void)configureCell:(DCFeedItem *)feedItem{
-    [self.facebookBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 20.0f, 0, 0)];
-    [self.twitterBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 20.0f, 0, 0)];
-    [self.instragramBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 20.0f, 0, 0)];
-    [self.facebookBtn.layer addSublayer:[[ECCommonClass sharedManager] addImageToButton:self.facebookBtn imageType:Facebook aColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] aSize:30.0]];
-    [self.twitterBtn.layer addSublayer:[[ECCommonClass sharedManager] addImageToButton:self.twitterBtn imageType:TWX aColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] aSize:30.0]];
-    [self.instragramBtn.layer addSublayer:[[ECCommonClass sharedManager] addImageToButton:self.instragramBtn imageType:Instagram aColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] aSize:30.0]];
+//    [self.facebookBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 20.0f, 0, 0)];
+//    [self.twitterBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 20.0f, 0, 0)];
+//    [self.instragramBtn setTitleEdgeInsets:UIEdgeInsetsMake(0, 20.0f, 0, 0)];
+//    [self.facebookBtn.layer addSublayer:[[ECCommonClass sharedManager] addImageToButton:self.facebookBtn imageType:nil aColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] aSize:30.0]];
+//    [self.twitterBtn.layer addSublayer:[[ECCommonClass sharedManager] addImageToButton:self.twitterBtn imageType:nil aColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] aSize:30.0]];
+//    [self.instragramBtn.layer addSublayer:[[ECCommonClass sharedManager] addImageToButton:self.instragramBtn imageType:nil aColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] aSize:30.0]];
     [self.facebookBtn addBorderForSide:Right color:[UIColor lightGrayColor] width:0.5];
     [self.twitterBtn addBorderForSide:Right color:[UIColor lightGrayColor] width:0.5];
     [self loadFacebookData:feedItem];
@@ -45,8 +45,9 @@
     NSString *likesCount = feedItem.social.facebook.like_count;
     if(likesCount != nil){
         NSMutableAttributedString *titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nLIKES", likesCount]];
-        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [likesCount length])];
-        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] range:NSMakeRange(0, [likesCount length])];
+        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [likesCount length])];
+//        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] range:NSMakeRange(0, [likesCount length])];
+        [titleText addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [likesCount length])];
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         [paragraphStyle setAlignment:NSTextAlignmentCenter];
         [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [likesCount length])];
@@ -64,8 +65,9 @@
     if(followerCount != nil){
         // Setup the string
         NSMutableAttributedString *titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFOLLOWERS", followerCount]];
-        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [followerCount length])];
-        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] range:NSMakeRange(0, [followerCount length])];
+        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [followerCount length])];
+//        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] range:NSMakeRange(0, [followerCount length])];
+        [titleText addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [followerCount length])];
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         [paragraphStyle setAlignment:NSTextAlignmentCenter];
         [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [followerCount length])];
@@ -83,8 +85,9 @@
     if(followerCount != nil){
         // Setup the string
         NSMutableAttributedString *titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFOLLOWERS", followerCount]];
-        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:15.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [followerCount length])];
-        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] range:NSMakeRange(0, [followerCount length])];
+        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [followerCount length])];
+//        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] range:NSMakeRange(0, [followerCount length])];
+        [titleText addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [followerCount length])];
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
         [paragraphStyle setAlignment:NSTextAlignmentCenter];
         [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [followerCount length])];

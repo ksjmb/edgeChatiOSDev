@@ -56,6 +56,12 @@
     }];
 }
 
+- (void)viewWillAppear:(BOOL)animated{
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    self.mUserEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+}
+
 #pragma mark:- Instance Methods
 
 - (void)loadFeedItemsByFilter:(DCFeedItemFilter *)feedItemFilter{
@@ -360,6 +366,13 @@
 
 - (void)didTapLoginButton:(NSString *)storyboardIdentifier{
     NSLog(@"didTapLoginButton: EventTableVC: storyboardIdentifier: %@", storyboardIdentifier);
+    [self sendToSpecificVC:storyboardIdentifier];
+}
+
+#pragma mark:- RegisterDelegate Methods
+
+- (void)didTapSignUpButton:(NSString *)storyboardIdentifier{
+    NSLog(@"didTapSignUpButton: EventTableVC: storyboardIdentifier: %@", storyboardIdentifier);
     [self sendToSpecificVC:storyboardIdentifier];
 }
 

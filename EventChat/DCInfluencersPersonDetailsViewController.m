@@ -15,6 +15,7 @@
 #import "DCPersonEntityObject.h"
 #import "DCPersonProfessionObject.h"
 #import "AppDelegate.h"
+#import "ECCommonClass.h"
 #import "ECEventTopicCommentsViewController.h"
 #import "SignUpLoginViewController.h"
 #import "DCChatReactionViewController.h"
@@ -215,10 +216,26 @@
     [self sendToSpecificVC:storyboardIdentifier];
 }
 
+#pragma mark:- RegisterDelegate Methods
+
+- (void)didTapSignUpButton:(NSString *)storyboardIdentifier{
+    NSLog(@"didTapSignUpButton: DCInfluencersPersonDetails: storyboardIdentifier: %@", storyboardIdentifier);
+    [self sendToSpecificVC:storyboardIdentifier];
+}
+
 #pragma mark:- IBAction Methods
 
 - (IBAction)actionOnFollowBtn:(id)sender {
-    NSLog(@"Comming soon...");
+    [[ECCommonClass sharedManager] alertViewTitle:@"Alert" message:@"Comming soon..."];
+    /*
+    UIAlertController* alert;
+    alert = [UIAlertController alertControllerWithTitle:@"Alert" message:@"Comming soon..." preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+    [alert addAction:defaultAction];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self presentViewController:alert animated:YES completion:nil];
+    });
+     */
 }
 
 #pragma mark:- Delegate Methods

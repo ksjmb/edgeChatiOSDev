@@ -359,22 +359,24 @@
     
     if (![_message.parantId isEqualToString:@"0"]) {
         [self.replyLabel setHidden:YES];
+        [self.viewReplyLabel setHidden:YES];
         metrics = @{@"tumbSize": @(kMessageTableViewCellAvatarHeight),
                     @"padding": @15,
                     @"right": @10,
                     @"left": @45
                     };
-        [super layoutSubviews];
+//        [super layoutSubviews];
     }
     else
     {
         [self.replyLabel setHidden:NO];
+        [self.viewReplyLabel setHidden:NO];
         metrics = @{@"tumbSize": @(kMessageTableViewCellAvatarHeight),
                     @"padding": @15,
                     @"right": @10,
                     @"left": @5
                     };
-        [super layoutSubviews];
+//        [super layoutSubviews];
     }
     
     [self.contentView addSubview:self.thumbnailView];

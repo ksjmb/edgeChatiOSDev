@@ -46,7 +46,7 @@
                         <constraints>
                             <constraint firstAttribute="height" constant="21" id="N8a-YT-gQ5"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="11"/>
+                        <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="11"/>
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
@@ -58,7 +58,7 @@
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="ujW-vf-2Zm"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="14"/>
+                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="14"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -68,16 +68,16 @@
                                     <constraint firstAttribute="height" constant="21" id="agQ-qR-x6d"/>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="i6Y-7l-CcK"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="12"/>
+                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="12"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00 Comments" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="U1W-H5-MYb">
-                                <rect key="frame" x="42" y="63" width="79.5" height="21"/>
+                                <rect key="frame" x="42" y="63" width="77.5" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="6hu-W3-rg9"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="12"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -105,7 +105,7 @@
                                     <constraint firstAttribute="width" constant="125" id="35g-4x-56E"/>
                                     <constraint firstAttribute="height" constant="28" id="5xs-yw-7qd"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="12"/>
                                 <connections>
                                     <action selector="actionOnCommentButton:" destination="EXz-vn-AQS" eventType="touchUpInside" id="7uS-JU-NUe"/>
                                 </connections>
@@ -183,7 +183,7 @@
                             <constraint firstAttribute="width" constant="50" id="JvP-ev-dth"/>
                             <constraint firstAttribute="height" constant="21" id="Wqk-3L-hNw"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                        <fontDescription key="fontDescription" name="AvenirNext-Regular" family="Avenir Next" pointSize="10"/>
                         <state key="normal" title="view more"/>
                         <connections>
                             <action selector="actionOnViewMoreButton:" destination="EXz-vn-AQS" eventType="touchUpInside" id="B3K-si-ZTZ"/>

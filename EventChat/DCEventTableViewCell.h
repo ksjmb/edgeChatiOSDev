@@ -32,6 +32,8 @@
 @property (nonatomic, weak) IBOutlet UIButton *commentButton;
 @property (nonatomic, weak) IBOutlet UIButton *favoriteButton;
 @property (weak, nonatomic) IBOutlet UILabel *eventCommentCount;
+@property (weak, nonatomic) IBOutlet UILabel *eventMonthNameLabel;
+@property (weak, nonatomic) IBOutlet UILabel *eventMonthDayLabel;
 
 @property (nonatomic, weak) id <DCEventTableViewCellDelegate> delegate;
 @property (nonatomic, strong) DCFeedItem *feedItem;

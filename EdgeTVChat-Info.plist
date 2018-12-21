@@ -2,8 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>ITSAppUsesNonExemptEncryption</key>
-	<false/>
 	<key>APIVersion</key>
 	<string>v4</string>
 	<key>AttendanceQuestionOptions</key>
@@ -60,8 +58,7 @@
 		</dict>
 		<dict>
 			<key>CFBundleURLName</key>
-<!--            <string>com.diddychat.EdgeTVChat</string>-->
-            <string>com.eventChat.Mb</string>
+			<string>com.eventChat.Mb</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>EdgeTVChat</string>
@@ -72,13 +69,12 @@
 			<string>Editor</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-<!--                <string>com.diddychat.EdgeTVChat</string>-->
-                <string>com.eventChat.Mb</string>
+				<string>com.eventChat.Mb</string>
 			</array>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>2</string>
+	<string>3</string>
 	<key>DBName</key>
 	<string>edgetvchat_stage</string>
 	<key>Fabric</key>
@@ -110,6 +106,8 @@
 	<string>133172340606837</string>
 	<key>FacebookDisplayName</key>
 	<string>EdgeChat</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 	<key>LSApplicationCategoryType</key>
 	<string></string>
 	<key>LSApplicationQueriesSchemes</key>

@@ -249,6 +249,13 @@
     [self sendToSpecificVC:storyboardIdentifier];
 }
 
+#pragma mark:- RegisterDelegate Methods
+
+- (void)didTapSignUpButton:(NSString *)storyboardIdentifier{
+    NSLog(@"didTapSignUpButton: ECFeedVC: storyboardIdentifier: %@", storyboardIdentifier);
+    [self sendToSpecificVC:storyboardIdentifier];
+}
+
 #pragma mark:- Instance Methods
 
 - (void)pushToSignInVC :(NSString*)stbIdentifier{

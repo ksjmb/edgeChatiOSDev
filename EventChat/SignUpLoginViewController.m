@@ -507,13 +507,9 @@
                                                                                           });
                                                                                       }];
                                   }
-
-
                               }];
-
                           }
                           else{
-
                           }
                       }];
                  }
@@ -633,11 +629,13 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
 
 - (IBAction)didTapSignUpWithEmail:(id)sender{
     RegisterViewController *registerViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"RegisterViewController"];
-    UINavigationController *navigationController =
-    [[UINavigationController alloc] initWithRootViewController:registerViewController];
+    registerViewController.storyboardIdentifierStr = self.storyboardIdentifierString;
+//    UINavigationController *navigationController =
+//    [[UINavigationController alloc] initWithRootViewController:registerViewController];
     //[self presentViewController:registerViewController animated:YES completion:nil];
-    registerViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
-    [self presentViewController:navigationController animated:YES completion:nil];
+//    registerViewController.modalTransitionStyle = UIModalTransitionStyleFlipHorizontal;
+//    [self presentViewController:navigationController animated:YES completion:nil];
+    [self.navigationController pushViewController:registerViewController animated:YES];
 }
 
 //** Simple Login

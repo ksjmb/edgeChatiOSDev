@@ -12,6 +12,7 @@
 #import "DCFeedItem.h"
 #import "DCDigital.h"
 #import "SignUpLoginViewController.h"
+#import "RegisterViewController.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
 
@@ -19,7 +20,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DCInfluencersPersonDetailsViewController : UIViewController <SignUpLoginViewControllerDelegate, UITableViewDataSource, UITableViewDelegate, DCInfluencersPersonDetailsTVCellDelegate>
+@interface DCInfluencersPersonDetailsViewController : UIViewController <SignUpLoginViewControllerDelegate, UITableViewDataSource, UITableViewDelegate, DCInfluencersPersonDetailsTVCellDelegate, RegisterViewControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *mBKImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *mProfilePhotoImageView;
