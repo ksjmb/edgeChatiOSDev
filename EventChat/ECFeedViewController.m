@@ -229,6 +229,7 @@
     }else{
         // move to specificVC with identifier and required parameters
         self.navigationItem.leftBarButtonItem = nil;
+        self.signedInUser = nil;
     }
 }
 

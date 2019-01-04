@@ -53,7 +53,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.title = @"Season List";
-    self.signedInUser = [[ECAPI sharedManager] signedInUser];
     [self initialSetup];
 }
 
@@ -65,6 +64,16 @@
     
     self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    
+    if (self.userEmail == nil){
+        self.signedInUser = nil;
+    }
+    
+    if([self.signedInUser.favoritedFeedItemIds containsObject:_selectedFeedItemId]){
+        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+    }else{
+        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+    }
 }
 
 #pragma mark - Table view data source
@@ -438,6 +447,8 @@
 #pragma mark:- Instance Methods
 
 - (void)initialSetup{
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    
     _currentSeason = 1;
     self.feedItemSeasonArray = [_relatedFeedItems valueForKeyPath:@"@distinctUnionOfObjects.digital.seasonNumber"];
     
@@ -464,13 +475,14 @@
         }
     }
     
-    if([self.signedInUser.favoritedFeedItemIds containsObject:_selectedFeedItemId]){
-        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
-    }else{
-        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
-    }
+//    if([self.signedInUser.favoritedFeedItemIds containsObject:_selectedFeedItemId]){
+//        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+//    }else{
+//        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+//    }
     
-    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
+//    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
+    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor blackColor]] forState:UIControlStateNormal];
     
     self.episodeTableView.estimatedRowHeight = 279.0;
     self.episodeTableView.rowHeight = UITableViewAutomaticDimension;

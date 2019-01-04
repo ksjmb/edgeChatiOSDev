@@ -403,9 +403,9 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
     //
+    self.signedInUser = nil; // New Change
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"username"];
     [[NSUserDefaults standardUserDefaults] synchronize];
-    self.signedInUser = nil; // New Change
     
     UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     ECFeedViewController *ecFeedViewController = [mainStoryboard instantiateViewControllerWithIdentifier:@"ECFeedViewController"];
