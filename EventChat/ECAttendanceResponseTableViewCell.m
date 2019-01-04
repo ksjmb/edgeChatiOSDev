@@ -38,6 +38,7 @@
     // Configure the view for the selected state
 }
 
+/*
 - (void)configureWithFeedItem:(DCFeedItem *)selectedFeedItem{
     self.selectedFeedItem = selectedFeedItem;
     
@@ -88,8 +89,51 @@
 //    
 //    [self.eventStartTime setText:finalTime];
 }
+*/
+ 
+- (void)configureWithFeedItem:(DCFeedItem *)selectedFeedItem :(NSString *)responseString{
+    self.selectedFeedItem = selectedFeedItem;
+    // Get Main Image
+    // EdgeTVChat custom code
+    NSString *mainImage_Url = nil;
+    if ([[[[NSBundle mainBundle] objectForInfoDictionaryKey: @"DBName"] lowercaseString] isEqual:@"edgetvchat_stage" ]){
+        if([selectedFeedItem.entityType isEqual:EntityType_DIGITAL]){
+            mainImage_Url = selectedFeedItem.digital.imageUrl;
+            [self.feedItemTitle setText:[NSString stringWithFormat:@"S%@E%@ - %@", selectedFeedItem.digital.seasonNumber, selectedFeedItem.digital.episodeNumber, selectedFeedItem.digital.episodeTitle]];
+            [self.feedItemDetails setText:selectedFeedItem.digital.starring];
+        
+        }else if ([selectedFeedItem.entityType isEqual:EntityType_EVENT]){
+            mainImage_Url = selectedFeedItem.event.mainImage;
+            [self.feedItemTitle setText:selectedFeedItem.event.name];
+            [self.feedItemDetails setText:[NSString stringWithFormat:@"%@, %@", selectedFeedItem.event.city, selectedFeedItem.event.state]];
+        
+        }else{
+            mainImage_Url = selectedFeedItem.mainImage_url;
+            [self.feedItemTitle setText:selectedFeedItem.person.profession.title];
+            [self.feedItemDetails setText:selectedFeedItem.person.name];
+        }
+    }else{
+        mainImage_Url = selectedFeedItem.mainImage_url;
+        [self.feedItemTitle setText:selectedFeedItem.title];
+        [self.feedItemDetails setText:selectedFeedItem.influencer];
+    }
+    if( mainImage_Url != nil){
+        [self showImageOnTheCell:self ForImageUrl:mainImage_Url];
+    }
+    
+    if (![responseString  isEqual: @""]){
+        if ([responseString  isEqual: @"Going"]) {
+            [self.attendanceResponse setSelectedSegmentIndex:0];
+        } else if ([responseString  isEqual: @"Maybe"]) {
+            [self.attendanceResponse setSelectedSegmentIndex:1];
+        } else if ([responseString  isEqual: @"Can't go"]) {
+            [self.attendanceResponse setSelectedSegmentIndex:2];
+        }
+    }
+}
 
 #pragma mark - API Methods
+
 -(void)setUserAttendanceResponse:(id)sender{
     NSLog(@"Seg: %ld", ((UISegmentedControl *)sender).selectedSegmentIndex);
     NSInteger selectedIndex = ((UISegmentedControl *)sender).selectedSegmentIndex;
@@ -139,6 +183,7 @@
             for (int i = 0; i < [self.attendanceResponse numberOfSegments]; i++)
             {
                 NSLog(@"REspnse %@", attendance.response);
+                
                 if ([[self.attendanceResponse titleForSegmentAtIndex:i] isEqualToString:attendance.response])
                 {
                     [self.attendanceResponse setSelectedSegmentIndex:i];
@@ -146,6 +191,7 @@
                 }
                 //else {Do Nothing - these are not the droi, err, segment we are looking for}
             }
+            
         }
     }];
 }
@@ -190,7 +236,6 @@
                                 }
                             }];
     }
-    
 }
 
 @end

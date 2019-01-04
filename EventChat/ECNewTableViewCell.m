@@ -164,6 +164,7 @@
         [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
     }
     else{
+//        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
         [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
     
@@ -172,11 +173,12 @@
         [self.likeButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
     }
     else{
-        [self.likeButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor grayColor]] forState:UIControlStateNormal];
+        [self.likeButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
     
     //share button
-    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
+//    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
+    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor blackColor]] forState:UIControlStateNormal];
     
     // Get Venue address
     if([feedItem.location.name length] > 0 && [feedItem.location.city length] > 0){
@@ -199,7 +201,8 @@
 //                [self.playSelectedEpisodeButton setBackgroundImage:[IonIcons imageWithIcon:ion_play  size:60.0 color:[UIColor redColor]] forState:UIControlStateNormal];
             if([feedItem.digital.seasonNumber intValue] == 0 && [feedItem.digital.seasonNumber intValue] ==0){
                 [_playSelectedEpisodeButton setHidden:NO];
-            }else{
+            }
+            else{
                 [_playSelectedEpisodeButton setHidden:YES];
             }
         }

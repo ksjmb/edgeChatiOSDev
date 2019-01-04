@@ -1463,7 +1463,7 @@ Cg
                                     <outlet property="delegate" destination="PE5-qS-n86" id="mxW-4c-YQB"/>
                                 </connections>
                             </tableView>
-                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="CVA-A5-qWt">
+                            <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" translatesAutoresizingMaskIntoConstraints="NO" id="CVA-A5-qWt">
                                 <rect key="frame" x="16" y="629" width="343" height="31"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="TVY-pT-cbT"/>

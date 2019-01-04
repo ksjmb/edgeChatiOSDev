@@ -182,7 +182,7 @@
     
     [buo getShortUrlWithLinkProperties:lp andCallback:^(NSString* url, NSError* error) {
         if (!error) {
-            NSLog(@"@", url);
+            NSLog(@"url: didTapSharePlaylist %@", url);
         }
     }];
     
@@ -191,7 +191,6 @@
     }]; 
 }
 - (void)didTapDeleteFavoriteButton:(NSInteger)index{
-    
     
 }
 

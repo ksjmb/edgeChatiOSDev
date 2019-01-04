@@ -41,5 +41,6 @@
 @property (nonatomic, weak) id <ECAttendanceResponseTableViewCellDelegate> delegate;
 @property (nonatomic, weak) NSArray *questionOptions;
 
-- (void)configureWithFeedItem:(DCFeedItem *)selectedFeedItem;
+//- (void)configureWithFeedItem:(DCFeedItem *)selectedFeedItem;
+- (void)configureWithFeedItem:(DCFeedItem *)selectedFeedItem :(NSString *)responseString;
 @end

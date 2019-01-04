@@ -23,6 +23,7 @@
 #import "DCSocialTableViewCell.h"
 #import "DCPlaylistsTableViewController.h"
 #import "ECAttendanceDetailsViewController.h"
+#import "SVProgressHUD.h"
 
 @interface DCInfluencersPersonDetailsViewController ()
 @property (nonatomic, strong)ECUser *signedInUser;
@@ -286,8 +287,8 @@
                                                                 style:UIAlertActionStyleDefault
                                                               handler:^(UIAlertAction *action)
                                         {
-                                            NSLog(@"Twitter action...");
-                                            [self shareViaTwitter:[NSURL URLWithString:self.mSelectedDCFeedItem.person.profilePic_url] :self.mSelectedDCFeedItem.person.name];
+                                            [self twitterSetup:[NSURL URLWithString:self.mSelectedDCFeedItem.person.profilePic_url] :self.mSelectedDCFeedItem.person.name];
+//                                            [self shareViaTwitter:[NSURL URLWithString:self.mSelectedDCFeedItem.person.profilePic_url] :self.mSelectedDCFeedItem.person.name];
                                         }];
         
         UIAlertAction *moreOptionsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"More Options...", @"More Options... action")
@@ -370,12 +371,34 @@
 
 #pragma mark:- Twitter Methods
 
-- (void)shareViaTwitter:(NSURL *)mURL :(NSString *)title{
+
+- (void)twitterSetup:(NSURL *)url :(NSString *)title{
+    dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_sync(aQueue,^{
+        NSLog(@"1. This is the global Dispatch Queue");
+        [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+        [SVProgressHUD showWithStatus:@"Loading..."];
+    });
+    
+    dispatch_sync(aQueue,^{
+        NSLog(@"2. %s",dispatch_queue_get_label(aQueue));
+    });
+    
+    dispatch_async(aQueue,^{
+        NSLog(@"3. %s",dispatch_queue_get_label(aQueue));
+        UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
+        [self shareViaTwitter:mImage :title];
+    });
+}
+
+- (void)shareViaTwitter:(UIImage *)image :(NSString *)title{
     TWTRComposer *composer = [[TWTRComposer alloc] init];
     
-    UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:mURL]];
-    [composer setImage:mImage];
+//    UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:mURL]];
+    [composer setImage:image];
     [composer setText:title];
+    [SVProgressHUD dismiss];
     
     [composer showFromViewController:self completion:^(TWTRComposerResult result) {
         if (result == TWTRComposerResultCancelled) {

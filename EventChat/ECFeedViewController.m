@@ -134,7 +134,8 @@
         self.searchController.hidesNavigationBarDuringPresentation = false;
         self.searchController.dimsBackgroundDuringPresentation = NO; // default is YES
         self.searchController.searchBar.delegate = self; // so we can monitor text changes + others
-        [self.navigationItem setTitle:@"EdgeChat"]; //self.navigationItem.titleView = self.searchController.searchBar;
+//        [self.navigationItem setTitle:@"EdgeChat"]; //self.navigationItem.titleView = self.searchController.searchBar;
+        [self.navigationItem setTitle:@"EdgeTV!"];
         [self.searchController.searchBar sizeToFit];
         if (@available(iOS 11.0, *)) {
             [self.searchController.searchBar.heightAnchor constraintLessThanOrEqualToConstant: 44].active = YES;
@@ -1078,6 +1079,7 @@
     if (self.userEmail != nil){
         NSString* title = ecFeedCell.feedItem.person.name;
         NSString* link = ecFeedCell.feedItem.person.profilePic_url;
+//        UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:[NSURL URLWithString:ecFeedCell.feedItem.person.profilePic_url]]];
         NSArray* dataToShare = @[title, link];
         UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
                                                                                  message:nil
@@ -1120,8 +1122,7 @@
                                                                 style:UIAlertActionStyleDefault
                                                               handler:^(UIAlertAction *action)
                                         {
-                                            NSLog(@"Twitter action...");
-                                            [self shareViaTwitter:[NSURL URLWithString:ecFeedCell.feedItem.person.profilePic_url] :ecFeedCell.feedItem.person.name];
+                                            [self twitterSetup:[NSURL URLWithString:ecFeedCell.feedItem.person.profilePic_url] :ecFeedCell.feedItem.person.name];
                                         }];
         
         UIAlertAction *moreOptionsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"More Options...", @"More Options... action")
@@ -1145,13 +1146,13 @@
         [alertController addAction:twitterAction];
         [alertController addAction:moreOptionsAction];
         
-        UIPopoverPresentationController *popover = alertController.popoverPresentationController;
-        if (popover)
-        {
-            popover.sourceView = ecFeedCell;
-            popover.sourceRect = ecFeedCell.bounds;
-            popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
-        }    
+//        UIPopoverPresentationController *popover = alertController.popoverPresentationController;
+//        if (popover)
+//        {
+//            popover.sourceView = ecFeedCell;
+//            popover.sourceRect = ecFeedCell.bounds;
+//            popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
+//        }
         [self presentViewController:alertController animated:YES completion:nil];
     }else{
         [self pushToSignInVC:@"sameFeedVC"];
@@ -1159,11 +1160,36 @@
 }
 
 #pragma mark:- Twitter Methods
-/*
-- (void)shareViaTwitter:(NSURL *)mURL{
+
+- (void)twitterSetup:(NSURL *)url :(NSString *)title{
+    dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_sync(aQueue,^{
+        NSLog(@"1. This is the global Dispatch Queue");
+        [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+        [SVProgressHUD showWithStatus:@"Loading..."];
+    });
+    
+    dispatch_sync(aQueue,^{
+        NSLog(@"2. %s",dispatch_queue_get_label(aQueue));
+    });
+    
+    dispatch_async(aQueue,^{
+        NSLog(@"3. %s",dispatch_queue_get_label(aQueue));
+        UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
+        [self shareViaTwitter:mImage :title];
+    });
+}
+
+- (void)shareViaTwitter:(UIImage *)image :(NSString *)title{
     SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-    [tweetSheet addURL:mURL];
+    
+    [tweetSheet addImage:image];
+    [tweetSheet setTitle:title];
+    [SVProgressHUD dismiss];
+    
     [tweetSheet setCompletionHandler:^(SLComposeViewControllerResult result) {
+        [SVProgressHUD dismiss];
         switch (result) {
             case SLComposeViewControllerResultCancelled:
             {
@@ -1198,8 +1224,8 @@
     }];
     [self presentViewController:tweetSheet animated:YES completion:Nil];
 }
-*/
 
+/*
 - (void)shareViaTwitter:(NSURL *)mURL :(NSString *)title{
     TWTRComposer *composer = [[TWTRComposer alloc] init];
     
@@ -1208,6 +1234,7 @@
     [composer setText:title];
     
     [composer showFromViewController:self completion:^(TWTRComposerResult result) {
+        [SVProgressHUD dismiss];
         if (result == TWTRComposerResultCancelled) {
             UIAlertController* alert;
             alert = [UIAlertController alertControllerWithTitle:@"Failed" message:@"Something went wrong while sharing on Twitter, Please try again later." preferredStyle:UIAlertControllerStyleAlert];
@@ -1228,6 +1255,7 @@
         }
     }];
 }
+ */
 
 #pragma mark - FBSDKSharingDelegate
 

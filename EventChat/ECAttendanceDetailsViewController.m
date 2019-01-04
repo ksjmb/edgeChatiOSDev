@@ -15,6 +15,7 @@
 
 @interface ECAttendanceDetailsViewController ()
 @property (nonatomic, assign) AppDelegate *appDelegate;
+@property (nonatomic, strong) NSString* responseStr;
 @end
 
 @implementation ECAttendanceDetailsViewController
@@ -69,7 +70,7 @@
             cell = [[ECAttendanceResponseTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
         }
         cell.delegate = self;
-        [cell configureWithFeedItem:self.selectedFeedItem];
+        [cell configureWithFeedItem:self.selectedFeedItem :self.responseStr];
         return cell;
     }
     else{
@@ -95,6 +96,14 @@
         } else {
             // code
             self.attendeeList = [[NSArray alloc] initWithArray:attendees copyItems:true];
+            self.responseStr = @"";
+            
+            for (int i = 0; i < [self.attendeeList count]; i++){
+                ECAttendee *attList = [self.attendeeList objectAtIndex:i];
+                if ([attList.userId isEqualToString:self.signedInUser.userId]){
+                    self.responseStr = attList.response;
+                }
+            }
             [self.attendeeListTableView reloadData];
         }
     }];

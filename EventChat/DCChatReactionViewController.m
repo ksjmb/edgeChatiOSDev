@@ -69,7 +69,7 @@
 @property (nonatomic, strong)NSMutableDictionary *viewReplyDict;
 @property (nonatomic, assign) AppDelegate *appDelegate;
 @property (nonatomic, assign) BOOL isParentIdPresent;
-@property (nonatomic, strong)NSMutableArray *attendanceArray;
+//@property (nonatomic, strong)NSMutableArray *attendanceArray;
 //
 @property (strong, nonatomic) ECFullScreenImageViewController *fullScreenImageViewController;
 @property (nonatomic, strong) NSArray *users;
@@ -788,6 +788,7 @@
     [self.postCommentView setHidden:true];
     [self.chatTableView setHidden:true];
     [self.attendeeListTableView setHidden:false];
+    [self.segmentControl setHidden:false];
     [self.messages removeAllObjects];
     [self getFeedItemAttendeeList];
 }
@@ -844,8 +845,8 @@
             NSString *mReactionCount = [NSString stringWithFormat:@"(%lu", (unsigned long)self.attendeeList.count];
             mReactionCount = [mReactionCount stringByAppendingString:@")"];
             [self.reactionsCountLabel setText:mReactionCount];
-            //            [self.noDataAvailableLabel setHidden:true];
-            //            [self.attendeeListTableView setHidden:false];
+            [self.noDataAvailableLabel setHidden:true];
+            [self.attendeeListTableView setHidden:false];
         }else{
             [self.attendeeListTableView setHidden:true];
             [self.noDataAvailableLabel setHidden:false];
@@ -1336,17 +1337,22 @@
             NSLog(@"Error saving response: getFeedItemAttendeeList: %@", error);
         } else {
             self.attendeeList = [[NSArray alloc] initWithArray:attendees copyItems:true];
-            self.attendanceArray = [[NSMutableArray alloc] init];
+//            self.attendanceArray = [[NSMutableArray alloc] init];
+            NSString *responseStr = @"";
             
             for (int i = 0; i < [self.attendeeList count]; i++){
                 ECAttendee *attList = [self.attendeeList objectAtIndex:i];
-                [self.attendanceArray addObject:attList.userId];
-            }
-            
-            if ([self.attendanceArray containsObject:self.signedInUser.userId]){
-                [self.segmentControl setHidden:false];
-            }else{
-                [self.segmentControl setHidden:true];
+                responseStr = attList.response;
+                if ([attList.userId isEqualToString:self.signedInUser.userId]){
+                    if ([responseStr  isEqual: @"Going"]) {
+                        [self.segmentControl setSelectedSegmentIndex:0];
+                    } else if ([responseStr  isEqual: @"Maybe"]) {
+                        [self.segmentControl setSelectedSegmentIndex:1];
+                    } else if ([responseStr  isEqual: @"Can't go"]) {
+                        [self.segmentControl setSelectedSegmentIndex:2];
+                    }
+                    break;
+                }
             }
             [self.attendeeListTableView reloadData];
         }
@@ -1588,7 +1594,8 @@
                                                           handler:^(UIAlertAction *action)
                                     {
                                         NSLog(@"Twitter action...");
-                                        [self shareViaTwitter:[NSURL URLWithString:_topEpisodeImageURL] :_topEpisodeTitle];
+                                        [self twitterSetup:[NSURL URLWithString:_topEpisodeImageURL] :_topEpisodeTitle];
+//                                        [self shareViaTwitter:[NSURL URLWithString:_topEpisodeImageURL] :_topEpisodeTitle];
                                     }];
     
     UIAlertAction *moreOptionsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"More Options...", @"More Options... action")
@@ -1611,11 +1618,34 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-- (void)shareViaTwitter:(NSURL *)mURL :(NSString *)mTitle{
+#pragma mark:- Twitter Methods
+
+- (void)twitterSetup:(NSURL *)url :(NSString *)title{
+    dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_sync(aQueue,^{
+        NSLog(@"1. This is the global Dispatch Queue");
+        [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+        [SVProgressHUD showWithStatus:@"Loading..."];
+    });
+    
+    dispatch_sync(aQueue,^{
+        NSLog(@"2. %s",dispatch_queue_get_label(aQueue));
+    });
+    
+    dispatch_async(aQueue,^{
+        NSLog(@"3. %s",dispatch_queue_get_label(aQueue));
+        UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
+        [self shareViaTwitter:mImage :title];
+    });
+}
+
+- (void)shareViaTwitter:(UIImage *)image :(NSString *)mTitle{
     SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-    UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:mURL]];
-    [tweetSheet addImage:mImage];
+//    UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:mURL]];
+    [tweetSheet addImage:image];
     [tweetSheet setInitialText:mTitle];
+    [SVProgressHUD dismiss];
     
     [tweetSheet setCompletionHandler:^(SLComposeViewControllerResult result) {
         switch (result) {
