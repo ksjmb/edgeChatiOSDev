@@ -48,7 +48,6 @@
     [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor ecSubTextGrayColor] range:NSMakeRange([followingCount length], 10)];
     [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange([followingCount length], 10)];
     [self.followingButton setAttributedTitle:titleText forState:UIControlStateNormal];
-    
 }
 
 - (void)loadFollowers:(NSInteger)count{

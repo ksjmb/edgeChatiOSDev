@@ -141,7 +141,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ZYp-FU-GUK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="662" y="-1838"/>
+            <point key="canvasLocation" x="418" y="-1838"/>
         </scene>
         <!--Feed-->
         <scene sceneID="hNz-n2-bh7">
@@ -276,7 +276,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="540" y="-1119"/>
+            <point key="canvasLocation" x="417" y="-1119"/>
         </scene>
         <!--Show View Controller-->
         <scene sceneID="jD9-hU-TIg">
@@ -433,7 +433,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="t2U-J8-tYK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1413.5999999999999" y="-1101.4992503748126"/>
+            <point key="canvasLocation" x="1214" y="-1119"/>
         </scene>
         <!--Person Detail Table View Controller-->
         <scene sceneID="wsm-gB-Mlq">
@@ -649,12 +649,12 @@ Cg
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="8U8-GQ-Wgm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2260" y="-1101.4992503748126"/>
+            <point key="canvasLocation" x="1982" y="-1119"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="4d9-9g-XET">
             <objects>
-                <viewController id="1tU-cA-cI4" sceneMemberID="viewController">
+                <viewController automaticallyAdjustsScrollViewInsets="NO" id="1tU-cA-cI4" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="9ad-fT-q7V"/>
                         <viewControllerLayoutGuide type="bottom" id="w15-c7-372"/>
@@ -681,7 +681,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Ays-Jk-jm0" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3082" y="-1110"/>
+            <point key="canvasLocation" x="2791" y="-1119"/>
         </scene>
         <!--Streaming Player View Controller-->
         <scene sceneID="2ft-gA-rJI">
@@ -1750,7 +1750,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kE1-TR-Q4n" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1420" y="-1838"/>
+            <point key="canvasLocation" x="1214" y="-1838"/>
         </scene>
         <!--Influencers Person Details View Controller-->
         <scene sceneID="hen-5E-1nC">
@@ -1976,7 +1976,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yZg-75-ZQu" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2260" y="-1810.7946026986508"/>
+            <point key="canvasLocation" x="1982" y="-1838"/>
         </scene>
         <!--Season Selector Table View Controller-->
         <scene sceneID="3Pg-sI-g7A">
@@ -2489,7 +2489,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="4Nw-L8-lE0" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2198" y="1507"/>
+            <point key="canvasLocation" x="2198" y="1415"/>
         </scene>
         <!--Follow View Controller-->
         <scene sceneID="zgZ-0z-d8H">
@@ -2678,7 +2678,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="6q8-fT-GMz" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1420" y="2275"/>
+            <point key="canvasLocation" x="2198" y="2158"/>
         </scene>
         <!--Playlists-->
         <scene sceneID="91o-03-nnO">
@@ -2723,7 +2723,7 @@ Cg
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EJ2-4L-Wyc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1425" y="2923"/>
+            <point key="canvasLocation" x="3665" y="2158"/>
         </scene>
         <!--Favorites-->
         <scene sceneID="VcZ-E9-RRN">
@@ -2846,7 +2846,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="RdP-86-MOM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2199" y="2922"/>
+            <point key="canvasLocation" x="4377" y="2158"/>
         </scene>
         <!--Title-->
         <scene sceneID="Q2p-bx-j99">
@@ -2882,7 +2882,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yFM-Kc-AyJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2198" y="3580"/>
+            <point key="canvasLocation" x="1420" y="2158"/>
         </scene>
         <!--Terms & Conditions-->
         <scene sceneID="WjM-kE-nDV">
@@ -2916,7 +2916,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="DD6-um-GYK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1413.5999999999999" y="3579.7601199400301"/>
+            <point key="canvasLocation" x="662" y="2158"/>
         </scene>
         <!--Notifications-->
         <scene sceneID="hec-rD-UG6">
@@ -3159,7 +3159,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="GIV-vR-QNm" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="662" y="528"/>
+            <point key="canvasLocation" x="417" y="528"/>
         </scene>
         <!--Feed-->
         <scene sceneID="CGz-xd-c0V">
@@ -3435,7 +3435,7 @@ Cg
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eVt-RE-LuG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="661.60000000000002" y="-296.40179910044981"/>
+            <point key="canvasLocation" x="417" y="-296"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="RnW-jS-sTP">
@@ -3466,7 +3466,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="rbg-ny-1aS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2394" y="-296"/>
+            <point key="canvasLocation" x="1982" y="-296"/>
         </scene>
         <!--Events-->
         <scene sceneID="wQ6-PF-iv8">
@@ -3853,7 +3853,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="l5B-Ls-Tgb" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2956" y="598"/>
+            <point key="canvasLocation" x="2934" y="528"/>
         </scene>
         <!--Profile Table View Controller-->
         <scene sceneID="HhB-86-x2A">
@@ -4317,7 +4317,7 @@ Cg
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="HEf-8E-TsZ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2935" y="1507"/>
+            <point key="canvasLocation" x="2934" y="1415"/>
         </scene>
         <!--Test Table View Controller-->
         <scene sceneID="Yex-Ih-Ajb">
@@ -4448,7 +4448,7 @@ Cg
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0rl-nH-SUW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2933.5999999999999" y="2173.7631184407796"/>
+            <point key="canvasLocation" x="2934" y="2159"/>
         </scene>
         <!--Create Post-->
         <scene sceneID="J51-cD-8iA">
@@ -4499,7 +4499,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bEv-kN-1I4" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3725" y="1505"/>
+            <point key="canvasLocation" x="3666" y="1415"/>
         </scene>
         <!--User List Table View Controller-->
         <scene sceneID="Xrj-bG-61Q">
@@ -4554,7 +4554,7 @@ Cg
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tBQ-vi-abU" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4598" y="1504"/>
+            <point key="canvasLocation" x="4377" y="1415"/>
         </scene>
         <!--View Controller-->
         <scene sceneID="D3z-NX-VQh">
@@ -4749,7 +4749,223 @@ Cg
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C5y-fV-y4q" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1366" y="-296"/>
+            <point key="canvasLocation" x="1214" y="-296"/>
+        </scene>
+        <!--New User Profile View Controller-->
+        <scene sceneID="cLf-rE-skP">
+            <objects>
+                <viewController storyboardIdentifier="ECNewUserProfileViewController" automaticallyAdjustsScrollViewInsets="NO" id="yLA-DO-r2d" customClass="ECNewUserProfileViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="q2j-H9-2oJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="b8l-ad-f5J"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="q2w-O2-hHP">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder.png" translatesAutoresizingMaskIntoConstraints="NO" id="51N-bR-IdA">
+                                <rect key="frame" x="0.0" y="64" width="375" height="230"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="230" id="J8W-Ia-nmp"/>
+                                </constraints>
+                            </imageView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="missing-profile.png" translatesAutoresizingMaskIntoConstraints="NO" id="Gbi-Dy-o8g">
+                                <rect key="frame" x="157.5" y="259" width="60" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="60" id="AfB-cd-gLU"/>
+                                    <constraint firstAttribute="height" constant="60" id="Rnt-iu-PZn"/>
+                                </constraints>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Andre Phillip" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gkx-ki-nuA">
+                                <rect key="frame" x="8" y="327" width="359" height="21"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="21" id="fta-dp-ku5"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="AvenirNext-Bold" family="Avenir Next" pointSize="16"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y3U-c9-24O">
+                                <rect key="frame" x="0.0" y="360" width="375" height="1"/>
+                                <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="1" id="vdl-k0-DgI"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="16"/>
+                                <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="tat-jp-VhG">
+                                <rect key="frame" x="0.0" y="369" width="375" height="298"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <prototypes>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ECUserProfileSocialTableViewCell" rowHeight="50" id="32c-jS-IfP" customClass="ECUserProfileSocialTableViewCell">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="50"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="32c-jS-IfP" id="JuS-6W-zqb">
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="50"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="dZV-E5-V4P">
+                                                    <rect key="frame" x="0.0" y="0.0" width="375" height="49.5"/>
+                                                    <subviews>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" buttonType="roundedRect" reversesTitleShadowWhenHighlighted="YES" showsTouchWhenHighlighted="YES" lineBreakMode="wordWrap" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="iM8-UC-Wiz" customClass="CustomButton">
+                                                            <rect key="frame" x="0.0" y="0.0" width="125" height="49.5"/>
+                                                            <constraints>
+                                                                <constraint firstAttribute="height" constant="49.5" id="IcG-z6-QrU"/>
+                                                            </constraints>
+                                                            <state key="normal">
+                                                                <attributedString key="attributedTitle">
+                                                                    <fragment>
+                                                                        <string key="content">0
+</string>
+                                                                        <attributes>
+                                                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                            <font key="NSFont" size="18" name="AvenirNext-Bold"/>
+                                                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
+                                                                        </attributes>
+                                                                    </fragment>
+                                                                    <fragment content="LIKES">
+                                                                        <attributes>
+                                                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                            <font key="NSFont" size="12" name="AvenirNext-Bold"/>
+                                                                            <font key="NSOriginalFont" size="12" name="AvenirNext-Bold"/>
+                                                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
+                                                                        </attributes>
+                                                                    </fragment>
+                                                                </attributedString>
+                                                            </state>
+                                                            <connections>
+                                                                <action selector="actionOnFacebookButton:" destination="yLA-DO-r2d" eventType="touchUpInside" id="YHG-l9-9ul"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" buttonType="roundedRect" reversesTitleShadowWhenHighlighted="YES" showsTouchWhenHighlighted="YES" lineBreakMode="wordWrap" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="04j-WB-9zC" customClass="CustomButton">
+                                                            <rect key="frame" x="125" y="0.0" width="125" height="49.5"/>
+                                                            <state key="normal">
+                                                                <attributedString key="attributedTitle">
+                                                                    <fragment>
+                                                                        <string key="content">0
+</string>
+                                                                        <attributes>
+                                                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                            <font key="NSFont" size="18" name="AvenirNext-Bold"/>
+                                                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
+                                                                        </attributes>
+                                                                    </fragment>
+                                                                    <fragment content="FOLLOWERS">
+                                                                        <attributes>
+                                                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                            <font key="NSFont" size="12" name="AvenirNext-Bold"/>
+                                                                            <font key="NSOriginalFont" size="12" name="AvenirNext-Bold"/>
+                                                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
+                                                                        </attributes>
+                                                                    </fragment>
+                                                                </attributedString>
+                                                            </state>
+                                                            <connections>
+                                                                <action selector="actionOnTwitterButton:" destination="yLA-DO-r2d" eventType="touchUpInside" id="x9p-pQ-GKh"/>
+                                                            </connections>
+                                                        </button>
+                                                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" buttonType="roundedRect" reversesTitleShadowWhenHighlighted="YES" showsTouchWhenHighlighted="YES" lineBreakMode="wordWrap" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NjW-LB-E5z" customClass="CustomButton">
+                                                            <rect key="frame" x="250" y="0.0" width="125" height="49.5"/>
+                                                            <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                            <state key="normal">
+                                                                <attributedString key="attributedTitle">
+                                                                    <fragment>
+                                                                        <string key="content">0
+</string>
+                                                                        <attributes>
+                                                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                            <font key="NSFont" size="18" name="AvenirNext-Bold"/>
+                                                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
+                                                                        </attributes>
+                                                                    </fragment>
+                                                                    <fragment content="FOLLOWERS">
+                                                                        <attributes>
+                                                                            <color key="NSColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                                            <font key="NSFont" size="12" name="AvenirNext-Bold"/>
+                                                                            <font key="NSOriginalFont" size="12" name="AvenirNext-Bold"/>
+                                                                            <paragraphStyle key="NSParagraphStyle" alignment="center" lineBreakMode="wordWrapping" baseWritingDirection="natural" tighteningFactorForTruncation="0.0" allowsDefaultTighteningForTruncation="NO"/>
+                                                                        </attributes>
+                                                                    </fragment>
+                                                                </attributedString>
+                                                            </state>
+                                                            <connections>
+                                                                <action selector="actionOnInstagramButton:" destination="yLA-DO-r2d" eventType="touchUpInside" id="djZ-ak-Rl4"/>
+                                                            </connections>
+                                                        </button>
+                                                    </subviews>
+                                                </stackView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstAttribute="trailing" secondItem="dZV-E5-V4P" secondAttribute="trailing" id="9ra-zl-liA"/>
+                                                <constraint firstAttribute="bottom" secondItem="dZV-E5-V4P" secondAttribute="bottom" id="I0q-pd-E6W"/>
+                                                <constraint firstItem="dZV-E5-V4P" firstAttribute="leading" secondItem="JuS-6W-zqb" secondAttribute="leading" id="IJd-xM-WRL"/>
+                                                <constraint firstItem="dZV-E5-V4P" firstAttribute="top" secondItem="JuS-6W-zqb" secondAttribute="top" id="UKo-Cc-yg1"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="mFacebookButton" destination="iM8-UC-Wiz" id="Bzq-Lz-BWs"/>
+                                            <outlet property="mInstagramButton" destination="NjW-LB-E5z" id="8ET-dh-83B"/>
+                                            <outlet property="mTwitterButton" destination="04j-WB-9zC" id="VxA-FN-G5K"/>
+                                        </connections>
+                                    </tableViewCell>
+                                </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="yLA-DO-r2d" id="4Y5-Qz-Mpi"/>
+                                    <outlet property="delegate" destination="yLA-DO-r2d" id="jO9-Jg-EUg"/>
+                                </connections>
+                            </tableView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="r8T-d9-Ohm">
+                                <rect key="frame" x="296" y="272" width="54" height="34"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="54" id="DqQ-i8-Alj"/>
+                                    <constraint firstAttribute="height" constant="34" id="GJF-aC-6zu"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="16"/>
+                                <state key="normal" title="Follow">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                                <connections>
+                                    <action selector="actionOnFollowButton:" destination="yLA-DO-r2d" eventType="touchUpInside" id="Ihv-pe-8kQ"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="r8T-d9-Ohm" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="Gbi-Dy-o8g" secondAttribute="trailing" constant="8" symbolic="YES" id="5Bn-NL-bui"/>
+                            <constraint firstItem="51N-bR-IdA" firstAttribute="leading" secondItem="q2w-O2-hHP" secondAttribute="leading" id="5sG-BI-BdK"/>
+                            <constraint firstItem="b8l-ad-f5J" firstAttribute="top" secondItem="tat-jp-VhG" secondAttribute="bottom" id="Boj-Y5-SvE"/>
+                            <constraint firstItem="y3U-c9-24O" firstAttribute="leading" secondItem="q2w-O2-hHP" secondAttribute="leading" id="CDR-U2-2Vg"/>
+                            <constraint firstItem="51N-bR-IdA" firstAttribute="top" secondItem="q2j-H9-2oJ" secondAttribute="bottom" id="GfZ-Hp-4ba"/>
+                            <constraint firstItem="tat-jp-VhG" firstAttribute="leading" secondItem="q2w-O2-hHP" secondAttribute="leading" id="HZS-bQ-QBF"/>
+                            <constraint firstAttribute="trailing" secondItem="gkx-ki-nuA" secondAttribute="trailing" constant="8" id="Hzs-25-BqS"/>
+                            <constraint firstItem="gkx-ki-nuA" firstAttribute="leading" secondItem="q2w-O2-hHP" secondAttribute="leading" constant="8" id="Ore-Ni-yn3"/>
+                            <constraint firstItem="y3U-c9-24O" firstAttribute="top" secondItem="gkx-ki-nuA" secondAttribute="bottom" constant="12" id="ZFd-Is-SZ2"/>
+                            <constraint firstItem="Gbi-Dy-o8g" firstAttribute="centerX" secondItem="q2w-O2-hHP" secondAttribute="centerX" id="d5H-cE-bO9"/>
+                            <constraint firstAttribute="trailing" secondItem="51N-bR-IdA" secondAttribute="trailing" id="deH-qW-qRe"/>
+                            <constraint firstItem="gkx-ki-nuA" firstAttribute="top" secondItem="Gbi-Dy-o8g" secondAttribute="bottom" constant="8" id="hZG-dZ-HKO"/>
+                            <constraint firstAttribute="trailing" secondItem="y3U-c9-24O" secondAttribute="trailing" id="jMF-3r-BRJ"/>
+                            <constraint firstItem="Gbi-Dy-o8g" firstAttribute="top" secondItem="q2j-H9-2oJ" secondAttribute="bottom" constant="195" id="mJV-2N-PQV"/>
+                            <constraint firstItem="tat-jp-VhG" firstAttribute="top" secondItem="y3U-c9-24O" secondAttribute="bottom" constant="8" id="nAq-Rb-Xke"/>
+                            <constraint firstItem="r8T-d9-Ohm" firstAttribute="top" secondItem="q2j-H9-2oJ" secondAttribute="bottom" constant="208" id="vPy-ax-4Lk"/>
+                            <constraint firstAttribute="trailing" secondItem="tat-jp-VhG" secondAttribute="trailing" id="y6B-Hw-dIM"/>
+                            <constraint firstAttribute="trailing" secondItem="r8T-d9-Ohm" secondAttribute="trailing" constant="25" id="zql-y5-LN0"/>
+                        </constraints>
+                    </view>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <connections>
+                        <outlet property="mFollowButton" destination="r8T-d9-Ohm" id="CTa-yY-adT"/>
+                        <outlet property="mUserNameLabel" destination="gkx-ki-nuA" id="4zM-Zq-4uz"/>
+                        <outlet property="mUserProfileTableView" destination="tat-jp-VhG" id="U45-UB-vhr"/>
+                        <outlet property="userBGImageView" destination="51N-bR-IdA" id="G9H-Ds-hoI"/>
+                        <outlet property="userProfileImageView" destination="Gbi-Dy-o8g" id="04h-aV-3gs"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="WPq-bU-5BX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2790" y="-1838"/>
         </scene>
     </scenes>
     <resources>

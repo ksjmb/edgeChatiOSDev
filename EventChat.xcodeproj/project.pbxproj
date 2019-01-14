@@ -1393,11 +1393,15 @@
 		F93BCCC921C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F93BCCC521C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib */; };
 		F93BCCCC21C248610079242D /* DCSocialTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F93BCCCB21C248610079242D /* DCSocialTableViewCell.m */; };
 		F93BCCCD21C248610079242D /* DCSocialTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F93BCCCB21C248610079242D /* DCSocialTableViewCell.m */; };
+		F988566721EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F988566621EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m */; };
+		F988566821EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F988566621EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m */; };
 		F9940D24219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9940D23219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m */; };
 		F9940D25219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9940D23219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m */; };
 		F99F0CF121CA448A00061BF7 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F99F0CF021CA448900061BF7 /* Social.framework */; };
 		F9AD5C2F21A67AD20074C43B /* DCReactionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9AD5C2E21A67AD20074C43B /* DCReactionTableViewCell.m */; };
 		F9AD5C3021A67AD20074C43B /* DCReactionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9AD5C2E21A67AD20074C43B /* DCReactionTableViewCell.m */; };
+		F9CAEF3421EC760B00CF9152 /* ECNewUserProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9CAEF3321EC760B00CF9152 /* ECNewUserProfileViewController.m */; };
+		F9CAEF3521EC760B00CF9152 /* ECNewUserProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9CAEF3321EC760B00CF9152 /* ECNewUserProfileViewController.m */; };
 		F9E67C1F219D5C20000081AB /* libAFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E67C1E219D5C20000081AB /* libAFNetworking.a */; };
 		F9E67C21219D5C4F000081AB /* libAFOAuth2Manager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E67C20219D5C4F000081AB /* libAFOAuth2Manager.a */; };
 		F9E67C23219D5C73000081AB /* libAWSCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E67C22219D5C73000081AB /* libAWSCore.a */; };
@@ -1879,6 +1883,8 @@
 		F93BCCC521C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCInfluencersPersonDetailsTableViewCell.xib; sourceTree = "<group>"; };
 		F93BCCCA21C248610079242D /* DCSocialTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCSocialTableViewCell.h; sourceTree = "<group>"; };
 		F93BCCCB21C248610079242D /* DCSocialTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCSocialTableViewCell.m; sourceTree = "<group>"; };
+		F988566521EC8B580037DC34 /* ECUserProfileSocialTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECUserProfileSocialTableViewCell.h; sourceTree = "<group>"; };
+		F988566621EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECUserProfileSocialTableViewCell.m; sourceTree = "<group>"; };
 		F9940D22219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCNewTVShowEpisodeTableViewCell.h; sourceTree = "<group>"; };
 		F9940D23219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCNewTVShowEpisodeTableViewCell.m; sourceTree = "<group>"; };
 		F99F0CF021CA448900061BF7 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
@@ -1886,6 +1892,8 @@
 		F9AD5C2E21A67AD20074C43B /* DCReactionTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCReactionTableViewCell.m; sourceTree = "<group>"; };
 		F9BAE2F7219C1CEF00921566 /* DCNewTVShowViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCNewTVShowViewController.h; sourceTree = "<group>"; };
 		F9BAE2F8219C1CEF00921566 /* DCNewTVShowViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCNewTVShowViewController.m; sourceTree = "<group>"; };
+		F9CAEF3221EC760B00CF9152 /* ECNewUserProfileViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECNewUserProfileViewController.h; sourceTree = "<group>"; };
+		F9CAEF3321EC760B00CF9152 /* ECNewUserProfileViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECNewUserProfileViewController.m; sourceTree = "<group>"; };
 		F9E67C1E219D5C20000081AB /* libAFNetworking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libAFNetworking.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9E67C20219D5C4F000081AB /* libAFOAuth2Manager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libAFOAuth2Manager.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9E67C22219D5C73000081AB /* libAWSCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libAWSCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2620,7 +2628,7 @@
 		36A218FA1F2549EF00FC3380 /* FeedItem */ = {
 			isa = PBXGroup;
 			children = (
-				F9E9A89F21C7C7F0003FFAF4 /* New Group */,
+				F9E9A89F21C7C7F0003FFAF4 /* UserProfile */,
 				F93BCCBE21C243350079242D /* InfluPersonDetails */,
 				F9F10D1721A2CEE0005C21FD /* DCChatAndReaction */,
 				F9BAE2F6219C1CB600921566 /* DCTVShow */,
@@ -2821,11 +2829,15 @@
 			name = DCTVShow;
 			sourceTree = "<group>";
 		};
-		F9E9A89F21C7C7F0003FFAF4 /* New Group */ = {
+		F9E9A89F21C7C7F0003FFAF4 /* UserProfile */ = {
 			isa = PBXGroup;
 			children = (
+				F9CAEF3221EC760B00CF9152 /* ECNewUserProfileViewController.h */,
+				F9CAEF3321EC760B00CF9152 /* ECNewUserProfileViewController.m */,
+				F988566521EC8B580037DC34 /* ECUserProfileSocialTableViewCell.h */,
+				F988566621EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m */,
 			);
-			name = "New Group";
+			name = UserProfile;
 			sourceTree = "<group>";
 		};
 		F9F10D1721A2CEE0005C21FD /* DCChatAndReaction */ = {
@@ -4177,6 +4189,7 @@
 				0EBC7FDE1CF4258A00598D62 /* ECEventBriteVenue.m in Sources */,
 				36539314201BF02A0066A986 /* DCPersonDetailTableViewController.m in Sources */,
 				360175B32004A6E90042FB3F /* KeepTypes.m in Sources */,
+				F9CAEF3421EC760B00CF9152 /* ECNewUserProfileViewController.m in Sources */,
 				87305C491EA0F84B008F5958 /* ConnectionManager.m in Sources */,
 				731807801D8A284D00CC9ADF /* ECAttendeeListTableViewCell.m in Sources */,
 				0E0820BB1C691A1B001C40F0 /* ECEventBriteEvent.m in Sources */,
@@ -4283,6 +4296,7 @@
 				0E0820C11C6DC739001C40F0 /* ECEventBriteSearchResult.m in Sources */,
 				360175AE2004A6E90042FB3F /* KeepView.m in Sources */,
 				360E95251F1D70EE00BBC842 /* DCSocialEntityObject.m in Sources */,
+				F988566721EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m in Sources */,
 				3619B1DA2006B461002811B2 /* VideoTrimmerViewController.m in Sources */,
 				735CFECF1DA44ED0006E0A38 /* ECFollowCell.m in Sources */,
 				360A9D1E1F0F5AE2004317F2 /* DCFeedItem.m in Sources */,
@@ -4660,6 +4674,7 @@
 				369B9C8C1F18900000DA883D /* ConnectionManager.m in Sources */,
 				3636C84C2020EFCF007DE121 /* DCProfileTableViewController.m in Sources */,
 				3636C85C2020F2B4007DE121 /* DCFollowPostButtonCell.m in Sources */,
+				F9CAEF3521EC760B00CF9152 /* ECNewUserProfileViewController.m in Sources */,
 				369B9C8D1F18900000DA883D /* ECAttendeeListTableViewCell.m in Sources */,
 				3686FF8C1F2435C2000B85F8 /* DCDigitalEntityObject.m in Sources */,
 				369B9C8E1F18900000DA883D /* ECEventBriteEvent.m in Sources */,
@@ -4766,6 +4781,7 @@
 				363352AF201D6637002C0C60 /* DCYTPlayerTableViewCell.m in Sources */,
 				361684372043E78A00F6740B /* DCEventTableViewCell.m in Sources */,
 				3619B1BB2006B419002811B2 /* MediaBrowser.m in Sources */,
+				F988566821EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m in Sources */,
 				369B9CC21F18900000DA883D /* ECEventBriteSearchResult.m in Sources */,
 				369B9CC31F18900000DA883D /* ECFollowCell.m in Sources */,
 				369B9CC41F18900000DA883D /* DCFeedItem.m in Sources */,

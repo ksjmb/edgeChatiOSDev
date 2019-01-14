@@ -47,6 +47,7 @@
 #import "ECAuthAPI.h"
 #import "DCInfluencersPersonDetailsViewController.h"
 #import <Social/Social.h>
+#import "ECNewUserProfileViewController.h"
 
 @interface ECFeedViewController () <HTHorizontalSelectionListDataSource, HTHorizontalSelectionListDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *eventFeedTableView;
@@ -764,7 +765,8 @@
 
 //** ProfileTap **//
 - (IBAction)didTapViewProfile:(id)sender{
-    DCProfileTableViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCProfileTableViewController"];
+    ECNewUserProfileViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewUserProfileViewController"];
+//    DCProfileTableViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCProfileTableViewController"];
     dcProfileTableViewController.isSignedInUser = true;
     dcProfileTableViewController.profileUser = self.signedInUser;
     [self.navigationController pushViewController:dcProfileTableViewController animated:YES];

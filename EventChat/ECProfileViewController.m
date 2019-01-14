@@ -89,7 +89,6 @@
                     [[ECAPI sharedManager] updateProfilePicUrl:self.profileUser.userId profilePicUrl:fbUserData.url callback:^(NSError *error) {
                         if (error) {
                             NSLog(@"Error adding user: %@", error);
-                            NSLog(@"%@", error);
                         } else {
                             // code
                         }
@@ -135,6 +134,7 @@
 {
     return 60.0;
 }
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -146,7 +146,6 @@
     else{
         return [self.usersArray count];
     }
-    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -193,7 +192,6 @@
         [cell configureWithUser:ecUser];
         return cell;
     }
-    
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
@@ -227,7 +225,7 @@
             [self.userListView setHidden:NO];
             NSLog(@"%@", users);
             self.usersArray = [[NSArray alloc] initWithArray:users];
-            NSLog(@"%d", (int)[self.usersArray count]);
+            NSLog(@"self.usersArray count: %d", (int)[self.usersArray count]);
             [self.userListTableView reloadData];
             [self.cancelSearchButton setTitle:@"Cancel"];
         }
@@ -258,7 +256,6 @@
     ECFollowViewController *ecFollowViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECFollowViewController"];
     ecFollowViewController.showFollowing = false;
     ecFollowViewController.usersArray = self.followerUsersArray;
-    
     [self.navigationController pushViewController:ecFollowViewController animated:YES];
 }
 
@@ -266,7 +263,6 @@
     ECFollowViewController *ecFollowViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECFollowViewController"];
     ecFollowViewController.showFollowing = true;
     ecFollowViewController.usersArray = self.followingUsersArray;
-    
     [self.navigationController pushViewController:ecFollowViewController animated:YES];
 }
 
@@ -282,7 +278,6 @@
         [[ECAPI sharedManager] unfollowUserByUserId:self.signedInUser.userId followeeId:self.profileUser.userId callback:^(NSError *error) {
             if (error) {
                 NSLog(@"Error adding user: %@", error);
-                NSLog(@"%@", error);
             } else {
                 UIAlertView *alertView = [[UIAlertView alloc]
                                           initWithTitle:@"Unfollow"
@@ -312,7 +307,6 @@
             }
         }];
     }
-    
 }
 
 - (UIColor *)colorWithDecimalRed:(float)red green:(float)green blue:(float)blue alpha:(CGFloat)alpha {
@@ -324,7 +318,6 @@
     [[ECAPI sharedManager] getFollowing:self.profileUser.userId callback:^(NSArray *users, NSError *error) {
         if (error) {
             NSLog(@"Error adding user: %@", error);
-            NSLog(@"%@", error);
         } else {
             // code
             NSLog(@"%@", users);
@@ -351,7 +344,6 @@
     [[ECAPI sharedManager] getFollowers:self.profileUser.userId callback:^(NSArray *users, NSError *error) {
         if (error) {
             NSLog(@"Error adding user: %@", error);
-            NSLog(@"%@", error);
         } else {
             // code
             NSLog(@"%@", users);
@@ -377,10 +369,10 @@
 - (void)loadFavorites{
     NSString *favoritesCount;
     if(self.isSignedInUser){
-        favoritesCount = [NSString stringWithFormat:@"%@", self.signedInUser.favoriteCount];
+        favoritesCount = [NSString stringWithFormat:@"%d", self.signedInUser.favoriteCount];
     }
     else{
-        favoritesCount = [NSString stringWithFormat:@"%@", self.profileUser.favoriteCount];
+        favoritesCount = [NSString stringWithFormat:@"%d", self.profileUser.favoriteCount];
     }
     
     // Setup the string
