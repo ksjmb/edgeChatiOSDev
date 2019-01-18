@@ -18,9 +18,11 @@
 #import "DCTime.h"
 #import "DCPersonEntityObject.h"
 #import "DCPersonProfessionObject.h"
+#import "DCPost.h"
 
 @class ECAttendee;
 @class ECEventBriteEvent;
+@class DCPost;
 
 @class ECAttendanceResponseTableViewCell;
 @protocol ECAttendanceResponseTableViewCellDelegate <NSObject>
@@ -37,10 +39,14 @@
 @property (nonatomic, weak) IBOutlet UISegmentedControl *attendanceResponse;
 //@property (nonatomic, strong) ECEventBriteEvent *selectedEvent;
 @property (nonatomic, strong)DCFeedItem *selectedFeedItem;
+@property (nonatomic, strong)DCPost *selectedPostItem;
 @property (nonatomic, strong)ECUser *signedInUser;
 @property (nonatomic, weak) id <ECAttendanceResponseTableViewCellDelegate> delegate;
 @property (nonatomic, weak) NSArray *questionOptions;
+@property (nonatomic, assign) BOOL isFromPost;
 
 //- (void)configureWithFeedItem:(DCFeedItem *)selectedFeedItem;
 - (void)configureWithFeedItem:(DCFeedItem *)selectedFeedItem :(NSString *)responseString;
+- (void)configureWithPostItem:(DCPost *)selectedPostItem :(NSString *)responseString;
+
 @end

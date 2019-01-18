@@ -371,7 +371,6 @@
 
 #pragma mark:- Twitter Methods
 
-
 - (void)twitterSetup:(NSURL *)url :(NSString *)title{
     dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     dispatch_sync(aQueue,^{

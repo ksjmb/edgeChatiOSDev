@@ -508,6 +508,7 @@
                     [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithDouble:durationInSeconds] forKey:ECMediaLength];
                     [[NSUserDefaults standardUserDefaults] synchronize];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"uploadVideoToS3" object:nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"uploadVideo" object:nil];
                      dispatch_async(dispatch_get_main_queue(), ^{
                     NSMutableArray *allViewControllers = [NSMutableArray arrayWithArray:[self.navigationController viewControllers]];
                     for (UIViewController *aViewController in allViewControllers) {

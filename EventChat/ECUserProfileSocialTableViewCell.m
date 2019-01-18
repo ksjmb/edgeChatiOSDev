@@ -44,7 +44,7 @@
 - (void)loadFacebookData:(ECUser *)user{
     NSString *likesCount = [NSString stringWithFormat:@"%lu", (unsigned long)[user.followeeIds count]];
     if(likesCount != nil){
-        NSMutableAttributedString *titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nLIKES", likesCount]];
+        NSMutableAttributedString *titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFOLLOWING", likesCount]];
         [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [likesCount length])];
         [titleText addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [likesCount length])];
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
@@ -52,9 +52,9 @@
         [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [likesCount length])];
         
         // Normal font for the rest of the text
-        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:10.0] forKey:NSFontAttributeName] range:NSMakeRange([likesCount length], 6)];
-        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor ecSubTextGrayColor] range:NSMakeRange([likesCount length], 6)];
-        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange([likesCount length], 6)];
+        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:10.0] forKey:NSFontAttributeName] range:NSMakeRange([likesCount length], 10)];
+        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor ecSubTextGrayColor] range:NSMakeRange([likesCount length], 10)];
+        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange([likesCount length], 10)];
         [self.mFacebookButton setAttributedTitle:titleText forState:UIControlStateNormal];
     }
 }
@@ -80,16 +80,16 @@
 
 - (void)loadInstagramData:(ECUser *)user :(ECUser *)signInUser{
     NSString *followerCount;
-    if(self.userEmailStr != nil){
-        followerCount = [NSString stringWithFormat:@"%d", signInUser.favoriteCount];
-    }
-    else{
+//    if(self.userEmailStr != nil){
+//        followerCount = [NSString stringWithFormat:@"%d", signInUser.favoriteCount];
+//    }
+//    else{
         followerCount = [NSString stringWithFormat:@"%d", user.favoriteCount];
-    }
+//    }
     
     if(followerCount != nil){
         // Setup the string
-        NSMutableAttributedString *titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFOLLOWERS", followerCount]];
+        NSMutableAttributedString *titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFAVORITES", followerCount]];
         [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [followerCount length])];
         [titleText addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [followerCount length])];
         NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
@@ -103,6 +103,5 @@
         [self.mInstagramButton setAttributedTitle:titleText forState:UIControlStateNormal];
     }
 }
-
 
 @end

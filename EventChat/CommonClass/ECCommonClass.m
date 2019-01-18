@@ -256,7 +256,6 @@
 
 
 -(void)showInstagramTypePickerForPhotoGalleryClicked {
-    
     dispatch_async(dispatch_get_main_queue(), ^{
         UIStoryboard *videoProcessingStoryboard = [UIStoryboard storyboardWithName:@"VideoProcessor" bundle:[NSBundle mainBundle]];
         VideoBrowserViewController *videoBrowserVC = [videoProcessingStoryboard instantiateViewControllerWithIdentifier:@"videoBrowser"];

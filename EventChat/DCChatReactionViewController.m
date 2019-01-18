@@ -99,7 +99,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadVideoToS3) name:@"uploadVideoToS3" object:nil];
     
     if(self.isPost){
-        [self.navigationItem setTitle:[NSString stringWithFormat:@"%@", self.dcPost.content]];
+//        [self.navigationItem setTitle:[NSString stringWithFormat:@"%@", self.dcPost.content]];
+        [self.navigationItem setTitle:[NSString stringWithFormat:@"%@", self.dcPost.displayName]];
+        
     }
     else{
         // EdgeTVChat custom code
@@ -195,6 +197,15 @@
             [self showImageOnHeader:self.selectedFeedItem.event.mainImage];
         }
         //[self convertStringDateToNSDate:_selectedFeedItem.created_at];
+    }
+    
+    //If user come from postComments
+    if(self.isPost){
+        self.nameLabel.text = self.dcPost.displayName;
+        self.descriptionLabel.text = self.dcPost.content;
+        if(self.dcPost.imageUrl != nil){
+            [self showImageOnHeader:self.dcPost.imageUrl];
+        }
     }
     
     //Add camera image to upload video or image

@@ -25,7 +25,6 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
     
@@ -191,6 +190,7 @@
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdatedNew" object:nil];
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateEventTV" object:nil];
                         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateChatReaction" object:nil];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
                         [self dismissViewControllerAnimated:YES completion:nil];
                     }
                 }];

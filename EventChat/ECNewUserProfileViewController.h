@@ -9,10 +9,13 @@
 #import <UIKit/UIKit.h>
 #import "ECUser.h"
 #import "DCNewPostViewController.h"
+#import "DCInfluencersPersonDetailsTableViewCell.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
 
 @class ECUser;
 
-@interface ECNewUserProfileViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, DCNewPostViewControllerDelegate>
+@interface ECNewUserProfileViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, DCNewPostViewControllerDelegate, DCInfluencersPersonDetailsTVCellDelegate, FBSDKSharingDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *userBGImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *userProfileImageView;

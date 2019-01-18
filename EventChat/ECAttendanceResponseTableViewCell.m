@@ -132,6 +132,33 @@
     }
 }
 
+- (void)configureWithPostItem:(DCPost *)selectedPostItem :(NSString *)responseString{
+    self.isFromPost = true;
+    self.selectedPostItem = selectedPostItem;
+    
+    if ([selectedPostItem.postType  isEqual: @"image"]){
+        if(selectedPostItem.imageUrl != nil){
+            [self.feedItemThumbnail setHidden:false];
+            [self showImageOnTheCell:self ForImageUrl:selectedPostItem.imageUrl];
+        }
+    }else{
+        [self.feedItemThumbnail setHidden:true];
+    }
+    
+    [self.feedItemTitle setText: selectedPostItem.displayName];
+    [self.feedItemDetails setText: selectedPostItem.content];
+    
+    if (![responseString  isEqual: @""]){
+        if ([responseString  isEqual: @"Going"]) {
+            [self.attendanceResponse setSelectedSegmentIndex:0];
+        } else if ([responseString  isEqual: @"Maybe"]) {
+            [self.attendanceResponse setSelectedSegmentIndex:1];
+        } else if ([responseString  isEqual: @"Can't go"]) {
+            [self.attendanceResponse setSelectedSegmentIndex:2];
+        }
+    }
+}
+
 #pragma mark - API Methods
 
 -(void)setUserAttendanceResponse:(id)sender{
@@ -151,7 +178,14 @@
     //@kj_change
 //    userResponse = [self.questionOptions objectAtIndex:((UISegmentedControl *)sender).selectedSegmentIndex];
     
-    [[ECAPI sharedManager] setAttendeeResponse:self.signedInUser.userId feedItemId:self.selectedFeedItem.feedItemId response:userResponse callback:^(NSError *error) {
+    NSString *mId = @"";
+    if (self.isFromPost){
+        mId = self.selectedPostItem.postId;
+    }else{
+        mId = self.selectedFeedItem.feedItemId;
+    }
+    
+    [[ECAPI sharedManager] setAttendeeResponse:self.signedInUser.userId feedItemId:mId response:userResponse callback:^(NSError *error) {
         if (error) {
             NSLog(@"Error saving response: %@", error);
         } else {
@@ -163,7 +197,14 @@
 }
 
 -(void)getUserAttendanceResponse{
-    [[ECAPI sharedManager] getAttendeeResponse:self.signedInUser.userId feedItemId:self.selectedFeedItem.feedItemId callback:^(ECAttendee *attendance, NSError *error) {
+    NSString *mIdStr = @"";
+    if (self.isFromPost){
+        mIdStr = self.selectedPostItem.postId;
+    }else{
+        mIdStr = self.selectedFeedItem.feedItemId;
+    }
+    
+    [[ECAPI sharedManager] getAttendeeResponse:self.signedInUser.userId feedItemId:mIdStr callback:^(ECAttendee *attendance, NSError *error) {
         if (error) {
             NSLog(@"Error saving response: %@", error);
         } else {
@@ -224,7 +265,6 @@
                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                 if (image) {
                                     _feedItemThumbnail.image = image;
-                                    
                                 }
                                 else {
                                     if(error){

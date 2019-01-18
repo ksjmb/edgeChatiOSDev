@@ -404,9 +404,10 @@
 - (void)didTapPostButton{
     DCNewPostViewController *dcNewPostViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCNewPostViewController"];
     dcNewPostViewController.delegate = self;
-    UINavigationController *navigationController =
-    [[UINavigationController alloc] initWithRootViewController:dcNewPostViewController];
-    [self presentViewController:navigationController animated:YES completion:nil];
+//    UINavigationController *navigationController =
+//    [[UINavigationController alloc] initWithRootViewController:dcNewPostViewController];
+//    [self presentViewController:navigationController animated:YES completion:nil];
+    [self.navigationController pushViewController:dcNewPostViewController animated:true];
 }
 
 - (void)didTapCommentsButton{

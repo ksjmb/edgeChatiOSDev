@@ -12,6 +12,8 @@
 #import "VideoTrimmerViewController.h"
 #import "ECCommonClass.h"
 #define RadiansToDegrees(radians) ((radians) * (180.0 / M_PI))
+
+
 @interface VideoBrowserViewController ()
 {
      int checkValue;
@@ -21,8 +23,6 @@
 @property (strong, nonatomic) ALAssetsLibrary *assetLibrary;
 
 @property (strong, nonatomic) ALAsset *selectedAsset;
-
-
 
 @end
 
@@ -210,8 +210,6 @@
         trimVideoViewController.movieName = self.selectedAsset.defaultRepresentation.filename;
         trimVideoViewController.isPhoneLibraryVideo = YES;
     }
-    
-
 }
 
 @end

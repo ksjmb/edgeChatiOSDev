@@ -14,6 +14,7 @@
 #import "TestTableViewController.h"
 #import "SignUpLoginViewController.h"
 #import "ECCommonClass.h"
+#import "ECNewUserProfileViewController.h"
 
 @interface MoreViewController ()
 @property (nonatomic, strong)ECUser *signedInUser;
@@ -115,10 +116,18 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if(indexPath.row == 0) {
         if (self.userEmail != nil){
+            /*
             DCProfileTableViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCProfileTableViewController"];
             dcProfileTableViewController.isSignedInUser = true;
             dcProfileTableViewController.profileUser = self.signedInUser;
             [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
+             */
+            
+            ECNewUserProfileViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewUserProfileViewController"];
+            dcProfileTableViewController.isSignedInUser = true;
+            dcProfileTableViewController.profileUser = self.signedInUser;
+            [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
+            
         }else{
             [self pushToSignInVC:@"DCProfileTableViewController"];
         }

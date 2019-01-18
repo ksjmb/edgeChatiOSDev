@@ -1431,6 +1431,7 @@
 		F9E67C53219D5CB2000081AB /* libSVProgressHUD.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E67C52219D5CB2000081AB /* libSVProgressHUD.a */; };
 		F9E67C55219D5CB2000081AB /* libyoutube-ios-player-helper.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E67C54219D5CB2000081AB /* libyoutube-ios-player-helper.a */; };
 		F9E67C56219D7342000081AB /* DCNewTVShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9BAE2F8219C1CEF00921566 /* DCNewTVShowViewController.m */; };
+		F9E7893A21F1D6C7006B9399 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E7893921F1D6C7006B9399 /* MobileCoreServices.framework */; };
 		F9F10D1A21A2CF36005C21FD /* DCChatReactionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F10D1921A2CF36005C21FD /* DCChatReactionViewController.m */; };
 		F9F10D1B21A2CF36005C21FD /* DCChatReactionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F10D1921A2CF36005C21FD /* DCChatReactionViewController.m */; };
 		F9F5A16021AC031900270041 /* ECNewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F5A15E21AC031900270041 /* ECNewTableViewCell.m */; };
@@ -1922,6 +1923,7 @@
 		F9E67C50219D5CB2000081AB /* libSlackTextViewController.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libSlackTextViewController.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9E67C52219D5CB2000081AB /* libSVProgressHUD.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libSVProgressHUD.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9E67C54219D5CB2000081AB /* libyoutube-ios-player-helper.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libyoutube-ios-player-helper.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F9E7893921F1D6C7006B9399 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		F9F10D1821A2CF36005C21FD /* DCChatReactionViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCChatReactionViewController.h; sourceTree = "<group>"; };
 		F9F10D1921A2CF36005C21FD /* DCChatReactionViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCChatReactionViewController.m; sourceTree = "<group>"; };
 		F9F5A15D21AC031900270041 /* ECNewTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECNewTableViewCell.h; sourceTree = "<group>"; };
@@ -1976,6 +1978,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F9E7893A21F1D6C7006B9399 /* MobileCoreServices.framework in Frameworks */,
 				F99F0CF121CA448A00061BF7 /* Social.framework in Frameworks */,
 				F9E67C25219D5CB2000081AB /* libAWSS3.a in Frameworks */,
 				F9E67C27219D5CB2000081AB /* libBolts.a in Frameworks */,
@@ -2671,6 +2674,7 @@
 		475611F09FA90C5360BBDF05 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				F9E7893921F1D6C7006B9399 /* MobileCoreServices.framework */,
 				F99F0CF021CA448900061BF7 /* Social.framework */,
 				F9E67C24219D5CB2000081AB /* libAWSS3.a */,
 				F9E67C26219D5CB2000081AB /* libBolts.a */,

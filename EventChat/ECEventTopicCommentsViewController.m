@@ -120,7 +120,8 @@
     
     
     if(self.isPost){
-        [self.navigationItem setTitle:[NSString stringWithFormat:@"%@", self.dcPost.content]];
+//        [self.navigationItem setTitle:[NSString stringWithFormat:@"%@", self.dcPost.content]];
+        [self.navigationItem setTitle:[NSString stringWithFormat:@"%@", self.dcPost.displayName]];
     }
     else{
         // EdgeTVChat custom code
@@ -970,6 +971,7 @@
     [alertController addAction:okAction];
     [self presentViewController:alertController animated:YES completion:nil];
 }
+
 // textview right btn i.e. post button click
 - (void)didPressRightButton:(id)sender
 {

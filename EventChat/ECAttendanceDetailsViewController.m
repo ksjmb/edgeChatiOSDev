@@ -70,7 +70,11 @@
             cell = [[ECAttendanceResponseTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:cellIdentifier];
         }
         cell.delegate = self;
-        [cell configureWithFeedItem:self.selectedFeedItem :self.responseStr];
+        if (self.isPost){
+            [cell configureWithPostItem:self.selectedPostItem :self.responseStr];
+        }else{
+            [cell configureWithFeedItem:self.selectedFeedItem :self.responseStr];
+        }
         return cell;
     }
     else{
@@ -90,11 +94,17 @@
 
 #pragma mark - API Methods
 -(void)getFeedItemAttendeeList{
-    [[ECAPI sharedManager] getAttendeeList:self.selectedFeedItem.feedItemId callback:^(NSArray *attendees, NSError *error) {
+    NSString *mID = @"";
+    if (self.isPost){
+        mID = self.selectedPostItem.postId;
+    }else{
+        mID = self.selectedFeedItem.feedItemId;
+    }
+    
+    [[ECAPI sharedManager] getAttendeeList:mID callback:^(NSArray *attendees, NSError *error) {
         if (error) {
             NSLog(@"Error saving response: %@", error);
         } else {
-            // code
             self.attendeeList = [[NSArray alloc] initWithArray:attendees copyItems:true];
             self.responseStr = @"";
             

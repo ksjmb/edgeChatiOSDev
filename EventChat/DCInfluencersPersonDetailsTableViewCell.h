@@ -13,6 +13,9 @@
 
 @class DCFeedItem;
 @class DCInfluencersPersonDetailsTableViewCell;
+@class DCPost;
+@class CustomButton;
+@class ECUser;
 
 @protocol DCInfluencersPersonDetailsTVCellDelegate <NSObject>
 
@@ -20,6 +23,7 @@
 - (void)didTapFavoriteButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index;
 - (void)didTapAttendanceButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index;
 - (void)didTapShareButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index;
+- (void)playVideoButtonTapped:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index;
 /*
  - (void)playVideoForSelectedEpisode:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index;
 - (void)viewMoreButtonTapped:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell;
@@ -40,11 +44,21 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UILabel *mVideoCommentCount;
 @property (weak, nonatomic) IBOutlet UIButton *mVideoShareBtn;
 @property (weak, nonatomic) IBOutlet UIButton *mVideoFavBtn;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *mVideoTitleLabelHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *playerViewHeightConstraint;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageViewHeightConstraint;
+
 
 @property (nonatomic, weak) id <DCInfluencersPersonDetailsTVCellDelegate> dcPersonDelegate;
 @property (nonatomic, strong) DCFeedItem *mDCFeedItem;
 
+//Influerence Details VC
 - (void)configureTableViewCellWithItem:(DCFeedItem *)feedItem isFavorited:(BOOL)isFavorited isAttending:(BOOL)isAttending indexPath:(NSIndexPath*)indexPath;
+
+//User Profile VC
+@property (nonatomic, strong) ECUser *mSignedInUser;
+@property (nonatomic, strong) DCPost *mDCPost;
+- (void)configureWithPost:(DCPost *)post signedInUser:(ECUser *)signedInUser;
 
 @end
 
