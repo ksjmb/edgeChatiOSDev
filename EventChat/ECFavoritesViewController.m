@@ -203,10 +203,8 @@
             NSLog(@"Error: %@", error);
         }
         else{
-            
             NSArray *reversed = [[array reverseObjectEnumerator] allObjects];
             self.topics = [[NSMutableArray alloc] initWithArray:topics];
-            
             // Push to comments view controller directly
             ECEventTopicCommentsViewController *ecEventTopicCommentsViewController = [[ECEventTopicCommentsViewController alloc] init];
             ECTopic *topic = [self.topics objectAtIndex:1];
@@ -216,7 +214,6 @@
             
             [self.navigationController pushViewController:ecEventTopicCommentsViewController animated:YES];
         }
-        
     }];
 }
 

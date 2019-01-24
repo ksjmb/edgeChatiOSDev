@@ -226,7 +226,6 @@
         [[ECAPI sharedManager] deletePlaylistById:playlist.playlistId callback:^(NSArray *playlists, NSError *error) {
             if (error) {
                 NSLog(@"Error adding user: %@", error);
-                NSLog(@"%@", error);
             } else {
                 [self.playlists removeObjectAtIndex:indexPath.row];
                 [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
@@ -268,7 +267,6 @@
     [[ECAPI sharedManager] getPlaylistsByUserId:self.signedInUser.userId callback:^(NSArray *playlists, NSError *error) {
         self.playlists = [[NSMutableArray alloc] initWithArray:playlists];
         [self.playlistTableView reloadData];
-        
         [sender endRefreshing];
     }];
 }

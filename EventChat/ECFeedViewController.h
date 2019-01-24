@@ -15,11 +15,12 @@
 #import "ECNewTableViewCell.h"
 #import "SignUpLoginViewController.h"
 #import "RegisterViewController.h"
+#import "AddToPlaylistPopUpViewController.h"
 
 @class AFOAuthCredential;
 
 //@interface ECFeedViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, ECFeedCellDelegate, UISearchBarDelegate, UISearchControllerDelegate, UIActionSheetDelegate, FBSDKSharingDelegate, UISearchResultsUpdating>
-@interface ECFeedViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, ECNewTableViewCellDelegate, UISearchBarDelegate, UISearchControllerDelegate, UIActionSheetDelegate, FBSDKSharingDelegate, UISearchResultsUpdating, SignUpLoginViewControllerDelegate, RegisterViewControllerDelegate>
+@interface ECFeedViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, ECNewTableViewCellDelegate, UISearchBarDelegate, UISearchControllerDelegate, UIActionSheetDelegate, FBSDKSharingDelegate, UISearchResultsUpdating, SignUpLoginViewControllerDelegate, RegisterViewControllerDelegate, AddToPlaylistDelegate>
 
 @property (retain, nonatomic) NSString *sbIdentifierString;
 @property (nonatomic, assign) BOOL isCommingFromLogin;

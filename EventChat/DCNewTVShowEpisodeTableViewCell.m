@@ -126,6 +126,8 @@
     return _operationManager;
 }
 
+#pragma mark:- Configure Cell
+
 - (void)configureWithFeedItemWith:(DCFeedItem *)feedItem isFavorited:(BOOL)isFavorited isAttending:(BOOL)isAttending indexPath:(NSIndexPath*)indexPath{
     
     self.feedItem = feedItem;

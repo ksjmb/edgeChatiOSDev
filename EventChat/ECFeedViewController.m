@@ -48,6 +48,8 @@
 #import "DCInfluencersPersonDetailsViewController.h"
 #import <Social/Social.h>
 #import "ECNewUserProfileViewController.h"
+#import "ECNewPlaylistTableViewController.h"
+#import "AddToPlaylistPopUpViewController.h"
 
 @interface ECFeedViewController () <HTHorizontalSelectionListDataSource, HTHorizontalSelectionListDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *eventFeedTableView;
@@ -244,6 +246,14 @@
 //    NSLog(@"iscomming from more...");
 //    [self pushToSignInVC:@"MoreViewController"];
 //}
+
+#pragma mark:- AddToPlaylist Delegate Methods
+
+- (void)updateUI{
+    [self.navigationController.navigationBar setUserInteractionEnabled:YES];
+    self.tabBarController.tabBar.hidden = NO;
+    [self.filterList setUserInteractionEnabled:YES];
+}
 
 #pragma mark:- SignUpLoginDelegate Methods
 
@@ -774,12 +784,37 @@
 
 //** FavTap **//
 - (IBAction)didTapViewFavorites:(id)sender{
-    //    if (self.signedInUser != nil){
     if (self.userEmail != nil){
+        /*
+        AddToPlaylistPopUpViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddToPlaylistPopUpViewController"];
+        CATransition *transition = [CATransition animation];
+        transition.duration = 0.5;
+        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        transition.type = kCATransitionFromBottom;
+        transition.subtype = kCATransitionFromBottom;
+        [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+        [self.navigationController.navigationBar setUserInteractionEnabled:NO];
+        self.tabBarController.tabBar.hidden = YES;
+        [self.filterList setUserInteractionEnabled:NO];
+        vc.playlistDelegate = self;
+        [self addChildViewController:vc];
+        vc.view.frame = self.view.frame;
+        [self.view addSubview:vc.view];
+        [vc didMoveToParentViewController:self];
+        
+         //=======================
+        
         DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
         dcPlaylistsTableViewController.isFeedMode = false;
         dcPlaylistsTableViewController.isSignedInUser = true;
         [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+        */
+        
+        ECNewPlaylistTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewPlaylistTableViewController"];
+         vc.isFeedMode = false;
+         vc.isSignedInUser = true;
+         [self.navigationController pushViewController:vc animated:YES];
+        
     }else{
         [self pushToSignInVC:@"DCPlaylistsTableViewController"];
     }

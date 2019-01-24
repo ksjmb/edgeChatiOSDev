@@ -1438,6 +1438,20 @@
 		F9F5A16121AC031900270041 /* ECNewTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F5A15E21AC031900270041 /* ECNewTableViewCell.m */; };
 		F9F5A16221AC031900270041 /* ECNewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9F5A15F21AC031900270041 /* ECNewTableViewCell.xib */; };
 		F9F5A16321AC031900270041 /* ECNewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9F5A15F21AC031900270041 /* ECNewTableViewCell.xib */; };
+		F9F71C4221F83EE0007F37A8 /* ECPlaylistDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F71C4121F83EE0007F37A8 /* ECPlaylistDetailsViewController.m */; };
+		F9F71C4321F83EE0007F37A8 /* ECPlaylistDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F71C4121F83EE0007F37A8 /* ECPlaylistDetailsViewController.m */; };
+		F9F71C4721F83F34007F37A8 /* ECPlaylistDetailsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F71C4521F83F33007F37A8 /* ECPlaylistDetailsTableViewCell.m */; };
+		F9F71C4821F83F34007F37A8 /* ECPlaylistDetailsTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F71C4521F83F33007F37A8 /* ECPlaylistDetailsTableViewCell.m */; };
+		F9F71C4921F83F34007F37A8 /* ECPlaylistDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9F71C4621F83F34007F37A8 /* ECPlaylistDetailsTableViewCell.xib */; };
+		F9F71C4A21F83F34007F37A8 /* ECPlaylistDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F9F71C4621F83F34007F37A8 /* ECPlaylistDetailsTableViewCell.xib */; };
+		F9F7780F21F5A9E300006A47 /* ECNewPlaylistTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F7780E21F5A9E300006A47 /* ECNewPlaylistTableViewController.m */; };
+		F9F7781021F5A9E300006A47 /* ECNewPlaylistTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F7780E21F5A9E300006A47 /* ECNewPlaylistTableViewController.m */; };
+		F9F7781321F5AA1700006A47 /* ECNewPlaylistTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F7781221F5AA1700006A47 /* ECNewPlaylistTableViewCell.m */; };
+		F9F7781421F5AA1700006A47 /* ECNewPlaylistTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F7781221F5AA1700006A47 /* ECNewPlaylistTableViewCell.m */; };
+		F9F7781821F5F35400006A47 /* AddToPlaylistPopUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F7781721F5F35400006A47 /* AddToPlaylistPopUpViewController.m */; };
+		F9F7781921F5F35400006A47 /* AddToPlaylistPopUpViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F7781721F5F35400006A47 /* AddToPlaylistPopUpViewController.m */; };
+		F9F7781C21F5F9CB00006A47 /* AddToPlaylistPopUpCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F7781B21F5F9CB00006A47 /* AddToPlaylistPopUpCollectionViewCell.m */; };
+		F9F7781D21F5F9CB00006A47 /* AddToPlaylistPopUpCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9F7781B21F5F9CB00006A47 /* AddToPlaylistPopUpCollectionViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1929,6 +1943,19 @@
 		F9F5A15D21AC031900270041 /* ECNewTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECNewTableViewCell.h; sourceTree = "<group>"; };
 		F9F5A15E21AC031900270041 /* ECNewTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECNewTableViewCell.m; sourceTree = "<group>"; };
 		F9F5A15F21AC031900270041 /* ECNewTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ECNewTableViewCell.xib; sourceTree = "<group>"; };
+		F9F71C4021F83EE0007F37A8 /* ECPlaylistDetailsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECPlaylistDetailsViewController.h; sourceTree = "<group>"; };
+		F9F71C4121F83EE0007F37A8 /* ECPlaylistDetailsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECPlaylistDetailsViewController.m; sourceTree = "<group>"; };
+		F9F71C4421F83F33007F37A8 /* ECPlaylistDetailsTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECPlaylistDetailsTableViewCell.h; sourceTree = "<group>"; };
+		F9F71C4521F83F33007F37A8 /* ECPlaylistDetailsTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECPlaylistDetailsTableViewCell.m; sourceTree = "<group>"; };
+		F9F71C4621F83F34007F37A8 /* ECPlaylistDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ECPlaylistDetailsTableViewCell.xib; sourceTree = "<group>"; };
+		F9F7780D21F5A9E300006A47 /* ECNewPlaylistTableViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECNewPlaylistTableViewController.h; sourceTree = "<group>"; };
+		F9F7780E21F5A9E300006A47 /* ECNewPlaylistTableViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECNewPlaylistTableViewController.m; sourceTree = "<group>"; };
+		F9F7781121F5AA1700006A47 /* ECNewPlaylistTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECNewPlaylistTableViewCell.h; sourceTree = "<group>"; };
+		F9F7781221F5AA1700006A47 /* ECNewPlaylistTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECNewPlaylistTableViewCell.m; sourceTree = "<group>"; };
+		F9F7781621F5F35400006A47 /* AddToPlaylistPopUpViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddToPlaylistPopUpViewController.h; sourceTree = "<group>"; };
+		F9F7781721F5F35400006A47 /* AddToPlaylistPopUpViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddToPlaylistPopUpViewController.m; sourceTree = "<group>"; };
+		F9F7781A21F5F9CB00006A47 /* AddToPlaylistPopUpCollectionViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AddToPlaylistPopUpCollectionViewCell.h; sourceTree = "<group>"; };
+		F9F7781B21F5F9CB00006A47 /* AddToPlaylistPopUpCollectionViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AddToPlaylistPopUpCollectionViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2153,6 +2180,8 @@
 		0E38557B1DD1486600A3BCCB /* Favorites */ = {
 			isa = PBXGroup;
 			children = (
+				F9F7781521F5F32D00006A47 /* AddToPlaylist */,
+				F9F7780C21F5A9AD00006A47 /* NewPlaylist */,
 				0E38557C1DD1488E00A3BCCB /* ECFavoritesViewController.h */,
 				0E38557D1DD1488E00A3BCCB /* ECFavoritesViewController.m */,
 				0E38557F1DD148A700A3BCCB /* ECFavoritesCell.h */,
@@ -2865,6 +2894,41 @@
 			name = NewFeedCell;
 			sourceTree = "<group>";
 		};
+		F9F71C3F21F83EB1007F37A8 /* PlaylistDetails */ = {
+			isa = PBXGroup;
+			children = (
+				F9F71C4021F83EE0007F37A8 /* ECPlaylistDetailsViewController.h */,
+				F9F71C4121F83EE0007F37A8 /* ECPlaylistDetailsViewController.m */,
+				F9F71C4421F83F33007F37A8 /* ECPlaylistDetailsTableViewCell.h */,
+				F9F71C4521F83F33007F37A8 /* ECPlaylistDetailsTableViewCell.m */,
+				F9F71C4621F83F34007F37A8 /* ECPlaylistDetailsTableViewCell.xib */,
+			);
+			name = PlaylistDetails;
+			sourceTree = "<group>";
+		};
+		F9F7780C21F5A9AD00006A47 /* NewPlaylist */ = {
+			isa = PBXGroup;
+			children = (
+				F9F7780D21F5A9E300006A47 /* ECNewPlaylistTableViewController.h */,
+				F9F7780E21F5A9E300006A47 /* ECNewPlaylistTableViewController.m */,
+				F9F7781121F5AA1700006A47 /* ECNewPlaylistTableViewCell.h */,
+				F9F7781221F5AA1700006A47 /* ECNewPlaylistTableViewCell.m */,
+			);
+			name = NewPlaylist;
+			sourceTree = "<group>";
+		};
+		F9F7781521F5F32D00006A47 /* AddToPlaylist */ = {
+			isa = PBXGroup;
+			children = (
+				F9F71C3F21F83EB1007F37A8 /* PlaylistDetails */,
+				F9F7781621F5F35400006A47 /* AddToPlaylistPopUpViewController.h */,
+				F9F7781721F5F35400006A47 /* AddToPlaylistPopUpViewController.m */,
+				F9F7781A21F5F9CB00006A47 /* AddToPlaylistPopUpCollectionViewCell.h */,
+				F9F7781B21F5F9CB00006A47 /* AddToPlaylistPopUpCollectionViewCell.m */,
+			);
+			name = AddToPlaylist;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -3138,6 +3202,7 @@
 				3696A74C2050546700CE742B /* LaunchScreen_edgetvchat_Regular.png in Resources */,
 				36108C4A1EB55F3B00F6F0C2 /* ECAttendance_Off@2x.png in Resources */,
 				36A218F01F253BFE00FC3380 /* LaunchScreen_bankchat.png in Resources */,
+				F9F71C4921F83F34007F37A8 /* ECPlaylistDetailsTableViewCell.xib in Resources */,
 				0E1A3CCF1D8D252E0065FA89 /* ECFavorite_Off.png in Resources */,
 				0E0821011C72CCA2001C40F0 /* sorting_options.png in Resources */,
 				D4EDB6D821647AFD0011761E /* icon-167.png in Resources */,
@@ -3469,6 +3534,7 @@
 				3615535B1F1C2BCB00DA1384 /* LaunchScreen_edgetvchat.png in Resources */,
 				369B9D091F18900000DA883D /* VOYAGER_LIGHT.ttf in Resources */,
 				369B9D0A1F18900000DA883D /* ECFavorite_Off@2x.png in Resources */,
+				F9F71C4A21F83F34007F37A8 /* ECPlaylistDetailsTableViewCell.xib in Resources */,
 				3696A7752050648200CE742B /* Default-568@2x.png in Resources */,
 				369B9D0B1F18900000DA883D /* VOYAGER_REGULAR.ttf in Resources */,
 				369B9D0C1F18900000DA883D /* ECComment_Off@2x.png in Resources */,
@@ -4215,10 +4281,12 @@
 				87305C371E9E24A7008F5958 /* S3UploadImage.m in Sources */,
 				3696A7652050613900CE742B /* DCLaunchScreenViewController.m in Sources */,
 				87305C421EA0F562008F5958 /* ImageScrollView.m in Sources */,
+				F9F7781C21F5F9CB00006A47 /* AddToPlaylistPopUpCollectionViewCell.m in Sources */,
 				0E148E7A1C86CD8F0012021A /* MessageTextView.m in Sources */,
 				0E0820A31C63449E001C40F0 /* ECJSONModel.m in Sources */,
 				735CFEC91DA43320006E0A38 /* NotificationSettingsViewController.m in Sources */,
 				3619B1B92006B419002811B2 /* MediaBrowser.m in Sources */,
+				F9F7781321F5AA1700006A47 /* ECNewPlaylistTableViewCell.m in Sources */,
 				36D312C31FB90083006D7153 /* DCBranchIOParams.m in Sources */,
 				F93BCCC121C243920079242D /* DCInfluencersPersonDetailsViewController.m in Sources */,
 				730E27891D9F8003001F2032 /* MoreViewController.m in Sources */,
@@ -4247,6 +4315,7 @@
 				0E0820CA1C725E74001C40F0 /* ECFeedViewController.m in Sources */,
 				F9F10D1A21A2CF36005C21FD /* DCChatReactionViewController.m in Sources */,
 				36319DE91F0BE2B700678524 /* ECAuthAPI.m in Sources */,
+				F9F7781821F5F35400006A47 /* AddToPlaylistPopUpViewController.m in Sources */,
 				36AAE02D1F9868F400DB1C33 /* DCFeedItemDetailsWebViewController.m in Sources */,
 				F93BCCC621C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.m in Sources */,
 				360E95311F1D735700BBC842 /* DCMediaEntityObject.m in Sources */,
@@ -4316,6 +4385,7 @@
 				360E95281F1D710900BBC842 /* DCSocialEntity.m in Sources */,
 				0E18B4DA1CB37D7500D25518 /* RegisterViewController.m in Sources */,
 				360E95371F1D8A8700BBC842 /* DCDigitalEntityObject.m in Sources */,
+				F9F71C4221F83EE0007F37A8 /* ECPlaylistDetailsViewController.m in Sources */,
 				364098D32016B2BA00CBB9F8 /* TextFieldValidator.m in Sources */,
 				7318077A1D8A0B9200CC9ADF /* ECAttendanceDetailsViewController.m in Sources */,
 				0E0820C91C725E74001C40F0 /* ECFeedCell.m in Sources */,
@@ -4339,6 +4409,8 @@
 				3636C85A2020F2B4007DE121 /* DCFollowPostButtonCell.m in Sources */,
 				360175AD2004A6E90042FB3F /* UIScrollView+KeepLayout.m in Sources */,
 				360E95401F1D9DCB00BBC842 /* DCDigital.m in Sources */,
+				F9F71C4721F83F34007F37A8 /* ECPlaylistDetailsTableViewCell.m in Sources */,
+				F9F7780F21F5A9E300006A47 /* ECNewPlaylistTableViewController.m in Sources */,
 				0E3FADFE1C5B43D5005C28AA /* main.m in Sources */,
 				0E0820D31C726717001C40F0 /* ECEventBriteDescription.m in Sources */,
 				0E6899931D0002A9000E0E49 /* ECAddTopicViewController.m in Sources */,
@@ -4700,10 +4772,12 @@
 				369B9C951F18900000DA883D /* S3UploadImage.m in Sources */,
 				369B9C961F18900000DA883D /* ImageScrollView.m in Sources */,
 				360175C62004A7300042FB3F /* KeepArray.m in Sources */,
+				F9F7781D21F5F9CB00006A47 /* AddToPlaylistPopUpCollectionViewCell.m in Sources */,
 				369B9C971F18900000DA883D /* MessageTextView.m in Sources */,
 				369B9C981F18900000DA883D /* ECJSONModel.m in Sources */,
 				365DCB051F4EA4BF00499800 /* DCTopicCell.m in Sources */,
 				3619B2042006B57F002811B2 /* S3UploadVideo.m in Sources */,
+				F9F7781421F5AA1700006A47 /* ECNewPlaylistTableViewCell.m in Sources */,
 				360175C92004A7300042FB3F /* KeepLayoutConstraint.m in Sources */,
 				F93BCCC221C243920079242D /* DCInfluencersPersonDetailsViewController.m in Sources */,
 				3619B1D62006B461002811B2 /* VideoBrowserViewController.m in Sources */,
@@ -4732,6 +4806,7 @@
 				3619B1F02006B472002811B2 /* ECSliderLeft.m in Sources */,
 				F9F10D1B21A2CF36005C21FD /* DCChatReactionViewController.m in Sources */,
 				369B9CA71F18900000DA883D /* ECFavoritesCell.m in Sources */,
+				F9F7781921F5F35400006A47 /* AddToPlaylistPopUpViewController.m in Sources */,
 				369B9CA81F18900000DA883D /* ECAppInfo.m in Sources */,
 				F93BCCC721C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.m in Sources */,
 				369B9CA91F18900000DA883D /* ECTopicViewController.m in Sources */,
@@ -4801,6 +4876,7 @@
 				365749E3200941410071A0AC /* DCTopicViewController.m in Sources */,
 				369B9CC91F18900000DA883D /* ECEventBriteLogo.m in Sources */,
 				36E2FD7320115B52005D408C /* CustomButton.m in Sources */,
+				F9F71C4321F83EE0007F37A8 /* ECPlaylistDetailsViewController.m in Sources */,
 				369B9CCA1F18900000DA883D /* NSObject+AssociatedObject.m in Sources */,
 				3662FFE32039D19A00DD510C /* TestTableViewCell.m in Sources */,
 				369B9CCB1F18900000DA883D /* RegisterViewController.m in Sources */,
@@ -4824,6 +4900,8 @@
 				369B9CD51F18900000DA883D /* S3ServiceHandler.m in Sources */,
 				360175CA2004A7300042FB3F /* KeepTypes.m in Sources */,
 				369B9CD61F18900000DA883D /* ECAttendanceResponseTableViewCell.m in Sources */,
+				F9F71C4821F83F34007F37A8 /* ECPlaylistDetailsTableViewCell.m in Sources */,
+				F9F7781021F5A9E300006A47 /* ECNewPlaylistTableViewController.m in Sources */,
 				F9E67C56219D7342000081AB /* DCNewTVShowViewController.m in Sources */,
 				369B9CD71F18900000DA883D /* main.m in Sources */,
 				369B9CD81F18900000DA883D /* ECEventBriteDescription.m in Sources */,
