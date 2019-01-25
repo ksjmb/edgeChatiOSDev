@@ -1087,6 +1087,25 @@
 //** FavTap **//
 - (void)mainFeedDidTapFavoriteButton:(ECNewTableViewCell *)ecFeedCell index:(NSInteger)index{
     if (self.userEmail != nil){
+        AddToPlaylistPopUpViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddToPlaylistPopUpViewController"];
+        CATransition *transition = [CATransition animation];
+        transition.duration = 0.5;
+        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        transition.type = kCATransitionFromBottom;
+        transition.subtype = kCATransitionFromBottom;
+        [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+        [self.navigationController.navigationBar setUserInteractionEnabled:NO];
+        self.tabBarController.tabBar.hidden = YES;
+        [self.filterList setUserInteractionEnabled:NO];
+        vc.playlistDelegate = self;
+        vc.isFeedMode = true;
+        vc.mFeedItemId = ecFeedCell.feedItem.feedItemId;
+        [self addChildViewController:vc];
+        vc.view.frame = self.view.frame;
+        [self.view addSubview:vc.view];
+        [vc didMoveToParentViewController:self];
+        
+        /*
         DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
         dcPlaylistsTableViewController.isFeedMode = true;
         dcPlaylistsTableViewController.isSignedInUser = true;
@@ -1094,6 +1113,7 @@
         UINavigationController *navigationController =
         [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
         [self presentViewController:navigationController animated:YES completion:nil];
+         */
     }else{
         [[NSUserDefaults standardUserDefaults] setObject:ecFeedCell.feedItem.feedItemId forKey:@"feedItemId"];
         [self pushToSignInVC:@"DCPlaylistsTableViewController"];

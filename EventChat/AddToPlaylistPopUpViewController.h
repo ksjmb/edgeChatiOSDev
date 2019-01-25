@@ -7,12 +7,17 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ECUser.h"
+#import "ECEventBriteEvent.h"
+#import "DCFeedItem.h"
+#import "DCDigital.h"
+#import "DCTime.h"
 
 @protocol AddToPlaylistDelegate <NSObject>
 - (void)updateUI;
 @end
 
-@interface AddToPlaylistPopUpViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegate>
+@interface AddToPlaylistPopUpViewController : UIViewController <UICollectionViewDataSource, UICollectionViewDelegate, UITextFieldDelegate, UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *collectionPlaylistView;
 @property (weak, nonatomic) IBOutlet UICollectionView *playlistCollectionView;
@@ -22,8 +27,11 @@
 @property (weak, nonatomic) IBOutlet UIImageView *coverImageView;
 @property (weak, nonatomic) IBOutlet UITextField *playlistTextField;
 @property (weak, nonatomic) IBOutlet UIButton *cancelButton;
-
-
+@property (nonatomic) UIBackgroundTaskIdentifier backgroundUpdateTaskId;
+//
+@property (nonatomic) BOOL isFeedMode;
+@property (nonatomic, strong)ECUser *signedInUser;
+@property (nonatomic, copy) NSString *mFeedItemId;
 @property (assign) BOOL isImageSelected;
 
 @end
