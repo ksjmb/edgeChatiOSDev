@@ -116,11 +116,20 @@
 }
 
 - (IBAction)actionOnVwCancelButton:(id)sender {
-    NSLog(@"Title: %@", self.cancelButton.titleLabel.text);
     if ([self.cancelButton.titleLabel.text  isEqual: @"Save"]){
-        
-    }else{
-        
+        DCPlaylist *newPlaylist = [DCPlaylist alloc];
+        newPlaylist.playlistName = self.playlistTextField.text;
+        if([self.playlistTextField.text length] > 0){
+            [[ECAPI sharedManager] createPlaylist:self.signedInUser.userId playlistName:newPlaylist.playlistName callback:^(DCPlaylist *playlist, NSError *error) {
+                if(error){
+                    NSLog(@"Error while creating playlist: %@", error);
+                }
+                else{
+                    [self.mPlaylistsArray insertObject:playlist atIndex:0];
+                    [self.playlistCollectionView reloadData];
+                }
+            }];
+        }
     }
     [self removeAnimation];
 }
@@ -134,18 +143,35 @@
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     AddToPlaylistPopUpCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"AddToPlaylistPopUpCollectionViewCell" forIndexPath:indexPath];
-//    NSString *intVal = [NSString stringWithFormat:@"%ld", (long)indexPath.row + 1];
     DCPlaylist *playlist = [self.mPlaylistsArray objectAtIndex:indexPath.row];
     [cell.playlistNameLabel setText:playlist.playlistName];
-    // Also set the cover image for the same
+    // Also set the cover image and other required parameters for the same
     
     return cell;
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
     DCPlaylist *playlistItem = [self.mPlaylistsArray objectAtIndex:indexPath.row];
-    NSLog(@"IndexPath.Row: %ld", (long)indexPath.row);
-    NSLog(@"playlist.playlistName: %@", playlistItem.playlistName);
+    [[ECAPI sharedManager] addToPlaylist:playlistItem.playlistId feedItemId:self.mFeedItemId userId:self.signedInUser.userId callback:^(NSArray *playlists, NSError *error) {
+        if(error){
+            NSLog(@"Error while adding feedItem into playlist: %@", error);
+        }
+        else{
+            self.mPlaylistsArray = [[NSMutableArray alloc] initWithArray:playlists];
+            [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:self.signedInUser.profilePicUrl callback:^(NSError *error) {
+                if (error) {
+                    NSLog(@"Error while updating profile picURL: %@", error);
+                } else {
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdated" object:nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdatedNew" object:nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateEventTV" object:nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateChatReaction" object:nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
+                    [self removeAnimation];
+                }
+            }];
+        };
+    }];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {

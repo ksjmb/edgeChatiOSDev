@@ -39,6 +39,7 @@
 @property (nonatomic, strong)ECUser *mProfileUser;
 @property (nonatomic, strong) NSMutableArray *favListArray;
 @property (nonatomic, copy) NSString *mPlaylistId;
+@property (nonatomic, copy) NSString *mPlaylistName;
 @property (nonatomic, assign) BOOL isCanShare;
 
 @end

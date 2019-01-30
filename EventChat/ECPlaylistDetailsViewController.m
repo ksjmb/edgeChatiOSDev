@@ -70,6 +70,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+    [self.navigationItem setTitle:self.mPlaylistName];
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     
     NSNumber *value = [NSNumber numberWithInt:UIInterfaceOrientationPortrait];
@@ -174,7 +175,7 @@
 
 #pragma mark:- Instance Methods
 
-- (void)initialSetup{
+- (void) initialSetup{
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(profileUpdatedNew) name:@"profileUpdatedNew" object:nil];
     
     self.filterSeasonList = [[HTHorizontalSelectionList alloc] initWithFrame:CGRectMake(0, 0.0, self.view.frame.size.width, 40)];

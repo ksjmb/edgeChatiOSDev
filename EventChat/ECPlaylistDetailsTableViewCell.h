@@ -10,7 +10,10 @@
 #import <YTPlayerView.h>
 #import "DCFeedItem.h"
 #import "DCDigital.h"
+#import "ECUser.h"
+#import "DCPersonEntityObject.h"
 
+@class DCPersonEntityObject;
 @class ECPlaylistDetailsTableViewCell;
 
 @protocol ECPlaylistDetailsTableViewCellDelegate <NSObject>

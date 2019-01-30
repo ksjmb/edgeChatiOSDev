@@ -25,12 +25,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    [self.navigationController.navigationItem setTitle:@"Playlists"];
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
 }
 
 - (void)viewDidAppear:(BOOL)animated{
+    [self.navigationItem setTitle:@"Playlists"];
+    
     NSString *userId;
     if(self.isSignedInUser){
         userId = self.signedInUser.userId;
@@ -133,6 +134,7 @@
                 vc.favListArray = [[NSMutableArray alloc] initWithArray:favorites];
                 vc.mPlaylistId = playlist.playlistId;
                 vc.isCanShare = playlist.canShare;
+                vc.mPlaylistName = playlist.playlistName;
                 [self.navigationController pushViewController:vc animated:YES];
             }
         }];

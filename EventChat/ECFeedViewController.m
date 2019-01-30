@@ -239,6 +239,7 @@
 #pragma mark:- Post Notification Methods
 
 -(void)profileUpdated {
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
     [self.eventFeedTableView reloadData];
 }
 

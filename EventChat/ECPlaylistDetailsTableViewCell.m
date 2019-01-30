@@ -13,6 +13,8 @@
 #import "ECUser.h"
 #import "ECColor.h"
 #import "ECCommonClass.h"
+#import "DCFeedItem.h"
+#import "DCDigital.h"
 #import <SDWebImage/UIImageView+WebCache.h>
 
 @interface ECPlaylistDetailsTableViewCell()
@@ -96,10 +98,17 @@
 - (void)configureCellFeedItemWith:(DCFeedItem *)feedItem isFavorited:(BOOL)isFavorited isAttending:(BOOL)isAttending indexPath:(NSIndexPath *)indexPath{
     self.feedItem = feedItem;
     self.playButton.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.25];
+//    [self.favBtn setHidden:YES];
     
     //Title and description label
     [self.playlistTitleLabel setText:[NSString stringWithFormat:@"E%@ - %@", feedItem.digital.episodeNumber, feedItem.digital.episodeTitle]];
-    [self.playlistMsgLabel setText:feedItem.digital.episodeDescription];
+    
+    if (![feedItem.digital.episodeDescription  isEqual: @""]){
+        [self.playlistMsgLabel setText:feedItem.digital.episodeDescription];
+    }else{
+        [self.playlistTitleLabel setText:[NSString stringWithFormat:@"%@", feedItem.person.name]];
+        [self.playlistMsgLabel setText:feedItem.person.blurb];
+    }
     
     //Comments Button
     if([feedItem.commentCount intValue] > 0){
@@ -115,12 +124,15 @@
         self.commentCountButton.enabled = TRUE;
     }
     
+    /*
     //Fav button
     if(isFavorited){
-        [self.favBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+//        [self.favBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+        [self.favBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor whiteColor]] forState:UIControlStateNormal];
     }
     else{
-        [self.favBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+//        [self.favBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+        [self.favBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor whiteColor]] forState:UIControlStateNormal];
     }
     
     //like button
@@ -133,9 +145,28 @@
     
     //share button
     [self.shareBtn setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor blackColor]] forState:UIControlStateNormal];
+    */
+    
+    //Fav button
+    if(isFavorited){
+        [self.favBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
+    }
+    else{
+        [self.favBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor grayColor]] forState:UIControlStateNormal];
+    }
+    [self.likeButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor blackColor]] forState:UIControlStateNormal];
+    //share button
+    [self.shareBtn setImage:[IonIcons imageWithIcon:ion_heart  size:30.0 color:[UIColor whiteColor]] forState:UIControlStateNormal];
+    [self.shareBtn setUserInteractionEnabled:NO];
     
     if(feedItem.digital.imageUrl != nil){
-        [self showImageOnTheCell:self ForImageUrl:feedItem.digital.imageUrl isFromDownloadButton:NO];
+        if (![feedItem.digital.imageUrl  isEqual: @""]){
+            [self showImageOnTheCell:self ForImageUrl:feedItem.digital.imageUrl isFromDownloadButton:NO];
+        }else{
+            if(feedItem.person.profilePic_url != nil){
+                [self showImageOnTheCell:self ForImageUrl:feedItem.person.profilePic_url isFromDownloadButton:NO];
+            }
+        }
     }
     [self layoutIfNeeded];
 }
