@@ -817,7 +817,7 @@
          [self.navigationController pushViewController:vc animated:YES];
         
     }else{
-        [self pushToSignInVC:@"DCPlaylistsTableViewController"];
+        [self pushToSignInVC:@"ECNewPlaylistTableViewController"];
     }
 }
 
@@ -1117,7 +1117,7 @@
          */
     }else{
         [[NSUserDefaults standardUserDefaults] setObject:ecFeedCell.feedItem.feedItemId forKey:@"feedItemId"];
-        [self pushToSignInVC:@"DCPlaylistsTableViewController"];
+        [self pushToSignInVC:@"SameVC"];
     }
 }
 

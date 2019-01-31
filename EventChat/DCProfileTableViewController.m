@@ -27,6 +27,7 @@
 #import "DCPlaylistsTableViewController.h"
 #import "DCPost.h"
 #import "ECEventTopicCommentsViewController.h"
+#import "ECNewPlaylistTableViewController.h"
 
 @interface DCProfileTableViewController ()
 @property (nonatomic, strong) UIBarButtonItem *searchBarButtonItem;
@@ -474,12 +475,20 @@
 }
 
 - (IBAction)didTapViewFavorites:(id)sender{
+    ECNewPlaylistTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewPlaylistTableViewController"];
+    vc.isFeedMode = false;
+    vc.isSignedInUser = true;
+    vc.signedInUser = self.signedInUser;
+    vc.profileUser = self.profileUser;
+    [self.navigationController pushViewController:vc animated:YES];
+    /*
     DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
     dcPlaylistsTableViewController.isFeedMode = false;
     dcPlaylistsTableViewController.isSignedInUser = _isSignedInUser;
     dcPlaylistsTableViewController.signedInUser = _signedInUser;
     dcPlaylistsTableViewController.profileUser = _profileUser;
     [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+     */
 }
 
 #pragma mark - DCNewPostViewControllerDelegate methods

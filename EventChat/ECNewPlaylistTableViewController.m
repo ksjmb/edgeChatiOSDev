@@ -85,7 +85,6 @@
     return 180.0;
 }
 
-
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     DCPlaylist *playlist = [self.playlistArray objectAtIndex:indexPath.row];
     if(_isFeedMode){

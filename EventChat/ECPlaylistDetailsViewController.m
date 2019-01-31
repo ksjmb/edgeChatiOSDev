@@ -173,6 +173,26 @@
     NSLog(@"View More button click...");
 }
 
+#pragma mark:- Delegate Methods
+
+- (void)playVideoForSelectedEpisode:(ECPlaylistDetailsTableViewCell *)ecTableViewCell index:(NSInteger)index{
+    NSLog(@"Play Button: index: %ld", (long)index);
+}
+
+- (void)didTapCommentsButton:(ECPlaylistDetailsTableViewCell *)ecTableViewCell index:(NSInteger)index{
+    NSLog(@"comment: index: %ld", (long)index);
+}
+
+// change to Like button
+- (void)mainFeedDidTapFavoriteButton:(ECPlaylistDetailsTableViewCell *)ecTableViewCell index:(NSInteger)index{
+    NSLog(@"Fav (Like): index: %ld", (long)index);
+}
+
+// change to Share button
+- (void)mainFeedDidTapAttendanceButton:(ECPlaylistDetailsTableViewCell *)ecTableViewCell index:(NSInteger)index{
+    NSLog(@"Like (Share): index: %ld", (long)index);
+}
+
 #pragma mark:- Instance Methods
 
 - (void) initialSetup{

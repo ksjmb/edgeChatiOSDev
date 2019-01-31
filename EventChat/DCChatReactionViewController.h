@@ -22,6 +22,7 @@
 #import <IQKeyboardManager/IQKeyboardManager.h>
 #import "DCReactionTableViewCell.h"
 #import "MessageTableViewCell.h"
+#import "AddToPlaylistPopUpViewController.h"
 
 @class ECEventBriteEvent;
 @class ECTopicViewController;
@@ -29,7 +30,7 @@
 @class DCFeedItem;
 @class MessageTableViewCell;
 
-@interface DCChatReactionViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, FCAlertViewDelegate, UITextViewDelegate, UIActionSheetDelegate>
+@interface DCChatReactionViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, FCAlertViewDelegate, UITextViewDelegate, UIActionSheetDelegate, AddToPlaylistDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *mImageView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;

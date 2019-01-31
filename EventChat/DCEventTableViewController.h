@@ -12,8 +12,9 @@
 #import <FBSDKShareKit/FBSDKShareKit.h>
 #import "SignUpLoginViewController.h"
 #import "RegisterViewController.h"
+#import "AddToPlaylistPopUpViewController.h"
 
-@interface DCEventTableViewController : UITableViewController <DCEventTableViewCellDelegate, SignUpLoginViewControllerDelegate, FBSDKSharingDelegate, RegisterViewControllerDelegate>
+@interface DCEventTableViewController : UIViewController <DCEventTableViewCellDelegate, SignUpLoginViewControllerDelegate, FBSDKSharingDelegate, RegisterViewControllerDelegate, AddToPlaylistDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @property (strong, nonatomic) IBOutlet UITableView *eventTableView;
 @property (nonatomic, strong) DCFeedItem *saveEventFeedItem;

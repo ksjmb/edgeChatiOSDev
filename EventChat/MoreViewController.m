@@ -15,6 +15,7 @@
 #import "SignUpLoginViewController.h"
 #import "ECCommonClass.h"
 #import "ECNewUserProfileViewController.h"
+#import "ECNewPlaylistTableViewController.h"
 
 @interface MoreViewController ()
 @property (nonatomic, strong)ECUser *signedInUser;
@@ -134,12 +135,19 @@
     }
     else if(indexPath.row == 1) {
         if (self.userEmail != nil){
+            ECNewPlaylistTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewPlaylistTableViewController"];
+            vc.isFeedMode = false;
+            vc.isSignedInUser = true;
+            [self.navigationController pushViewController:vc animated:YES];
+            
+            /*
             DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
             dcPlaylistsTableViewController.isFeedMode = false;
             dcPlaylistsTableViewController.isSignedInUser = true;
             [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+             */
         }else{
-            [self pushToSignInVC:@"DCPlaylistsTableViewController"];
+            [self pushToSignInVC:@"ECNewPlaylistTableViewController"];
         }
     }
     else if(indexPath.row == 2) {
@@ -225,11 +233,17 @@
         dcProfileTableViewController.profileUser = self.signedInUser;
         [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
     }
-    else if([identifier isEqualToString:@"DCPlaylistsTableViewController"]) {
+    else if([identifier isEqualToString:@"ECNewPlaylistTableViewController"]) {
+        ECNewPlaylistTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewPlaylistTableViewController"];
+        vc.isFeedMode = false;
+        vc.isSignedInUser = true;
+        [self.navigationController pushViewController:vc animated:YES];
+        /*
         DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
         dcPlaylistsTableViewController.isSignedInUser = true;
         dcPlaylistsTableViewController.isFeedMode = false;
         [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+         */
     }
     else if([identifier isEqualToString:@"NotificationSettingsViewController"]) {
         NotificationSettingsViewController *notificationSettingsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"NotificationSettingsViewController"];

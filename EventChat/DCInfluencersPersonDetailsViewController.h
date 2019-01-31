@@ -13,6 +13,7 @@
 #import "DCDigital.h"
 #import "SignUpLoginViewController.h"
 #import "RegisterViewController.h"
+#import "AddToPlaylistPopUpViewController.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
 
@@ -20,7 +21,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DCInfluencersPersonDetailsViewController : UIViewController <SignUpLoginViewControllerDelegate, UITableViewDataSource, UITableViewDelegate, DCInfluencersPersonDetailsTVCellDelegate, RegisterViewControllerDelegate>
+@interface DCInfluencersPersonDetailsViewController : UIViewController <SignUpLoginViewControllerDelegate, UITableViewDataSource, UITableViewDelegate, DCInfluencersPersonDetailsTVCellDelegate, RegisterViewControllerDelegate, AddToPlaylistDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *mBKImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *mProfilePhotoImageView;

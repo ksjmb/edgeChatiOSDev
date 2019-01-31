@@ -46,7 +46,7 @@
 - (IBAction)actionOnCommentButton:(id)sender {
     NSIndexPath *indexPath = [(UITableView *)self.superview indexPathForCell:self];
     NSLog(@"ECPlaylistDetailsTableViewCell: IndexPath.row: %ld", (long)indexPath.row);
-    if([self.mPlaylistDelegate respondsToSelector:@selector(mainFeedDidTapShareButton:index:)]){
+    if([self.mPlaylistDelegate respondsToSelector:@selector(didTapCommentsButton:index:)]){
         [self.mPlaylistDelegate didTapCommentsButton:self index:indexPath.row];
     }
 }

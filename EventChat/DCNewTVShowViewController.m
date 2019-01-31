@@ -25,6 +25,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
 #import "SVProgressHUD.h"
+#import "AddToPlaylistPopUpViewController.h"
 
 @interface DCNewTVShowViewController () <HTHorizontalSelectionListDataSource, HTHorizontalSelectionListDelegate>
 
@@ -192,6 +193,25 @@
 
 - (void)mainFeedDidTapFavoriteButton:(DCNewTVShowEpisodeTableViewCell *)dcTVNewShowEpisodeTableViewCell index:(NSInteger)index{
     if (self.userEmail != nil){
+        AddToPlaylistPopUpViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddToPlaylistPopUpViewController"];
+        CATransition *transition = [CATransition animation];
+        transition.duration = 0.5;
+        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        transition.type = kCATransitionFromBottom;
+        transition.subtype = kCATransitionFromBottom;
+        [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+        [self.navigationController.navigationBar setUserInteractionEnabled:NO];
+        self.tabBarController.tabBar.hidden = YES;
+        [self.filterSeasonList setUserInteractionEnabled:NO];
+        vc.playlistDelegate = self;
+        vc.isFeedMode = true;
+        vc.mFeedItemId = dcTVNewShowEpisodeTableViewCell.feedItem.feedItemId;
+        [self addChildViewController:vc];
+        vc.view.frame = self.view.frame;
+        [self.view addSubview:vc.view];
+        [vc didMoveToParentViewController:self];
+        
+        /*
         DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
         dcPlaylistsTableViewController.isFeedMode = true;
         dcPlaylistsTableViewController.isSignedInUser = true;
@@ -199,10 +219,11 @@
         UINavigationController *navigationController =
         [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
         [self presentViewController:navigationController animated:YES completion:nil];
+         */
     }else{
         [[NSUserDefaults standardUserDefaults] setObject:dcTVNewShowEpisodeTableViewCell.feedItem.feedItemId forKey:@"feedItemId"];
 //        self.isTopFavButtonSelected = false;
-        [self pushToSignInVC:@"DCPlaylistsTableViewController"];
+        [self pushToSignInVC:@"SamcVC"];
     }
 }
 
@@ -565,6 +586,25 @@
 
 - (void)didTapFavButton{
     if (self.userEmail != nil){
+        AddToPlaylistPopUpViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddToPlaylistPopUpViewController"];
+        CATransition *transition = [CATransition animation];
+        transition.duration = 0.5;
+        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        transition.type = kCATransitionFromBottom;
+        transition.subtype = kCATransitionFromBottom;
+        [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+        [self.navigationController.navigationBar setUserInteractionEnabled:NO];
+        self.tabBarController.tabBar.hidden = YES;
+        [self.filterSeasonList setUserInteractionEnabled:NO];
+        vc.playlistDelegate = self;
+        vc.isFeedMode = true;
+        vc.mFeedItemId = self.selectedFeedItemId;
+        [self addChildViewController:vc];
+        vc.view.frame = self.view.frame;
+        [self.view addSubview:vc.view];
+        [vc didMoveToParentViewController:self];
+        
+        /*
         DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
         NSLog(@"self.selectedFeedItemId: %@", self.selectedFeedItemId);
         dcPlaylistsTableViewController.isFeedMode = true;
@@ -574,9 +614,11 @@
         [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
         [self presentViewController:navigationController animated:YES completion:nil];
 //        [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+         */
+        
     }else{
 //        self.isTopFavButtonSelected = false;
-        [self pushToSignInVC:@"DCPlaylistsTableViewController"];
+        [self pushToSignInVC:@"SameVC"];
     }
 }
 
@@ -646,6 +688,14 @@
     [alertController addAction:moreOptionsAction];
     
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+#pragma mark:- AddToPlaylist Delegate Methods
+
+- (void)updateUI{
+    [self.navigationController.navigationBar setUserInteractionEnabled:YES];
+    self.tabBarController.tabBar.hidden = NO;
+    [self.filterSeasonList setUserInteractionEnabled:YES];
 }
 
 #pragma mark:- SignUpLoginDelegate Methods

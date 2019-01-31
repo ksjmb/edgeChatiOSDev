@@ -19,6 +19,7 @@
 #import "ECCommonClass.h"
 #import "DCFeedItem.h"
 #import "DCEventEntityObject.h"
+#import "AddToPlaylistPopUpViewController.h"
 
 @interface DCEventTableViewController ()
 @property (nonatomic, strong) ECUser *signedInUser;
@@ -45,7 +46,6 @@
 
     [[ECAPI sharedManager] getFeedItemFilters:^(NSArray *results, NSError *error){
         self.feedItemFilters = [[NSMutableArray alloc] initWithArray:results];
-        
         for(int x=0; x < [_feedItemFilters count]; x++){
             DCFeedItemFilter *feedItemFilter = _feedItemFilters[x];
             if([feedItemFilter.name isEqual:@"Event"]){
@@ -57,6 +57,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+    [self.navigationItem setTitle:@"Events"];
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.mUserEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -71,7 +72,7 @@
         }
         else{
             self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
-            [self.tableView reloadData];
+            [self.eventTableView reloadData];
             [SVProgressHUD dismiss];
         }
     }];
@@ -174,6 +175,26 @@
 
 - (void)eventFeedDidTapFavoriteButton:(DCEventTableViewCell *)dcEventTableViewCell index:(NSInteger)index{
     if (_mUserEmail != nil && ![_mUserEmail isEqualToString:@""]){
+        AddToPlaylistPopUpViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddToPlaylistPopUpViewController"];
+        CATransition *transition = [CATransition animation];
+        transition.duration = 0.5;
+        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        transition.type = kCATransitionFromBottom;
+        transition.subtype = kCATransitionFromBottom;
+        [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+        [self.navigationController.navigationBar setUserInteractionEnabled:NO];
+        self.tabBarController.tabBar.hidden = YES;
+//        self.edgesForExtendedLayout = UIRectEdgeBottom;
+//        self.extendedLayoutIncludesOpaqueBars = NO;
+        vc.playlistDelegate = self;
+        vc.isFeedMode = true;
+        vc.mFeedItemId = dcEventTableViewCell.feedItem.feedItemId;
+        [self addChildViewController:vc];
+        vc.view.frame = self.view.frame;
+        [self.view addSubview:vc.view];
+        [vc didMoveToParentViewController:self];
+        
+        /*
         DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
         dcPlaylistsTableViewController.isFeedMode = true;
         dcPlaylistsTableViewController.isSignedInUser = true;
@@ -181,9 +202,10 @@
         UINavigationController *navigationController =
         [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTableViewController];
         [self presentViewController:navigationController animated:YES completion:nil];
+         */
     }else{
         [[NSUserDefaults standardUserDefaults] setObject:dcEventTableViewCell.feedItem.feedItemId forKey:@"feedItemId"];
-        [self pushToSignInVC:@"DCPlaylistsTableViewController"];
+        [self pushToSignInVC:@"SameVC"];
     }
 }
 
@@ -284,6 +306,15 @@
     }else{
         [self pushToSignInVC:@"sameVC"];
     }
+}
+
+#pragma mark:- AddToPlaylist Delegate Methods
+
+- (void)updateUI{
+    [self.navigationController.navigationBar setUserInteractionEnabled:YES];
+    self.tabBarController.tabBar.hidden = NO;
+//    self.edgesForExtendedLayout = UIRectEdgeBottom;
+//    self.extendedLayoutIncludesOpaqueBars = YES;
 }
 
 #pragma mark:- Twitter Methods
