@@ -290,12 +290,10 @@
     if (inMemoryImage)
     {
         self.coverImageView.image = inMemoryImage;
-        
     }
     else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
         UIImage *image = [cache imageFromDiskCacheForKey:url];
         self.coverImageView.image = image;
-        
     }else{
         NSURL *urL = [NSURL URLWithString:url];
         SDWebImageManager *manager = [SDWebImageManager sharedManager];
@@ -310,14 +308,12 @@
                                     self.coverImageView.image = image;
                                     self.coverImageView.layer.borderWidth = 1.0;
                                     self.coverImageView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor redColor]);
-                                    
                                 }
                                 else {
                                     if(error){
                                         NSLog(@"Problem downloading Image,please try again...");
                                         return;
                                     }
-                                    
                                 }
                             }];
     }
