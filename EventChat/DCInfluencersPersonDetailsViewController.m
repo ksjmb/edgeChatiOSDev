@@ -196,13 +196,33 @@
             }
         }];
     }
-    else if([identifier isEqualToString:@"DCPlaylistsTableViewController"]) {
+    else if([identifier isEqualToString:@"AddToPlaylistPopUpViewController"]) {
         NSString *feedItemId = [[NSUserDefaults standardUserDefaults] valueForKey:@"feedItemId"];
+        
+        AddToPlaylistPopUpViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddToPlaylistPopUpViewController"];
+        CATransition *transition = [CATransition animation];
+        transition.duration = 0.5;
+        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+        transition.type = kCATransitionFromBottom;
+        transition.subtype = kCATransitionFromBottom;
+        [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+        [self.navigationController.navigationBar setUserInteractionEnabled:NO];
+        self.tabBarController.tabBar.hidden = YES;
+        vc.playlistDelegate = self;
+        vc.isFeedMode = true;
+        vc.mFeedItemId = feedItemId;
+        [self addChildViewController:vc];
+        vc.view.frame = self.view.frame;
+        [self.view addSubview:vc.view];
+        [vc didMoveToParentViewController:self];
+        
+        /*
         DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
             dcPlaylistsTableViewController.isSignedInUser = true;
             dcPlaylistsTableViewController.isFeedMode = true;
             dcPlaylistsTableViewController.feedItemId = feedItemId;
             [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+         */
     }
     else if([identifier isEqualToString:@"ECAttendanceDetailsViewController"]) {
         ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
@@ -373,7 +393,7 @@
          */
     }else{
         [[NSUserDefaults standardUserDefaults] setObject:self.mSelectedDCFeedItem.feedItemId forKey:@"feedItemId"];
-        [self pushToSignInViewController:@"SameVC"];
+        [self pushToSignInViewController:@"AddToPlaylistPopUpViewController"];
     }
 }
 

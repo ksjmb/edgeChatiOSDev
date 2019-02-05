@@ -21,6 +21,8 @@
     // Initialization code
     self.userEmailStr = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    [self.mFacebookButton addBorderForSide:Right color:[UIColor lightGrayColor] width:0.5];
+    [self.mTwitterButton addBorderForSide:Right color:[UIColor lightGrayColor] width:0.5];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
@@ -32,8 +34,8 @@
 #pragma mark - Configure Cell
 
 -(void)configureSocialCell:(ECUser *)user :(ECUser *)loginUser{
-    [self.mFacebookButton addBorderForSide:Right color:[UIColor lightGrayColor] width:0.5];
-    [self.mTwitterButton addBorderForSide:Right color:[UIColor lightGrayColor] width:0.5];
+//    [self.mFacebookButton addBorderForSide:Right color:[UIColor lightGrayColor] width:0.5];
+//    [self.mTwitterButton addBorderForSide:Right color:[UIColor lightGrayColor] width:0.5];
     [self loadFacebookData:user];
     [self loadTwitterData:user];
     [self loadInstagramData:user :loginUser];

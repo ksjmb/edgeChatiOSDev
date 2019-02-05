@@ -18,11 +18,12 @@
 - (void)awakeFromNib {
     [super awakeFromNib];
     // Initialization code
+    [self.facebookBtn addBorderForSide:Right color:[UIColor lightGrayColor] width:0.5];
+    [self.twitterBtn addBorderForSide:Right color:[UIColor lightGrayColor] width:0.5];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
     // Configure the view for the selected state
 }
 
@@ -33,8 +34,6 @@
 //    [self.facebookBtn.layer addSublayer:[[ECCommonClass sharedManager] addImageToButton:self.facebookBtn imageType:nil aColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] aSize:30.0]];
 //    [self.twitterBtn.layer addSublayer:[[ECCommonClass sharedManager] addImageToButton:self.twitterBtn imageType:nil aColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] aSize:30.0]];
 //    [self.instragramBtn.layer addSublayer:[[ECCommonClass sharedManager] addImageToButton:self.instragramBtn imageType:nil aColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]] aSize:30.0]];
-    [self.facebookBtn addBorderForSide:Right color:[UIColor lightGrayColor] width:0.5];
-    [self.twitterBtn addBorderForSide:Right color:[UIColor lightGrayColor] width:0.5];
     [self loadFacebookData:feedItem];
     [self loadTwitterData:feedItem];
     [self loadInstagramData:feedItem];
