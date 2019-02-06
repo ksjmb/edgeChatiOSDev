@@ -699,7 +699,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yUO-3Q-OLB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3799" y="-1101"/>
+            <point key="canvasLocation" x="3777" y="-1085"/>
         </scene>
         <!--NewTV Show View Controller-->
         <scene sceneID="5t8-QL-sM2">
@@ -2298,7 +2298,7 @@ Cg
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uke-xg-Cfc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4462" y="-1093"/>
+            <point key="canvasLocation" x="4497" y="-1085"/>
         </scene>
         <!--How To View Controller-->
         <scene sceneID="3ov-CY-5Pt">
@@ -2373,8 +2373,8 @@ Cg
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4aT-Uh-UwU">
-                                                    <rect key="frame" x="8" y="0.0" width="559" height="42"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <rect key="frame" x="8" y="0.0" width="361" height="42"/>
+                                                    <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="15"/>
                                                     <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
@@ -2427,7 +2427,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yAb-Oh-tUe" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4303" y="-244"/>
+            <point key="canvasLocation" x="4301.6000000000004" y="-244.22788605697153"/>
         </scene>
         <!--Profile View Controller-->
         <scene sceneID="wg7-f3-ORb">
@@ -4379,7 +4379,7 @@ Cg
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="A8X-XE-IeB" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="4378" y="528"/>
+            <point key="canvasLocation" x="4302" y="500"/>
         </scene>
         <!--Event Conversation-->
         <scene sceneID="ZZA-Ui-184">
