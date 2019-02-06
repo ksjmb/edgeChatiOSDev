@@ -122,6 +122,10 @@
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath{
+    return 300.0;
+}
+
 #pragma mark:- HTHorizontalSelectionList DataSource Methods
 
 - (NSInteger)numberOfItemsInSelectionList:(HTHorizontalSelectionList *)selectionList {
@@ -198,10 +202,13 @@
 - (void) initialSetup{
 //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(profileUpdatedNew) name:@"profileUpdatedNew" object:nil];
     
+    //** Uncomment below code when it is required in app, also unselect self.horizontalItemView from stroboard **//
+    /*
     self.filterSeasonList = [[HTHorizontalSelectionList alloc] initWithFrame:CGRectMake(0, 0.0, self.view.frame.size.width, 40)];
     self.filterSeasonList.delegate = self;
     self.filterSeasonList.dataSource = self;
     [self.horizontalItemView addSubview:self.filterSeasonList];
+     */
     
     [self.shareBtn setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor blackColor]] forState:UIControlStateNormal];
     

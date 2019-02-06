@@ -33,7 +33,6 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
 #import "DCFeedItemFilter.h"
-#import "ECCommonClass.h"
 #import "DCPersonDetailTableViewController.h"
 #import "AFOAuth2Manager.h"
 #import "ECAuthAPI.h"
@@ -50,6 +49,7 @@
 #import "ECNewUserProfileViewController.h"
 #import "ECNewPlaylistTableViewController.h"
 #import "AddToPlaylistPopUpViewController.h"
+#import "ECCommonClass.h"
 
 @interface ECFeedViewController () <HTHorizontalSelectionListDataSource, HTHorizontalSelectionListDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *eventFeedTableView;
