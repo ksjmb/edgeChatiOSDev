@@ -238,6 +238,11 @@
 
 - (void)initialSetupForReaction{
     self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
+    if([self.signedInUser.attendingFeedItemIds containsObject:self.selectedFeedItem.feedItemId]){
+        [self.thumbsImageView setImage:[UIImage imageNamed:@"thumb_blue"]];
+    }else{
+        [self.thumbsImageView setImage:[UIImage imageNamed:@"thumb_white"]];
+    }
     [self getFeedItemAttendeeList];
     [self.attendeeListTableView setHidden:true];
 }
@@ -420,8 +425,6 @@
                                 else{
                                     index = index - 1;
                                 }
-                                
-                                
                                 NSIndexPath *indexPath = [NSIndexPath indexPathForRow:index inSection:0];
                                 UITableViewRowAnimation rowAnimation = self.inverted ? UITableViewRowAnimationBottom : UITableViewRowAnimationTop;
                                 UITableViewScrollPosition scrollPosition = self.inverted ? UITableViewScrollPositionBottom : UITableViewScrollPositionTop;
@@ -794,14 +797,16 @@
 
 - (IBAction)actionOnReactionsButton:(id)sender {
     [self.view endEditing:YES];
-    self.commentsBottomLabel.backgroundColor = [UIColor whiteColor];
-    self.reactionBottomLabel.backgroundColor = [UIColor colorWithRed:0.0/255.0 green:113.0/255.0 blue:169.0/255.0 alpha:0.75];
-    [self.postCommentView setHidden:true];
-    [self.chatTableView setHidden:true];
-    [self.attendeeListTableView setHidden:false];
-    [self.segmentControl setHidden:false];
-    [self.messages removeAllObjects];
-    [self getFeedItemAttendeeList];
+    if (!self.isInfluencers){
+        self.commentsBottomLabel.backgroundColor = [UIColor whiteColor];
+        self.reactionBottomLabel.backgroundColor = [UIColor colorWithRed:0.0/255.0 green:113.0/255.0 blue:169.0/255.0 alpha:0.75];
+        [self.postCommentView setHidden:true];
+        [self.chatTableView setHidden:true];
+        [self.attendeeListTableView setHidden:false];
+        [self.segmentControl setHidden:false];
+        [self.messages removeAllObjects];
+        [self getFeedItemAttendeeList];
+    }
 }
 
 - (IBAction)actionOnShareButton:(id)sender {

@@ -70,5 +70,8 @@
 //@property (nonatomic, strong) NSMutableArray *mainParentIdArray;
 @property (nonatomic, strong) NSMutableArray *childParentIdArray;
 @property (nonatomic, assign) BOOL isCommingFromEvent;
+@property (nonatomic, assign) BOOL isInfluencers;
+@property (weak, nonatomic) IBOutlet UIImageView *thumbsImageView;
+
 
 @end

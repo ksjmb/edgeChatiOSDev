@@ -176,7 +176,6 @@
         self.filterList.dataSource = self;
         [self.view addSubview:self.filterList];
         
-        
         [[ECAPI sharedManager] getFeedItemFilters:^(NSArray *results, NSError *error){
             self.feedItemFilters = [[NSMutableArray alloc] initWithArray:results];
             [self.filterList reloadData];
@@ -209,9 +208,14 @@
         UIImage* img;
         
         if([self.signedInUser.profilePicUrl length] > 0){
+            //FB_Login URL :
+            //https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=2023902657670094&height=200&width=200&ext=1547728873&hash=AeQgsXIZ6yxs38AK
             NSString* url = self.signedInUser.profilePicUrl;
             NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL   URLWithString:url]];
             img = [UIImage imageWithData:data];
+            if (img == nil){
+                img = [UIImage imageNamed:@"missing-profile.png"];
+            }
         }
         else{
             img = [UIImage imageNamed:@"missing-profile.png"];
@@ -367,11 +371,13 @@
         //        [self presentViewController:navigationController animated:YES completion:nil];
          */
     }
-    else if([identifier isEqualToString:@"ECAttendanceDetailsViewController"]) {
+    else if([identifier isEqualToString:@"SameVC"]) {
+        [self setUserAttendanceResponse:self.saveFeedItem.feedItemId];
+        /*
         ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
         ecAttendanceDetailsViewController.selectedFeedItem = self.saveFeedItem;
         [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
-        
+         */
     }
 //    else if([identifier isEqualToString:@"MoreViewController"]) {
 //        self.tabBarController.selectedViewController = [self.tabBarController.viewControllers objectAtIndex:3];
@@ -548,8 +554,7 @@
 - (void)loadFeedItemsByFilter:(DCFeedItemFilter *)feedItemFilter{
     [[ECAPI sharedManager] filterFeedItemsByFilterObject:feedItemFilter callback:^(NSArray *searchResult, NSError *error) {
         if (error) {
-            NSLog(@"Error adding user: %@", error);
-            NSLog(@"%@", error);
+            NSLog(@"Error loadFeedItemsByFilter: %@", error);
         }
         else{
             self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
@@ -562,10 +567,32 @@
 - (void)tempCall{
     [[ECAPI sharedManager] getUserByEmail:@"belani.jigish@gmail.com" callback:^(ECUser *ecUser, NSError *error) {
         if(error){
-            NSLog(@"Error: %@", error);
+            NSLog(@"Error tempCall: %@", error);
         }
         else{
             NSLog(@"User: %@", ecUser);
+        }
+    }];
+}
+
+-(void)setUserAttendanceResponse:(NSString *)strFeedId{
+    NSString *userResponse = @"Going";
+    
+    [[ECAPI sharedManager] setAttendeeResponse:self.signedInUser.userId feedItemId:strFeedId response:userResponse callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error saving response: %@", error);
+        } else {
+            [self updateUserProfile];
+        }
+    }];
+}
+
+-(void)updateUserProfile{
+    [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:self.signedInUser.profilePicUrl callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error adding user: %@", error);
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdated" object:nil];
         }
     }];
 }
@@ -1144,12 +1171,15 @@
 //** LikeTap **//
 - (void)mainFeedDidTapAttendanceButton:(ECNewTableViewCell *)ecFeedCell index:(NSInteger)index{
     if (self.userEmail != nil){
+        [self setUserAttendanceResponse:ecFeedCell.feedItem.feedItemId];
+        /*
         ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
         ecAttendanceDetailsViewController.selectedFeedItem = ecFeedCell.feedItem;
         [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+         */
     }else{
         self.saveFeedItem = ecFeedCell.feedItem;
-        [self pushToSignInVC:@"ECAttendanceDetailsViewController"];
+        [self pushToSignInVC:@"SameVC"];
     }
 }
 

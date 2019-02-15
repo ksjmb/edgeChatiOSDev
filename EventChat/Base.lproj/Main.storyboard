@@ -1197,11 +1197,11 @@ Cg
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="6kk-J0-ZJF">
                                         <rect key="frame" x="187.5" y="0.0" width="187.5" height="40"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="thumb_up" translatesAutoresizingMaskIntoConstraints="NO" id="N4f-xh-avC">
-                                                <rect key="frame" x="34.5" y="10" width="20" height="20"/>
+                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="thumb_white" translatesAutoresizingMaskIntoConstraints="NO" id="N4f-xh-avC">
+                                                <rect key="frame" x="34.5" y="9.5" width="21" height="21"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="height" constant="20" id="PHm-iD-ilK"/>
-                                                    <constraint firstAttribute="width" constant="20" id="ypg-kV-VkN"/>
+                                                    <constraint firstAttribute="height" constant="21" id="PHm-iD-ilK"/>
+                                                    <constraint firstAttribute="width" constant="21" id="ypg-kV-VkN"/>
                                                 </constraints>
                                             </imageView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Reactions" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XG8-gC-2WP">
@@ -1229,7 +1229,7 @@ Cg
                                             <constraint firstAttribute="trailing" secondItem="ZcC-uR-zZO" secondAttribute="trailing" id="Nnc-kC-mKr"/>
                                             <constraint firstItem="N4f-xh-avC" firstAttribute="centerY" secondItem="XG8-gC-2WP" secondAttribute="centerY" id="Pz3-EF-kNW"/>
                                             <constraint firstItem="XG8-gC-2WP" firstAttribute="centerY" secondItem="6kk-J0-ZJF" secondAttribute="centerY" id="Yn5-OP-Hez"/>
-                                            <constraint firstItem="XG8-gC-2WP" firstAttribute="leading" secondItem="N4f-xh-avC" secondAttribute="trailing" constant="8" id="dbB-rP-Fvl"/>
+                                            <constraint firstItem="XG8-gC-2WP" firstAttribute="leading" secondItem="N4f-xh-avC" secondAttribute="trailing" constant="7" id="dbB-rP-Fvl"/>
                                             <constraint firstItem="ZcC-uR-zZO" firstAttribute="top" secondItem="6kk-J0-ZJF" secondAttribute="top" id="iAI-9J-0GF"/>
                                             <constraint firstItem="e1j-dH-AuH" firstAttribute="centerY" secondItem="XG8-gC-2WP" secondAttribute="centerY" id="rRL-Ap-1te"/>
                                             <constraint firstItem="e1j-dH-AuH" firstAttribute="leading" secondItem="XG8-gC-2WP" secondAttribute="trailing" constant="5" id="rnr-63-0KF"/>
@@ -1629,6 +1629,7 @@ Cg
                         <outlet property="reactionsCountLabel" destination="e1j-dH-AuH" id="eOA-IY-2ln"/>
                         <outlet property="segmentControl" destination="CVA-A5-qWt" id="x5d-Zo-9Vo"/>
                         <outlet property="shareButton" destination="aEO-Xi-6nW" id="h8a-bU-wpu"/>
+                        <outlet property="thumbsImageView" destination="N4f-xh-avC" id="PYq-5I-U6M"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="y77-9j-Qtp" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -6965,6 +6966,6 @@ AAAAAAAAAAAAAAAAAAEXeA
         <image name="notifications.png" width="32" height="32"/>
         <image name="placeholder.png" width="360" height="160"/>
         <image name="playBtnNew" width="15" height="20"/>
-        <image name="thumb_up" width="64" height="64"/>
+        <image name="thumb_white" width="50" height="50"/>
     </resources>
 </document>

@@ -255,7 +255,6 @@
     if (inMemoryImage)
     {
         cell.episodeImageView.image = inMemoryImage;
-        
     }
     else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
         UIImage *image = [cache imageFromDiskCacheForKey:url];
@@ -273,7 +272,6 @@
                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                 if (image) {
                                     cell.episodeImageView.image = image;
-                                    
                                 }
                                 else {
                                     if(error){
@@ -281,7 +279,6 @@
                                         ;
                                         return;
                                     }
-                                    
                                 }
                             }];
     }
