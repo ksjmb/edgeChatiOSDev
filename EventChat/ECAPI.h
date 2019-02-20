@@ -180,9 +180,17 @@ typedef void (^DCNodeApiClientFailure)(AFHTTPRequestOperation *task, NSError *er
                     callback:(void (^)(NSArray *playlists, NSError *error))callback;
 - (void)getFavoriteFeedItemsByFeedItemId:(NSArray *)feedItemIds
                                 callback:(void (^)(NSArray *favorites, NSError *error))callback;
+/*
 - (void)createPlaylist:(NSString *)userId
           playlistName:(NSString *)playlistName
               callback:(void (^)(DCPlaylist *playlists, NSError *error))callback;
+ */
+- (void)createPlaylist:(NSString *)userId
+          playlistName:(NSString *)playlistName
+        playlistDescription:(NSString *)playlistDescription
+         coverImageUrl:(NSString *)coverImageUrl
+        thumbnailImageUrl:(NSString *)thumbnailImageUrl
+              callback:(void (^)(NSArray *playlists, NSError *error))callback;
 - (void)deletePlaylistById:(NSString *)playlistId
                   callback:(void (^)(NSArray *playlists, NSError *error))callback;
 - (void)updatePlaylist:(NSString *)playlistId

@@ -31,6 +31,7 @@
 @property (nonatomic) bool hasWikiSource;
 @property (nonatomic, copy) NSString *mainImage_url;
 @property (nonatomic, copy) NSString *video_url;
+@property (nonatomic, copy) NSString *coverPic_Url;
 @property (nonatomic, copy) NSString *phone;
 @property (nonatomic, copy) NSString *commentCount;
 @property (nonatomic, copy) NSString *topicCount;

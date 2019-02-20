@@ -243,7 +243,7 @@
     }else{
         [self.thumbsImageView setImage:[UIImage imageNamed:@"thumb_white"]];
     }
-    [self getFeedItemAttendeeList];
+//    [self getFeedItemAttendeeList];
     [self.attendeeListTableView setHidden:true];
 }
 
@@ -1040,7 +1040,6 @@
             tapGestureRecognizer.numberOfTouchesRequired = 1;
             cell.mediaImageView.userInteractionEnabled = YES;
             [cell.mediaImageView addGestureRecognizer:tapGestureRecognizer];
-            
         }
         //Configuring cell for Video
         else if ([message.commentType isEqualToString:@"video"])

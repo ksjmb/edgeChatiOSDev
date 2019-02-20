@@ -80,6 +80,7 @@
         UITextField * tf = [tfArray objectAtIndex:0];
         newPlaylist.playlistName = tf.text;
         if([tf.text length] > 0){
+            /*
             [[ECAPI sharedManager] createPlaylist:self.signedInUser.userId playlistName:newPlaylist.playlistName callback:^(DCPlaylist *playlist, NSError *error) {
                 if(error){
                     NSLog(@"Error: %@", error);
@@ -89,6 +90,7 @@
                     [_playlistTableView reloadData];
                 }
             }];
+             */
         }
         else{
             UIAlertView *alertView = [[UIAlertView alloc]
@@ -175,6 +177,8 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     DCPlaylist *playlist = [_playlists objectAtIndex:indexPath.row];
     if(_isFeedMode){
+        //@kj
+        /*
         [[ECAPI sharedManager] addToPlaylist:playlist.playlistId feedItemId:_feedItemId userId:self.signedInUser.userId callback:^(NSArray *playlists, NSError *error) {
             if(error){
                 NSLog(@"Error: %@", error);
@@ -197,6 +201,7 @@
 //                [self dismissViewControllerAnimated:YES completion:nil];
             };
         }];
+         */
     }else{
         DCPlaylist *playlist = [_playlists objectAtIndex:indexPath.row];
         [[ECAPI sharedManager] getFavoriteFeedItemsByFeedItemId:playlist.favoritedFeedItemIds callback:^(NSArray *favorites, NSError *error) {

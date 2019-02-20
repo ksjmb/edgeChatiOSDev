@@ -2111,17 +2111,34 @@ static const int kRetryCount = 3;
     
     [self taskWithRetry:createTaskBlock failure:failureBlock retryCount:kRetryCount];
 }
-
+/*
 - (void)createPlaylist:(NSString *)userId
            playlistName:(NSString *)playlistName
              callback:(void (^)(DCPlaylist *playlists, NSError *error))callback{
+ 
+     NSString *endpoint = [[NSString stringWithFormat:@"/rest/v4/feedItems/createPlaylist/%@/%@", userId, playlistName] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+ */
+- (void)createPlaylist:(NSString *)userId
+            playlistName:(NSString *)playlistName
+            playlistDescription:(NSString *)playlistDescription
+            coverImageUrl:(NSString *)coverImageUrl
+            thumbnailImageUrl:(NSString *)thumbnailImageUrl
+            callback:(void (^)(NSArray *playlists, NSError *error))callback{
     
-    NSString *endpoint = [[NSString stringWithFormat:@"/rest/v4/feedItems/createPlaylist/%@/%@", userId, playlistName] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];;
+    NSString *endpoint = [[NSString stringWithFormat:@"/rest/v4/feedItems/createPlaylist/%@", userId] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionary];
+    mutableParameters[@"playlistName"] = playlistName;
+    mutableParameters[@"playlistDescription"] = playlistDescription;
+    mutableParameters[@"coverImageUrl"] = coverImageUrl;
+    mutableParameters[@"thumbnailImageUrl"] = thumbnailImageUrl;
+    
+    NSDictionary *parameters = [NSDictionary dictionaryWithDictionary:mutableParameters];
     
     DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
         AFHTTPRequestOperation *createdTask = [[ECHTTPRequestOperationManager sharedManagerDC]
                                                POST:endpoint
-                                               parameters:nil
+                                               parameters:parameters
                                                success:^(AFHTTPRequestOperation *operation, id responseObject) {
                                                    NSError *playlistError = nil;
                                                    NSDictionary *responseDictionary = [responseObject dictionaryOrNilValue];

@@ -33,5 +33,6 @@
 @property (nonatomic, strong)ECUser *signedInUser;
 @property (nonatomic, copy) NSString *mFeedItemId;
 @property (assign) BOOL isImageSelected;
+@property (nonatomic, copy) NSString *selectedImageURL;
 
 @end

@@ -13,6 +13,8 @@
 #import "ECFavoritesViewController.h"
 #import "ECNewPlaylistTableViewCell.h"
 #import "ECPlaylistDetailsViewController.h"
+#import <SDWebImage/UIImageView+WebCache.h>
+#import "UIImageView+AFNetworking.h"
 
 @interface ECNewPlaylistTableViewController ()
 @property (nonatomic, assign) AppDelegate *appDelegate;
@@ -27,22 +29,22 @@
     [super viewDidLoad];
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-}
-
-- (void)viewDidAppear:(BOOL)animated{
-    [self.navigationItem setTitle:@"Playlists"];
     
     NSString *userId;
     if(self.isSignedInUser){
         userId = self.signedInUser.userId;
-    }
-    else{
+    }else{
         userId = self.profileUser.userId;
     }
+    
     [[ECAPI sharedManager] getPlaylistsByUserId:userId callback:^(NSArray *playlists, NSError *error) {
         self.playlistArray = [[NSMutableArray alloc] initWithArray:playlists];
         [self.playlistTableView reloadData];
     }];
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    [self.navigationItem setTitle:@"Playlists"];
 }
 
 #pragma mark - Table view data source
@@ -58,26 +60,11 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     static NSString *CellIdentifier = @"ECNewPlaylistTableViewCell";
     DCPlaylist *playlist = [self.playlistArray objectAtIndex:indexPath.row];
-    ECNewPlaylistTableViewCell * cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    ECNewPlaylistTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     if (cell == nil) {
         cell = [[ECNewPlaylistTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
-    
-    cell.playlistProfilePhotoImageView.layer.cornerRadius = cell.playlistProfilePhotoImageView.frame.size.width / 2;
-    cell.playlistProfilePhotoImageView.layer.borderWidth = 5;
-    cell.playlistProfilePhotoImageView.layer.borderColor = [UIColor whiteColor].CGColor;
-    cell.playlistProfilePhotoImageView.layer.masksToBounds = YES;
-    
-    cell.playlistCoverImageView.layer.cornerRadius = 5.0;
-    cell.playlistCoverImageView.layer.masksToBounds = YES;
-    cell.playlistCoverImageView.layer.borderWidth = 5;
-    cell.playlistCoverImageView.layer.borderColor = [UIColor whiteColor].CGColor;
-    
-    [cell.playlistTitleLabel setText:playlist.playlistName];
-//    [cell.playlistUserNameLabel setText:@""];
-//    [cell.playlistProfilePhotoImageView setImage:@""];
-//    [cell.playlistCoverImageView setImage:@""];
-    
+    [cell configureTableViewCellWithItem:playlist indexPath:indexPath];
     return cell;
 }
 
@@ -87,57 +74,24 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     DCPlaylist *playlist = [self.playlistArray objectAtIndex:indexPath.row];
-    if(_isFeedMode){
-        [[ECAPI sharedManager] addToPlaylist:playlist.playlistId feedItemId:_feedItemId userId:self.signedInUser.userId callback:^(NSArray *playlists, NSError *error) {
-            if(error){
-                NSLog(@"Error: %@", error);
-            }
-            else{
-                self.playlistArray = [[NSMutableArray alloc] initWithArray:playlists];
-                //Update user profile API call
-                [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:self.signedInUser.profilePicUrl callback:^(NSError *error) {
-                    if (error) {
-                        NSLog(@"Error adding user: %@", error);
-                    } else {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdated" object:nil];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdatedNew" object:nil];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateEventTV" object:nil];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateChatReaction" object:nil];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
-                        [self dismissViewControllerAnimated:YES completion:nil];
-                    }
-                }];
-            };
-        }];
-    }else{
-        DCPlaylist *playlist = [self.playlistArray objectAtIndex:indexPath.row];
-        [[ECAPI sharedManager] getFavoriteFeedItemsByFeedItemId:playlist.favoritedFeedItemIds callback:^(NSArray *favorites, NSError *error) {
-            if (error) {
-                NSLog(@"Error while getting playlist: %@", error);
-            } else {
-                /*
-                ECFavoritesViewController *ecFavoritesViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECFavoritesViewController"];
-                ecFavoritesViewController.isSignedInUser = self.isSignedInUser;
-                ecFavoritesViewController.signedInUser = self.signedInUser;
-                ecFavoritesViewController.profileUser = self.profileUser;
-                ecFavoritesViewController.favoriteList = [[NSMutableArray alloc] initWithArray:favorites];
-                ecFavoritesViewController.playlistId = playlist.playlistId;
-                ecFavoritesViewController.canShare = playlist.canShare;
-                [self.navigationController pushViewController:ecFavoritesViewController animated:YES];
-                */
-                //
-                ECPlaylistDetailsViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECPlaylistDetailsViewController"];
-                vc.isSignedInUser = self.isSignedInUser;
-                vc.mSignedInUser = self.signedInUser;
-                vc.mProfileUser = self.profileUser;
-                vc.favListArray = [[NSMutableArray alloc] initWithArray:favorites];
-                vc.mPlaylistId = playlist.playlistId;
-                vc.isCanShare = playlist.canShare;
-                vc.mPlaylistName = playlist.playlistName;
-                [self.navigationController pushViewController:vc animated:YES];
-            }
-        }];
-    }
+    [[ECAPI sharedManager] getFavoriteFeedItemsByFeedItemId:playlist.favoritedFeedItemIds callback:^(NSArray *favorites, NSError *error) {
+        if (error) {
+            NSLog(@"Error while getting playlist: %@", error);
+        } else {
+            ECPlaylistDetailsViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECPlaylistDetailsViewController"];
+            vc.isSignedInUser = self.isSignedInUser;
+            vc.mSignedInUser = self.signedInUser;
+            vc.mProfileUser = self.profileUser;
+            vc.favListArray = [[NSMutableArray alloc] initWithArray:favorites];
+            vc.mPlaylistId = playlist.playlistId;
+            vc.isCanShare = playlist.canShare;
+            vc.mPlaylistName = playlist.playlistName;
+            vc.mProfileImageURL = playlist.thumbnailImageUrl;
+            vc.mCoverImageURL = playlist.coverImageUrl;
+            //                vc.mProfileName = playlist;
+            [self.navigationController pushViewController:vc animated:YES];
+        }
+    }];
 }
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {

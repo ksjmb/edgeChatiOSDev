@@ -22,7 +22,7 @@
 @class ECEventBriteEvent;
 @class ECPlaylistDetailsTableViewCell;
 
-@interface ECPlaylistDetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, ECPlaylistDetailsTableViewCellDelegate>
+@interface ECPlaylistDetailsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, ECPlaylistDetailsTableViewCellDelegate, UIActionSheetDelegate, FBSDKSharingDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *profileImageView;
 @property (weak, nonatomic) IBOutlet UILabel *profileNameLabel;
@@ -41,5 +41,8 @@
 @property (nonatomic, copy) NSString *mPlaylistId;
 @property (nonatomic, copy) NSString *mPlaylistName;
 @property (nonatomic, assign) BOOL isCanShare;
+@property (nonatomic, copy) NSString *mCoverImageURL;
+@property (nonatomic, copy) NSString *mProfileImageURL;
+@property (nonatomic, copy) NSString *mProfileName;
 
 @end

@@ -186,13 +186,12 @@ static NSString * const DCWebBasePath = @"http://www.diddychat.com";
                                                     failure:(void (^)(AFHTTPRequestOperation *, NSError *))failure
 {
     NSMutableURLRequest *mutableRequest = [request mutableCopy];
-    
+    //@kj
+    NSLog(@"mutableRequest: %@", mutableRequest);
     // Add any headers values etc. here
     
     AFHTTPRequestOperation *operation = [super HTTPRequestOperationWithRequest:mutableRequest success:success failure:failure];
     return operation;
 }
-
-
 
 @end

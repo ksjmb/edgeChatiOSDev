@@ -148,7 +148,6 @@
         // hierarchy until it finds the root view controller or one that defines a presentation context.
         //
         self.definesPresentationContext = YES;
-        
         //[self loadEventBriteSearchResults];
         NSLog(@"Overlay: %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"HasSeenOverlay"]);
         BOOL hasSeenOverlay = [[NSUserDefaults standardUserDefaults] objectForKey:@"HasSeenOverlay"];
@@ -670,7 +669,6 @@
     //
     //    [self.navigationController pushViewController:ecEventDetailsViewController animated:YES];
 }
-
 
 /*
  // Override to support conditional editing of the table view.

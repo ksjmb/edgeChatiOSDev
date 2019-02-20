@@ -95,13 +95,13 @@
 #pragma mark - IBAction Methods
 
 - (IBAction)actionOnPlusButton:(id)sender {
-    /*
+    
     [[ECCommonClass sharedManager]showActionSheetToSelectMediaFromGalleryOrCamFromController:self andMediaType:@"Image" andResult:^(bool flag) {
         if (flag) {
             [self getImageFromGallery];
         }
     }];
-     */
+    /*
     if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
         UIImagePickerController *pickerView =[[UIImagePickerController alloc]init];
         pickerView.allowsEditing = YES;
@@ -109,6 +109,7 @@
         pickerView.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
         [self presentViewController:pickerView animated:YES completion:nil];
     }
+     */
 }
 
 - (IBAction)actionOnButtonClick:(id)sender {
@@ -119,7 +120,22 @@
     if ([self.cancelButton.titleLabel.text  isEqual: @"Save"]){
         DCPlaylist *newPlaylist = [DCPlaylist alloc];
         newPlaylist.playlistName = self.playlistTextField.text;
+        newPlaylist.coverImageUrl = self.selectedImageURL;
+        newPlaylist.thumbnailImageUrl = @"";
+        newPlaylist.playlistDescription = @"";
+        
         if([self.playlistTextField.text length] > 0){
+            [[ECAPI sharedManager] createPlaylist:self.signedInUser.userId playlistName:newPlaylist.playlistName playlistDescription:newPlaylist.playlistDescription coverImageUrl:newPlaylist.coverImageUrl thumbnailImageUrl:newPlaylist.coverImageUrl
+                callback:^(NSArray *playlist, NSError *error) {
+                if(error){
+                    NSLog(@"Error while creating playlist: %@", error);
+                }
+                else{
+                    [self.mPlaylistsArray insertObject:playlist atIndex:0];
+                    [self.playlistCollectionView reloadData];
+                }
+            }];
+            /*
             [[ECAPI sharedManager] createPlaylist:self.signedInUser.userId playlistName:newPlaylist.playlistName callback:^(DCPlaylist *playlist, NSError *error) {
                 if(error){
                     NSLog(@"Error while creating playlist: %@", error);
@@ -129,6 +145,7 @@
                     [self.playlistCollectionView reloadData];
                 }
             }];
+             */
         }
     }
     [self removeAnimation];
@@ -138,14 +155,15 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section {
     return self.mPlaylistsArray.count;
-//    return 21;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath {
     AddToPlaylistPopUpCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"AddToPlaylistPopUpCollectionViewCell" forIndexPath:indexPath];
     DCPlaylist *playlist = [self.mPlaylistsArray objectAtIndex:indexPath.row];
     [cell.playlistNameLabel setText:playlist.playlistName];
-    // Also set the cover image and other required parameters for the same
+    if(playlist.coverImageUrl != nil){
+        [self showImageOnTheCell:cell ForImageUrl:playlist.coverImageUrl];
+    }
     
     return cell;
 }
@@ -203,10 +221,7 @@
     [self.collectionPlaylistView setHidden: YES];
     [self.vwNew setHidden: NO];
     [self initialSetup];
-//    if( imageURL != nil){
-//        [self showImageOnTheCell:self ForImageUrl:imageURL];
-//    }
-//    [self uploadImage];
+    [self uploadImage];
 }
 
 #pragma mark:- Handling background Image upload
@@ -231,6 +246,18 @@
     [self initialSetup];
     UIImage *img = [info valueForKey:UIImagePickerControllerEditedImage];
     self.coverImageView.image = img;
+    if (@available(iOS 11.0, *)) {
+        self.selectedImageURL = [info valueForKey:UIImagePickerControllerImageURL];
+    } else {
+        self.selectedImageURL = [info valueForKey:UIImagePickerControllerImageURL];
+    }
+    /*
+    (lldb) po [info valueForKey:UIImagePickerControllerImageURL]
+file:///Users/sanjaybalaji/Library/Developer/CoreSimulator/Devices/6E4BB862-6386-42D3-A78B-B838159197DA/data/Containers/Data/Application/72ADCA0C-AAFB-4468-B9B8-E2C3FDD99B32/tmp/87B438D1-B5F6-4B5D-9A1E-A24311A4A84A.jpeg
+     
+    NSURL* localUrl = (NSURL *)[info valueForKey:UIImagePickerControllerReferenceURL];
+    NSLog(@"localUrl: %@", localUrl);
+     */
 }
 
 #pragma mark:- Image upload
@@ -259,10 +286,11 @@
                     NSString *imageURL = [NSString stringWithFormat:@"%@Images/%@",awsURL,[[ECSharedmedia sharedManager]mediaImageURL]];
                     NSString *thumbImageURL = [NSString stringWithFormat:@"%@Images/%@",awsURL,[[ECSharedmedia sharedManager]mediaImageThumbURL]];
                     NSLog(@"imageURL: %@", imageURL);
+                    self.selectedImageURL = imageURL;
                     NSLog(@"thumbImageURL: %@", thumbImageURL);
-                    if(imageURL != nil){
-                        [self showImageOnTheCell:self ForImageUrl:imageURL];
-                    }
+                    NSURL *aURL = [NSURL URLWithString:[imageURL stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]];
+                    UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:aURL]];
+                    self.coverImageView.image = mImage;
                     
                 } else{
                     // Fail Condition ask for retry and cancel through alertView
@@ -281,20 +309,19 @@
 }
 
 #pragma mark - SDWebImage
-// Displaying Image on Cell
 
--(void)showImageOnTheCell:(AddToPlaylistPopUpViewController *)vc ForImageUrl:(NSString *)url{
+-(void)showImageOnTheCell:(AddToPlaylistPopUpCollectionViewCell *)cell ForImageUrl:(NSString *)url{
     SDImageCache *cache = [SDImageCache sharedImageCache];
     UIImage *inMemoryImage = [cache imageFromMemoryCacheForKey:url];
     // resolves the SDWebImage issue of image missing
     if (inMemoryImage)
     {
-        self.coverImageView.image = inMemoryImage;
+        cell.playlistImageView.image = inMemoryImage;
         
     }
     else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
         UIImage *image = [cache imageFromDiskCacheForKey:url];
-        self.coverImageView.image = image;
+        cell.playlistImageView.image = image;
         
     }else{
         NSURL *urL = [NSURL URLWithString:url];
@@ -307,8 +334,7 @@
                              }
                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                 if (image) {
-                                    self.coverImageView.image = image;
-                                    
+                                    cell.playlistImageView.image = image;
                                 }
                                 else {
                                     if(error){
@@ -316,7 +342,6 @@
                                         ;
                                         return;
                                     }
-                                    
                                 }
                             }];
     }

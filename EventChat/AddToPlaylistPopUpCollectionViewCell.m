@@ -10,4 +10,12 @@
 
 @implementation AddToPlaylistPopUpCollectionViewCell
 
+
+-(void)prepareForReuse{
+    [super prepareForReuse];
+    [self.playlistNameLabel setText:nil];
+    [self.playlistImageView setImage:[UIImage imageNamed:@"placeholder.png"]];
+    //lookup.png
+}
+
 @end

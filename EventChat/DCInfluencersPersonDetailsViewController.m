@@ -50,12 +50,6 @@
     self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     self.commentBarBtnItem = [[UIBarButtonItem alloc] initWithImage:[IonIcons imageWithIcon:ion_chatboxes  size:30.0 color:[UIColor whiteColor]] style:UIBarButtonItemStylePlain target:self action:@selector(didTapComment:)];
     [self.navigationItem setRightBarButtonItem:self.commentBarBtnItem];
-
-    if (![self.mSelectedDCFeedItem.person.name  isEqual: @""]){
-        [self.navigationItem setTitle:self.mSelectedDCFeedItem.person.name];
-    }else{
-        [self.navigationItem setTitle:@"Influencer's Profile"];
-    }
     
     self.mProfilePhotoImageView.layer.cornerRadius = self.mProfilePhotoImageView.frame.size.width / 2;
     self.mProfilePhotoImageView.layer.borderWidth = 5;
@@ -68,12 +62,24 @@
     self.mBKImageView.layer.borderColor = [UIColor whiteColor].CGColor;
     
     self.mFollowbtn.layer.cornerRadius = 5.0;
-    
     [self.mPersonTitleLabel setText:[NSString  stringWithFormat:@"%@", self.mSelectedDCFeedItem.person.name]];
     [self.mPersonDescriptionLabel setText:[NSString stringWithFormat:@"%@", self.mSelectedDCFeedItem.person.blurb]];
-//    [self showImageOnHeader:self.mSelectedDCFeedItem.mainImage_url];
-    [self showImageOnHeader:self.mSelectedDCFeedItem.person.profilePic_url];
     
+    if (![self.mSelectedDCFeedItem.person.name  isEqual: @""]){
+        [self.navigationItem setTitle:self.mSelectedDCFeedItem.person.name];
+    }else{
+        [self.navigationItem setTitle:@"Influencer's Profile"];
+    }
+    if (self.mSelectedDCFeedItem.person.profilePic_url != nil){
+        [self showProfileImage:self.mSelectedDCFeedItem.person.profilePic_url];
+    }else{
+        [self.mProfilePhotoImageView setImage:[UIImage imageNamed:@"missing-profile.png"]];
+    }
+    if (self.mSelectedDCFeedItem.coverPic_Url != nil){
+        [self showImageOnHeader:self.mSelectedDCFeedItem.coverPic_Url];
+    }else{
+        [self.mBKImageView setImage:[UIImage imageNamed:@"placeholder.png"]];
+    }
     // Register cell
     [self.mTableView registerNib:[UINib nibWithNibName:@"DCInfluencersPersonDetailsTableViewCell" bundle:nil]
          forCellReuseIdentifier:@"DCInfluencersPersonDetailsTableViewCell"];
@@ -81,7 +87,6 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
-    
     self.userEmailStr = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
     [[NSUserDefaults standardUserDefaults] synchronize];
 }
@@ -468,6 +473,20 @@
     }];
 }
 
+#pragma mark - FBSDKSharingDelegate
+
+- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults :(NSDictionary *)results {
+    NSLog(@"FB: SHARE RESULTS=%@\n",[results debugDescription]);
+}
+
+- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
+    NSLog(@"FB: ERROR=%@\n",[error debugDescription]);
+}
+
+- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
+    NSLog(@"FB: CANCELED SHARER=%@\n",[sharer debugDescription]);
+}
+
 #pragma mark:- SDWebImage
 
 -(void)showImageOnHeader:(NSString *)url{
@@ -508,4 +527,41 @@
     }
 }
 
+-(void)showProfileImage:(NSString *)url{
+    SDImageCache *cache = [SDImageCache sharedImageCache];
+    UIImage *inMemoryImage = [cache imageFromMemoryCacheForKey:url];
+    
+    if (inMemoryImage)
+    {
+        self.mProfilePhotoImageView.image = inMemoryImage;
+        
+    }
+    else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
+        UIImage *image = [cache imageFromDiskCacheForKey:url];
+        self.mProfilePhotoImageView.image = image;
+        
+    }else{
+        NSURL *urL = [NSURL URLWithString:url];
+        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+        [manager.imageDownloader setDownloadTimeout:20];
+        [manager downloadImageWithURL:urL
+                              options:0
+                             progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                                 // progression tracking code
+                             }
+                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                if (image) {
+                                    self.mProfilePhotoImageView.image = image;
+                                    self.mProfilePhotoImageView.layer.borderWidth = 1.0;
+                                    self.mProfilePhotoImageView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor redColor]);
+                                }
+                                else {
+                                    if(error){
+                                        NSLog(@"Problem downloading Image, play try again");
+                                        return;
+                                    }
+                                }
+                            }];
+    }
+}
 @end

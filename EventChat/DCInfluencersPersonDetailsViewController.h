@@ -21,7 +21,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface DCInfluencersPersonDetailsViewController : UIViewController <SignUpLoginViewControllerDelegate, UITableViewDataSource, UITableViewDelegate, DCInfluencersPersonDetailsTVCellDelegate, RegisterViewControllerDelegate, AddToPlaylistDelegate>
+@interface DCInfluencersPersonDetailsViewController : UIViewController <SignUpLoginViewControllerDelegate, UITableViewDataSource, UITableViewDelegate, DCInfluencersPersonDetailsTVCellDelegate, RegisterViewControllerDelegate, AddToPlaylistDelegate, FBSDKSharingDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *mBKImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *mProfilePhotoImageView;
