@@ -443,12 +443,18 @@
 
                  if ([FBSDKAccessToken currentAccessToken]){
                      NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
-                     [parameters setValue:@"id, name, email, gender, first_name, last_name" forKey:@"fields"];
+//                     [parameters setValue:@"id, name, email, gender, first_name, last_name" forKey:@"fields"];
+                     [parameters setValue:@"id, name, email, gender, first_name, last_name, picture.width(100).height(100)" forKey:@"fields"];
 
                      [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:parameters]
                       startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error){
                           // fetch all your data
                           if (!error) {
+                              //
+                              NSString *imageStringOfLoginUser = [[[result valueForKey:@"picture"] valueForKey:@"data"] valueForKey:@"url"];
+                              [[NSUserDefaults standardUserDefaults] setValue:imageStringOfLoginUser forKey:@"FB_PROFILE_PIC_URL"];
+                              [[NSUserDefaults standardUserDefaults] synchronize];
+                              //
                               NSString *userId = [result objectForKey:@"id"];
                               NSString *username = [NSString stringWithFormat:@"FB_%@", userId];
                               NSString *tempPassword = [[[NSUUID UUID] UUIDString] componentsSeparatedByString:@"-"][0];
@@ -526,7 +532,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
         
         if ([FBSDKAccessToken currentAccessToken]){
             NSMutableDictionary* parameters = [NSMutableDictionary dictionary];
-            [parameters setValue:@"id, name, email, gender, first_name, last_name" forKey:@"fields"];
+//            [parameters setValue:@"id, name, email, gender, first_name, last_name" forKey:@"fields"];
+            [parameters setValue:@"id, name, email, gender, first_name, last_name, picture.width(100).height(100)" forKey:@"fields"];
             
             [[[FBSDKGraphRequest alloc] initWithGraphPath:@"me" parameters:parameters]
              startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection, id result, NSError *error){
@@ -536,6 +543,9 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
                      NSString *userId = [result objectForKey:@"id"];
                      NSString *username = [NSString stringWithFormat:@"FB_%@", userId];
                      NSString *tempPassword = [[[NSUUID UUID] UUIDString] componentsSeparatedByString:@"-"][0];
+                     NSString *imageStringOfLoginUser = [[[result valueForKey:@"picture"] valueForKey:@"data"] valueForKey:@"url"];
+                     [[NSUserDefaults standardUserDefaults] setValue:imageStringOfLoginUser forKey:@"FB_PROFILE_PIC_URL"];
+                     [[NSUserDefaults standardUserDefaults] synchronize];
                      
                      [[ECAPI sharedManager] createUserWithSocial:[result objectForKey:@"email"] firstName:[result objectForKey:@"first_name"] lastName:[result objectForKey:@"last_name"] deviceToken:[(AppDelegate *)[[UIApplication sharedApplication] delegate] getDeviceToken] facebookUserId:[result objectForKey:@"id"] googleUserId:nil twitterUserId:nil socialConnect:@"Facebook" username:username password:tempPassword callback:^(NSError *error) {
                          

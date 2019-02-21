@@ -329,10 +329,8 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
 -(void)clearNotificationCount{
     [[ECAPI sharedManager] clearNotificationCount:self.signedInUser.userId callback:^(NSError *error) {
         if (error) {
-            NSLog(@"Error adding user: %@", error);
-            NSLog(@"%@", error);
+            NSLog(@"Error while clearNotificationCount: %@", error);
         } else {
-            // code
             [[self.tabBarController.tabBar.items objectAtIndex:2] setBadgeValue:nil];
             [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
         }
@@ -403,8 +401,9 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
     //
-    self.signedInUser = nil; // New Change
+    self.signedInUser = nil;
     [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"username"];
+    [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"FB_PROFILE_PIC_URL"];
     [[NSUserDefaults standardUserDefaults] synchronize];
     
     UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -413,7 +412,6 @@ static NSString * const kClientSecret = @"7A1017A3-7309-4F7F-8F88-F32B11EFB71A";
     self.window.rootViewController = self.tabBarController;
     [self.tabBarController setSelectedIndex:0];
     
-    //@kj_undo_change
     /*
     UIStoryboard *signUpLoginStoryboard = [UIStoryboard storyboardWithName:@"SignUpLogin" bundle:nil];
     SignUpLoginViewController *signUpLoginViewController = [signUpLoginStoryboard instantiateViewControllerWithIdentifier:@"SignUpLoginViewController"];

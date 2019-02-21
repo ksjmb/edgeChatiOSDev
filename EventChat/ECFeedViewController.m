@@ -200,17 +200,22 @@
 - (void)viewWillAppear:(BOOL)animated{
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
+    NSString *fb_profileImageURL = [[NSUserDefaults standardUserDefaults] valueForKey:@"FB_PROFILE_PIC_URL"];
     [[NSUserDefaults standardUserDefaults] synchronize];
+    NSString *imageURL = @"";
     
     if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
-        // Profile pic in UIBarButton [super viewDidLoad];
         UIImage* img;
-        
-        if([self.signedInUser.profilePicUrl length] > 0){
-            //FB_Login URL :
-            //https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=2023902657670094&height=200&width=200&ext=1547728873&hash=AeQgsXIZ6yxs38AK
-            NSString* url = self.signedInUser.profilePicUrl;
-            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL   URLWithString:url]];
+        if(fb_profileImageURL != nil){
+            imageURL = fb_profileImageURL;
+            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL   URLWithString:fb_profileImageURL]];
+            img = [UIImage imageWithData:data];
+            if (img == nil){
+                img = [UIImage imageNamed:@"missing-profile.png"];
+            }
+        }else if(self.signedInUser.profilePicUrl != nil){
+            imageURL = self.signedInUser.profilePicUrl;
+            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL   URLWithString:self.signedInUser.profilePicUrl]];
             img = [UIImage imageWithData:data];
             if (img == nil){
                 img = [UIImage imageNamed:@"missing-profile.png"];
@@ -232,8 +237,14 @@
         [profileButton addTarget:self action:@selector(didTapViewProfile:) forControlEvents:UIControlEventTouchUpInside];
         self.sortOptionsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
         self.navigationItem.leftBarButtonItem = self.sortOptionsBarButtonItem;
+        [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:imageURL callback:^(NSError *error) {
+            if (error) {
+                NSLog(@"Error adding user: %@", error);
+            } else {
+                self.signedInUser.profilePicUrl = imageURL;
+            }
+        }];
     }else{
-        // move to specificVC with identifier and required parameters
         self.navigationItem.leftBarButtonItem = nil;
         self.signedInUser = nil;
     }
@@ -1252,14 +1263,6 @@
         [alertController addAction:facebookAction];
         [alertController addAction:twitterAction];
         [alertController addAction:moreOptionsAction];
-        
-//        UIPopoverPresentationController *popover = alertController.popoverPresentationController;
-//        if (popover)
-//        {
-//            popover.sourceView = ecFeedCell;
-//            popover.sourceRect = ecFeedCell.bounds;
-//            popover.permittedArrowDirections = UIPopoverArrowDirectionAny;
-//        }
         [self presentViewController:alertController animated:YES completion:nil];
     }else{
         [self pushToSignInVC:@"sameFeedVC"];

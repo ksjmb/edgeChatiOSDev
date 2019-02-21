@@ -157,9 +157,6 @@
     self.userBGImageView.layer.borderColor = [UIColor whiteColor].CGColor;
     
     self.mFollowButton.layer.cornerRadius = 5.0;
-    
-    //    [self showImageOnHeader:self.profileUser.profilePicUrl];
-    
     // Register cell
     [self.mUserProfileTableView registerNib:[UINib nibWithNibName:@"DCInfluencersPersonDetailsTableViewCell" bundle:nil]
                      forCellReuseIdentifier:@"DCInfluencersPersonDetailsTableViewCell"];
@@ -181,7 +178,7 @@
                 ECFacebookUserData *fbUserData = [[ECFacebookUserData alloc] initWithDictionary:responseDictionary[@"data"] error:&infoError];
                 NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:fbUserData.url]];
                 UIImage *image = [UIImage imageWithData:data];
-                [self.userProfileImageView setImage:image];
+                [self.userProfileImageView setImage:[self imageWithImage:image scaledToSize:CGSizeMake(30, 30)]];
                 
                 //Update profilePicUrl in User Collection
                 if(self.isSignedInUser){
@@ -200,11 +197,26 @@
     else{
         NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.profileUser.profilePicUrl]];
         UIImage *image = [UIImage imageWithData:data];
-        [self.userProfileImageView setImage:image];
+        [self.userProfileImageView setImage:[self imageWithImage:image scaledToSize:CGSizeMake(30, 30)]];
     }
-    
     self.mUserProfileTableView.estimatedRowHeight = 240.0;
     self.mUserProfileTableView.rowHeight = UITableViewAutomaticDimension;
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+    if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
+        if ([[UIScreen mainScreen] scale] == 2.0) {
+            UIGraphicsBeginImageContextWithOptions(newSize, YES, 2.0);
+        } else {
+            UIGraphicsBeginImageContext(newSize);
+        }
+    } else {
+        UIGraphicsBeginImageContext(newSize);
+    }
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 #pragma mark:- IBAction Methods

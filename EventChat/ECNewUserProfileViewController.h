@@ -26,5 +26,6 @@
 @property (nonatomic, assign) BOOL isSignedInUser;
 @property (nonatomic, strong)ECUser *signedInUser;
 @property (nonatomic, strong)ECUser *profileUser;
+@property (strong, nonatomic) UIImage *fb_profile_image;
 
 @end
