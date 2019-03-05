@@ -24,7 +24,7 @@
                             <constraint firstAttribute="height" constant="150" id="o36-W4-t82"/>
                         </constraints>
                     </view>
-                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NWz-7V-Vua">
+                    <imageView hidden="YES" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NWz-7V-Vua">
                         <rect key="frame" x="4" y="4" width="367" height="150"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="150" id="dma-PH-C0k"/>

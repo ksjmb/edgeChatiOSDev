@@ -123,8 +123,9 @@
                                     </button>
                                     <button opaque="NO" clipsSubviews="YES" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YHF-Ww-Ctp">
                                         <rect key="frame" x="41.5" y="1" width="37" height="28"/>
-                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <color key="tintColor" red="0.2627450980392157" green="0.44705882352941179" blue="0.7803921568627451" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <connections>
                                             <action selector="actionOnLikeButton:" destination="EXz-vn-AQS" eventType="touchUpInside" id="s0T-6P-NAA"/>
                                         </connections>
@@ -133,6 +134,7 @@
                                         <rect key="frame" x="83.5" y="1" width="36.5" height="28"/>
                                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
+                                        <color key="tintColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <connections>
                                             <action selector="actionOnFavButton:" destination="EXz-vn-AQS" eventType="touchUpInside" id="00b-rU-55h"/>
                                         </connections>

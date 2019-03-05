@@ -23,6 +23,7 @@
 @property (nonatomic, copy) NSString *likePush;
 @property (nonatomic, copy) NSString *followPush;
 @property (nonatomic, copy) NSString *profilePicUrl;
+@property (nonatomic, copy) NSString *coverPic_Url;
 @property (nonatomic, assign) int commentCount;
 @property (nonatomic, copy) NSArray *likedCommentIds;
 @property (nonatomic, assign) int favoriteCount;

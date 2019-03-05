@@ -579,7 +579,11 @@
         _favImageView.translatesAutoresizingMaskIntoConstraints = NO;
         _favImageView.userInteractionEnabled = NO;
         //        _favImageView.backgroundColor = [UIColor colorWithWhite:0.9 alpha:1.0];
-        [self.favImageView setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]]];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_white"];
+        [self.favImageView setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)]];
+//        UIImage *btnImage = [UIImage imageNamed:@"heart_new"];
+//        [self.favImageView setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(30.0, 30.0)]];
+//        [self.favImageView setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]]];
         _favImageView.layer.cornerRadius = kMessageTableViewCellAvatarHeight/2.0;
         _favImageView.layer.masksToBounds = YES;
     }
@@ -616,6 +620,14 @@
     pointSize += SLKPointSizeDifferenceForCategory(contentSizeCategory);
     
     return pointSize;
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize{
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 #pragma mark - MessageTableViewCellDelegate Methods

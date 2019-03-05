@@ -78,23 +78,33 @@
     
     // Get favorited events:-
     if(isFavorited){
-        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:27.0 color:[UIColor redColor]] forState:UIControlStateNormal];
     }
     else{
-        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"heart_new"];
+        [self.favoriteButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+        
+//        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
     
     //Get attending events:-
     if(isAttending){
-        [self.likeButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_blue"];
+        [self.likeButton setTintColor:[UIColor colorWithRed:(67/255.0) green:(114/255.0) blue:(199/255.0) alpha:1]];
+        [self.likeButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+        
+//        [self.likeButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
     }
     else{
-        [self.likeButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor grayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_white"];
+        [self.likeButton setTintColor:[UIColor darkTextColor]];
+        [self.likeButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+//        [self.likeButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor grayColor]] forState:UIControlStateNormal];
     }
     
     //share button
 //    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
-    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor blackColor]] forState:UIControlStateNormal];
+    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor darkTextColor]] forState:UIControlStateNormal];
     
     // Format date
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
@@ -117,6 +127,14 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize{
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 #pragma mark - SDWebImage

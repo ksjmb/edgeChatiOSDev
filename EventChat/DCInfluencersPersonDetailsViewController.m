@@ -75,8 +75,9 @@
     }else{
         [self.mProfilePhotoImageView setImage:[UIImage imageNamed:@"missing-profile.png"]];
     }
-    if (self.mSelectedDCFeedItem.coverPic_Url != nil){
-        [self showImageOnHeader:self.mSelectedDCFeedItem.coverPic_Url];
+//    if (self.mSelectedDCFeedItem.coverPic_Url != nil){
+    if (self.signedInUser.coverPic_Url != nil){
+        [self showImageOnHeader:self.signedInUser.coverPic_Url];
     }else{
         [self.mBKImageView setImage:[UIImage imageNamed:@"placeholder.png"]];
     }

@@ -71,9 +71,11 @@
     }
     
     if([self.signedInUser.favoritedFeedItemIds containsObject:_selectedFeedItemId]){
-        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:27.0 color:[UIColor redColor]] forState:UIControlStateNormal];
     }else{
-        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"heart_new"];
+        [self.favoriteButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+//        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
 }
 
@@ -459,10 +461,20 @@
 //    self.signedInUser = [[ECAPI sharedManager] signedInUser];
     
     if([self.signedInUser.favoritedFeedItemIds containsObject:_selectedFeedItemId]){
-        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:27.0 color:[UIColor redColor]] forState:UIControlStateNormal];
     }else{
-        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"heart_new"];
+        [self.favoriteButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+//        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize{
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 #pragma mark:- Instance Methods
@@ -496,14 +508,7 @@
         }
     }
     
-//    if([self.signedInUser.favoritedFeedItemIds containsObject:_selectedFeedItemId]){
-//        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
-//    }else{
-//        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
-//    }
-    
-//    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
-    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor blackColor]] forState:UIControlStateNormal];
+    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor darkTextColor]] forState:UIControlStateNormal];
     
     self.episodeTableView.estimatedRowHeight = 279.0;
     self.episodeTableView.rowHeight = UITableViewAutomaticDimension;

@@ -161,24 +161,34 @@
     
     // Get favorited events:-
     if(isFavorited){
-        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:27.0 color:[UIColor redColor]] forState:UIControlStateNormal];
     }
     else{
+        UIImage *btnImage = [UIImage imageNamed:@"heart_new"];
+        [self.favButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+        
 //        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
-        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
     
     //Get attending events:-
     if(isAttending){
-        [self.likeButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_blue"];
+//        [self.likeButton setTintColor:[UIColor blueColor]];
+        [self.likeButton setTintColor:[UIColor colorWithRed:(67/255.0) green:(114/255.0) blue:(199/255.0) alpha:1]];
+        [self.likeButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+        
+//        [self.likeButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
     }
     else{
-        [self.likeButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_white"];
+        [self.likeButton setTintColor:[UIColor darkTextColor]];
+        [self.likeButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+//        [self.likeButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
     
     //share button
 //    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
-    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor blackColor]] forState:UIControlStateNormal];
+    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor darkTextColor]] forState:UIControlStateNormal];
     
     // Get Venue address
     if([feedItem.location.name length] > 0 && [feedItem.location.city length] > 0){
@@ -231,6 +241,14 @@
     }else{
         [self.viewMoreButton setHidden:YES];
     }
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize{
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 #pragma mark - AF

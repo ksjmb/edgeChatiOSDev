@@ -126,23 +126,34 @@
     
     // Get ECUser favorited events
     if(isFavorited){
-        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:27.0 color:[UIColor redColor]] forState:UIControlStateNormal];
     }
     else{
-        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"heart_new"];
+        [self.favoriteButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+        
+//        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
     
     //Get ECUser attending events
     if(isAttending){
-        [self.attendanceButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_blue"];
+        [self.attendanceButton setTintColor:[UIColor colorWithRed:(67/255.0) green:(114/255.0) blue:(199/255.0) alpha:1]];
+        [self.attendanceButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+        
+//        [self.attendanceButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
     }
     else{
-        [self.attendanceButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor grayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_white"];
+        [self.attendanceButton setTintColor:[UIColor darkTextColor]];
+        [self.attendanceButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+        
+//        [self.attendanceButton setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor grayColor]] forState:UIControlStateNormal];
     }
     
     //Set share button
 //    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
-    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor blackColor]] forState:UIControlStateNormal];
+    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor darkTextColor]] forState:UIControlStateNormal];
     
     // Get Venue address
     if([feedItem.location.name length] > 0 && [feedItem.location.city length] > 0){
@@ -277,6 +288,14 @@
 
 - (void)getEventVenueAddress{
     
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize{
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 #pragma mark - AF

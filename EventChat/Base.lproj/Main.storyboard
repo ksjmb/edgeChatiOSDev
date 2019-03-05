@@ -2065,13 +2065,6 @@ Cg
                                     <constraint firstAttribute="height" constant="230" id="r0L-5a-Vub"/>
                                 </constraints>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="missing-profile.png" translatesAutoresizingMaskIntoConstraints="NO" id="oU4-nf-6OG">
-                                <rect key="frame" x="157.5" y="259" width="60" height="60"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="60" id="CJ0-Sw-bBs"/>
-                                    <constraint firstAttribute="width" constant="60" id="SGK-6e-syx"/>
-                                </constraints>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="z2o-rl-rzZ">
                                 <rect key="frame" x="296" y="274" width="54" height="34"/>
                                 <color key="backgroundColor" cocoaTouchSystemColor="darkTextColor"/>
@@ -2088,7 +2081,7 @@ Cg
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Andre Phillip" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Xtw-4q-3JV">
-                                <rect key="frame" x="8" y="327" width="359" height="21"/>
+                                <rect key="frame" x="8" y="359" width="359" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="EEw-Rk-yTl"/>
                                 </constraints>
@@ -2097,7 +2090,7 @@ Cg
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="The Island Kiteboarder" textAlignment="center" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aof-2X-gUg">
-                                <rect key="frame" x="8" y="356" width="359" height="22"/>
+                                <rect key="frame" x="8" y="388" width="359" height="22"/>
                                 <constraints>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="t6z-4W-e3o"/>
                                 </constraints>
@@ -2106,7 +2099,7 @@ Cg
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zUl-DU-MVr">
-                                <rect key="frame" x="0.0" y="382" width="375" height="1"/>
+                                <rect key="frame" x="0.0" y="414" width="375" height="1"/>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="vmg-HT-nzk"/>
@@ -2116,7 +2109,7 @@ Cg
                                 <nil key="highlightedColor"/>
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="IMi-6O-ESo">
-                                <rect key="frame" x="0.0" y="391" width="375" height="276"/>
+                                <rect key="frame" x="0.0" y="423" width="375" height="244"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="DCSocialTableViewCell" rowHeight="50" id="bwD-1K-cMl" customClass="DCSocialTableViewCell">
@@ -2227,6 +2220,13 @@ Cg
                                     <outlet property="delegate" destination="JLH-uz-Ia4" id="Sfm-Rr-wWg"/>
                                 </connections>
                             </tableView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="missing-profile.png" translatesAutoresizingMaskIntoConstraints="NO" id="oU4-nf-6OG">
+                                <rect key="frame" x="127" y="231" width="120" height="120"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="120" id="CJ0-Sw-bBs"/>
+                                    <constraint firstAttribute="width" constant="120" id="SGK-6e-syx"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -2250,7 +2250,7 @@ Cg
                             <constraint firstItem="aof-2X-gUg" firstAttribute="leading" secondItem="f3e-xO-iEg" secondAttribute="leading" constant="8" id="tvF-4B-YvK"/>
                             <constraint firstAttribute="trailing" secondItem="zUl-DU-MVr" secondAttribute="trailing" id="x0K-LR-6Ax"/>
                             <constraint firstItem="IMi-6O-ESo" firstAttribute="top" secondItem="zUl-DU-MVr" secondAttribute="bottom" constant="8" id="yT8-Gx-ETr"/>
-                            <constraint firstItem="oU4-nf-6OG" firstAttribute="top" secondItem="mTg-jL-rCa" secondAttribute="bottom" constant="195" id="zMF-Nq-jUK"/>
+                            <constraint firstItem="oU4-nf-6OG" firstAttribute="top" secondItem="mTg-jL-rCa" secondAttribute="bottom" constant="167" id="zMF-Nq-jUK"/>
                             <constraint firstAttribute="trailing" secondItem="z2o-rl-rzZ" secondAttribute="trailing" constant="25" id="zix-gH-fMF"/>
                         </constraints>
                         <variation key="default">
@@ -5367,21 +5367,14 @@ Cg
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder.png" translatesAutoresizingMaskIntoConstraints="NO" id="51N-bR-IdA">
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder.png" translatesAutoresizingMaskIntoConstraints="NO" id="51N-bR-IdA">
                                 <rect key="frame" x="0.0" y="64" width="375" height="230"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="230" id="J8W-Ia-nmp"/>
                                 </constraints>
                             </imageView>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="missing-profile.png" translatesAutoresizingMaskIntoConstraints="NO" id="Gbi-Dy-o8g">
-                                <rect key="frame" x="157.5" y="259" width="60" height="60"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="60" id="AfB-cd-gLU"/>
-                                    <constraint firstAttribute="height" constant="60" id="Rnt-iu-PZn"/>
-                                </constraints>
-                            </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Andre Phillip" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gkx-ki-nuA">
-                                <rect key="frame" x="8" y="327" width="359" height="21"/>
+                                <rect key="frame" x="8" y="357" width="359" height="21"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="21" id="fta-dp-ku5"/>
                                 </constraints>
@@ -5390,7 +5383,7 @@ Cg
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="y3U-c9-24O">
-                                <rect key="frame" x="0.0" y="360" width="375" height="1"/>
+                                <rect key="frame" x="0.0" y="390" width="375" height="1"/>
                                 <color key="backgroundColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="vdl-k0-DgI"/>
@@ -5400,7 +5393,7 @@ Cg
                                 <nil key="highlightedColor"/>
                             </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="tat-jp-VhG">
-                                <rect key="frame" x="0.0" y="369" width="375" height="298"/>
+                                <rect key="frame" x="0.0" y="399" width="375" height="268"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="ECUserProfileSocialTableViewCell" rowHeight="50" id="32c-jS-IfP" customClass="ECUserProfileSocialTableViewCell">
@@ -5535,6 +5528,13 @@ Cg
                                     <action selector="actionOnFollowButton:" destination="yLA-DO-r2d" eventType="touchUpInside" id="Ihv-pe-8kQ"/>
                                 </connections>
                             </button>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="missing-profile.png" translatesAutoresizingMaskIntoConstraints="NO" id="Gbi-Dy-o8g">
+                                <rect key="frame" x="127" y="229" width="120" height="120"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="120" id="AfB-cd-gLU"/>
+                                    <constraint firstAttribute="height" constant="120" id="Rnt-iu-PZn"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -5551,7 +5551,7 @@ Cg
                             <constraint firstAttribute="trailing" secondItem="51N-bR-IdA" secondAttribute="trailing" id="deH-qW-qRe"/>
                             <constraint firstItem="gkx-ki-nuA" firstAttribute="top" secondItem="Gbi-Dy-o8g" secondAttribute="bottom" constant="8" id="hZG-dZ-HKO"/>
                             <constraint firstAttribute="trailing" secondItem="y3U-c9-24O" secondAttribute="trailing" id="jMF-3r-BRJ"/>
-                            <constraint firstItem="Gbi-Dy-o8g" firstAttribute="top" secondItem="q2j-H9-2oJ" secondAttribute="bottom" constant="195" id="mJV-2N-PQV"/>
+                            <constraint firstItem="Gbi-Dy-o8g" firstAttribute="top" secondItem="q2j-H9-2oJ" secondAttribute="bottom" constant="165" id="mJV-2N-PQV"/>
                             <constraint firstItem="tat-jp-VhG" firstAttribute="top" secondItem="y3U-c9-24O" secondAttribute="bottom" constant="8" id="nAq-Rb-Xke"/>
                             <constraint firstItem="r8T-d9-Ohm" firstAttribute="top" secondItem="q2j-H9-2oJ" secondAttribute="bottom" constant="208" id="vPy-ax-4Lk"/>
                             <constraint firstAttribute="trailing" secondItem="tat-jp-VhG" secondAttribute="trailing" id="y6B-Hw-dIM"/>

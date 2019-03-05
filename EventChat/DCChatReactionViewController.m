@@ -139,13 +139,15 @@
     [self.chatTableView registerClass:[MessageTableViewCell class] forCellReuseIdentifier:MessengerCellIdentifier];
     
     if([self.signedInUser.favoritedFeedItemIds containsObject:_selectedFeedItem.feedItemId]){
-        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:27.0 color:[UIColor redColor]] forState:UIControlStateNormal];
     }else{
-        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"heart_new"];
+        [self.favButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+//        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
     
 //    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
-    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor blackColor]] forState:UIControlStateNormal];
+    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor darkTextColor]] forState:UIControlStateNormal];
     
     // Format date
     dateFormatter = [[NSDateFormatter alloc] init];
@@ -268,6 +270,14 @@
     self.monthNameLabel.text = [calMonth stringFromDate:date];
     NSString *monthDay = [NSString stringWithFormat:@"%lu", (long)day];
     [self.monthDayLabel setText:monthDay];
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize{
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 -(void)setEventDate{
@@ -994,7 +1004,9 @@
         NSString *mLikeCount = [NSString stringWithFormat:@"%@, Like(%@", ago, message.likeCount];
         mLikeCount = [mLikeCount stringByAppendingString:@")"];
         cell.likeCountLabel.text = mLikeCount;
-        [cell.favImageView setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]]];
+//        [cell.favImageView setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]]];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_blue"];
+        [cell.favImageView setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)]];
         [cell.favImageView setUserInteractionEnabled:false];
         //        cell.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Like", ago, message.likeCount];
     }
@@ -1003,7 +1015,9 @@
         mLikeCount = [mLikeCount stringByAppendingString:@")"];
         cell.likeCountLabel.text = mLikeCount;
         //        cell.likeCountLabel.text = [NSString stringWithFormat:@"%@, %@ Like", ago, @"0"];
-        [cell.favImageView setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]]];
+//        [cell.favImageView setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]]];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_white"];
+        [cell.favImageView setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)]];
         [cell.favImageView setUserInteractionEnabled:true];
     }
     
@@ -1730,9 +1744,11 @@
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     
     if([self.signedInUser.favoritedFeedItemIds containsObject:self.selectedFeedItem.feedItemId]){
-        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:27.0 color:[UIColor redColor]] forState:UIControlStateNormal];
     }else{
-        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"heart_new"];
+        [self.favButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+//        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
 }
 

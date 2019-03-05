@@ -199,6 +199,10 @@
         UIImage *image = [UIImage imageWithData:data];
         [self.userProfileImageView setImage:[self imageWithImage:image scaledToSize:CGSizeMake(30, 30)]];
     }
+    
+    if (self.profileUser.coverPic_Url != nil){
+        [self showImageOnTheCell:self ForImageUrl:self.profileUser.coverPic_Url];
+    }
     self.mUserProfileTableView.estimatedRowHeight = 240.0;
     self.mUserProfileTableView.rowHeight = UITableViewAutomaticDimension;
 }
@@ -298,7 +302,7 @@
 - (void)loadFollowing{
     [[ECAPI sharedManager] getFollowing:self.profileUser.userId callback:^(NSArray *users, NSError *error) {
         if (error) {
-            NSLog(@"Error adding user: %@", error);
+            NSLog(@"Error getFollowing: %@", error);
         } else {
             NSLog(@"%@", users);
             self.mFollowingUsersArray = [[NSArray alloc] initWithArray:users];
@@ -309,7 +313,7 @@
 - (void)loadFollowers{
     [[ECAPI sharedManager] getFollowers:self.profileUser.userId callback:^(NSArray *users, NSError *error) {
         if (error) {
-            NSLog(@"Error adding user: %@", error);
+            NSLog(@"Error getFollowers: %@", error);
         } else {
             NSLog(@"%@", users);
             self.mFollowerUsersArray = [[NSArray alloc] initWithArray:users];
@@ -320,7 +324,7 @@
 - (void)loadUserPosts{
     [[ECAPI sharedManager] getPostByUserId:self.profileUser.userId callback:^(NSArray *posts, NSError *error) {
         if (error) {
-            NSLog(@"Error getting posts for user: %@", error);
+            NSLog(@"Error getPostByUserId: %@", error);
         } else {
             self.userPostArray = [[NSMutableArray alloc] initWithArray:posts];
             [self.userPostArray sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created_at" ascending:NO]]];
@@ -354,7 +358,6 @@
     if (inMemoryImage)
     {
         self.userBGImageView.image = inMemoryImage;
-        
     }
     else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
         UIImage *image = [cache imageFromDiskCacheForKey:url];
@@ -527,6 +530,45 @@
 
 -(void)didFinishVideoPlay{
     [self.navigationController dismissViewControllerAnimated:false completion:nil];
+}
+
+#pragma mark - SDWebImage
+
+-(void)showImageOnTheCell:(ECNewUserProfileViewController *)vc ForImageUrl:(NSString *)url{
+    SDImageCache *cache = [SDImageCache sharedImageCache];
+    UIImage *inMemoryImage = [cache imageFromMemoryCacheForKey:url];
+    // resolves the SDWebImage issue of image missing
+    if (inMemoryImage)
+    {
+        self.userBGImageView.image = inMemoryImage;
+    }
+    else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
+        UIImage *image = [cache imageFromDiskCacheForKey:url];
+        self.userBGImageView.image = image;
+        
+    }else{
+        NSURL *urL = [NSURL URLWithString:url];
+        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+        [manager.imageDownloader setDownloadTimeout:20];
+        [manager downloadImageWithURL:urL
+                              options:0
+                             progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                                 // progression tracking code
+                             }
+                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                if (image) {
+                                    self.userBGImageView.image = image;
+                                }
+                                else {
+                                    if(error){
+                                        NSLog(@"Problem downloading Image, play try again")
+                                        ;
+                                        return;
+                                    }
+                                }
+                            }];
+    }
+    
 }
 
 #pragma mark:- Twitter Methods

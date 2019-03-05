@@ -100,23 +100,34 @@
     
     //Fav button
     if(isFavorited){
-        [self.mVideoFavBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+        [self.mVideoFavBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:27.0 color:[UIColor redColor]] forState:UIControlStateNormal];
     }
     else{
-        [self.mVideoFavBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"heart_new"];
+        [self.mVideoFavBtn setTintColor:[UIColor darkTextColor]];
+        [self.mVideoFavBtn setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+//        [self.mVideoFavBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
     
     //like button
     if(isAttending){
-        [self.mVideoLikeBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_blue"];
+        [self.mVideoLikeBtn setTintColor:[UIColor colorWithRed:(67/255.0) green:(114/255.0) blue:(199/255.0) alpha:1]];
+        [self.mVideoLikeBtn setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+        
+//        [self.mVideoLikeBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
     }
     else{
-        [self.mVideoLikeBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor grayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_white"];
+        [self.mVideoLikeBtn setTintColor:[UIColor darkTextColor]];
+        [self.mVideoLikeBtn setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+        
+//        [self.mVideoLikeBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor grayColor]] forState:UIControlStateNormal];
     }
     
     //share button
 //    [self.mVideoShareBtn setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
-    [self.mVideoShareBtn setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor blackColor]] forState:UIControlStateNormal];
+    [self.mVideoShareBtn setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor darkTextColor]] forState:UIControlStateNormal];
 }
 
 - (void)configureWithPost:(DCPost *)post signedInUser:(ECUser *)signedInUser{
@@ -128,16 +139,27 @@
     
 //    if([signedInUser.favoritedPostIds containsObject:post.postId]){
         if([signedInUser.favoritedFeedItemIds containsObject:post.postId]){
-        [self.mVideoFavBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+        [self.mVideoFavBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:27.0 color:[UIColor redColor]] forState:UIControlStateNormal];
     }else{
-        [self.mVideoFavBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"heart_new"];
+        [self.mVideoFavBtn setTintColor:[UIColor darkTextColor]];
+        [self.mVideoFavBtn setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+//        [self.mVideoFavBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
 
 //    if([signedInUser.likedPostIds containsObject:post.postId]){
         if([signedInUser.attendingFeedItemIds containsObject:post.postId]){
-        [self.mVideoLikeBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
+            UIImage *btnImage = [UIImage imageNamed:@"thumb_blue"];
+            [self.mVideoLikeBtn setTintColor:[UIColor colorWithRed:(67/255.0) green:(114/255.0) blue:(199/255.0) alpha:1]];
+            [self.mVideoLikeBtn setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+            
+//        [self.mVideoLikeBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
     }else{
-        [self.mVideoLikeBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor grayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_white"];
+        [self.mVideoLikeBtn setTintColor:[UIColor darkTextColor]];
+        [self.mVideoLikeBtn setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+        
+//        [self.mVideoLikeBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor grayColor]] forState:UIControlStateNormal];
     }
     
     //Comments Button
@@ -154,7 +176,7 @@
         self.mVideoCommentBtn.enabled = TRUE;
     }
     
-    [self.mVideoShareBtn setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor blackColor]] forState:UIControlStateNormal];
+    [self.mVideoShareBtn setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor darkTextColor]] forState:UIControlStateNormal];
     
     //Video present
     if ([post.postType  isEqual: @"video"]){
@@ -206,6 +228,14 @@
     [_commentCount setText:[NSString stringWithFormat:@"%@ comments", post.commentCount]];
     _postContentTextView.translatesAutoresizingMaskIntoConstraints = false;
      */
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize{
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 #pragma mark:- IBAction Methods
