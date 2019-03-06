@@ -393,11 +393,13 @@
                     NSString *imageURL = [NSString stringWithFormat:@"%@Images/%@",awsURL,[[ECSharedmedia sharedManager]mediaImageURL]];
                     if(imageURL != nil){
                         ECCommonClass *instance = [ECCommonClass sharedManager];
-                        instance.isProfilePicUpdated = true;
                         if (self.isCoverImage){
+                            instance.isProfilePicUpdated = false;
                             self.signedInUser.coverPic_Url = imageURL;
                             [self showImageOnTheCell:self ForImageUrl:imageURL];
+                            [self updateUser];
                         }else{
+                            instance.isProfilePicUpdated = true;
                             self.signedInUser.profilePicUrl = imageURL;
                             [self showProfilePicImage:self ForImageUrl:imageURL];
                         }
@@ -486,6 +488,16 @@
             self.userPostArray = [[NSMutableArray alloc] initWithArray:posts];
             [self.userPostArray sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created_at" ascending:NO]]];
             [self.mUserProfileTableView reloadData];
+        }
+    }];
+}
+
+-(void)updateUser{
+    [[ECAPI sharedManager] updateUser:self.signedInUser callback:^(ECUser *ecUser, NSError *error) {
+        if (error) {
+            NSLog(@"Error update user: %@", error);
+        } else {
+            self.signedInUser = ecUser;
         }
     }];
 }

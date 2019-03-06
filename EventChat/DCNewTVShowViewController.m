@@ -184,6 +184,7 @@
                 dcChat.selectedFeedItem = dcTVNewShowEpisodeTableViewCell.feedItem;
                 dcChat.selectedTopic = topic;
                 dcChat.topicId = topic.topicId;
+                dcChat.isInfluencers = true;
                 [self.navigationController pushViewController:dcChat animated:NO];
             }
         }];
@@ -547,6 +548,7 @@
                 dcChat.selectedFeedItem = self.saveFeedItem;
                 dcChat.selectedTopic = topic;
                 dcChat.topicId = topic.topicId;
+                dcChat.isInfluencers = true;
                 [self.navigationController pushViewController:dcChat animated:NO];
             }
         }];

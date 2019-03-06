@@ -795,15 +795,17 @@
 #pragma mark:- IBActions Methods
 
 - (IBAction)actionOnCommentsButton:(id)sender {
-    self.reactionBottomLabel.backgroundColor = [UIColor whiteColor];
-    self.commentsBottomLabel.backgroundColor = [UIColor colorWithRed:0.0/255.0 green:112.0/255.0 blue:169.0/255.0 alpha:0.75];
-    [self.attendeeListTableView setHidden:true];
-    [self.segmentControl setHidden:true];
-    [self.postCommentView setHidden:false];
-    [self.chatTableView setHidden:false];
-    self.attendeeList = nil;
-    self.attendeeList = [[NSArray alloc] initWithArray:self.attendeeList];
-    [self configureDataSource];
+    if (!self.isInfluencers){
+        self.reactionBottomLabel.backgroundColor = [UIColor whiteColor];
+        self.commentsBottomLabel.backgroundColor = [UIColor colorWithRed:0.0/255.0 green:112.0/255.0 blue:169.0/255.0 alpha:0.75];
+        [self.attendeeListTableView setHidden:true];
+        [self.segmentControl setHidden:true];
+        [self.postCommentView setHidden:false];
+        [self.chatTableView setHidden:false];
+        self.attendeeList = nil;
+        self.attendeeList = [[NSArray alloc] initWithArray:self.attendeeList];
+        [self configureDataSource];
+    }
 }
 
 - (IBAction)actionOnReactionsButton:(id)sender {

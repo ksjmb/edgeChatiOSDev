@@ -230,6 +230,7 @@
             dcChat.selectedFeedItem = ecTableViewCell.feedItem;
             dcChat.selectedTopic = topic;
             dcChat.topicId = topic.topicId;
+            dcChat.isInfluencers = true;
             [self.navigationController pushViewController:dcChat animated:NO];
         }
     }];
