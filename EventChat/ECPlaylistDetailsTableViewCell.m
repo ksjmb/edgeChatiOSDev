@@ -149,12 +149,20 @@
     
     //Fav button
     if(isFavorited){
-        [self.favBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_blue"];
+        [self.favBtn setTintColor:[UIColor colorWithRed:(67/255.0) green:(114/255.0) blue:(199/255.0) alpha:1]];
+        [self.favBtn setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+        
+//        [self.favBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
     }
     else{
-        [self.favBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor grayColor]] forState:UIControlStateNormal];
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_white"];
+        [self.favBtn setTintColor:[UIColor darkTextColor]];
+        [self.favBtn setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+        
+//        [self.favBtn setImage:[IonIcons imageWithIcon:ion_thumbsup  size:30.0 color:[UIColor grayColor]] forState:UIControlStateNormal];
     }
-    [self.likeButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor blackColor]] forState:UIControlStateNormal];
+    [self.likeButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor darkTextColor]] forState:UIControlStateNormal];
     //share button
     [self.shareBtn setImage:[IonIcons imageWithIcon:ion_heart  size:30.0 color:[UIColor whiteColor]] forState:UIControlStateNormal];
     [self.shareBtn setUserInteractionEnabled:NO];
@@ -169,6 +177,14 @@
         }
     }
     [self layoutIfNeeded];
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize{
+    UIGraphicsBeginImageContext(newSize);
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
 }
 
 #pragma mark:- SDWebImage

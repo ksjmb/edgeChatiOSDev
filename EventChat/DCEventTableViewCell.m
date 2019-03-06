@@ -82,6 +82,7 @@
     }
     else{
         UIImage *btnImage = [UIImage imageNamed:@"heart_new"];
+        [self.favoriteButton setTintColor:[UIColor darkTextColor]];
         [self.favoriteButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
         
 //        [self.favoriteButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];

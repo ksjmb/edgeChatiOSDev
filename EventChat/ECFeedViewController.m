@@ -158,6 +158,39 @@
             [addController setModalPresentationStyle:UIModalPresentationOverFullScreen];
             [self.navigationController presentViewController:addController animated:YES completion: nil];
         }
+        //
+        NSString *fb_profileImageURL = [[NSUserDefaults standardUserDefaults] valueForKey:@"FB_PROFILE_PIC_URL"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        UIImage* img;
+        if(fb_profileImageURL != nil){
+            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL   URLWithString:fb_profileImageURL]];
+            img = [UIImage imageWithData:data];
+            if (img == nil){
+                img = [UIImage imageNamed:@"missing-profile.png"];
+            }
+            [self updateUserProfilePic:self.signedInUser.userId URL:fb_profileImageURL];
+        }else if(self.signedInUser.profilePicUrl != nil){
+            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL   URLWithString:self.signedInUser.profilePicUrl]];
+            img = [UIImage imageWithData:data];
+            if (img == nil){
+                img = [UIImage imageNamed:@"missing-profile.png"];
+            }
+            [self updateUserProfilePic:self.signedInUser.userId URL:self.signedInUser.profilePicUrl];
+        }else{
+            img = [UIImage imageNamed:@"missing-profile.png"];
+        }
+        _profileButton = [UIButton buttonWithType:UIButtonTypeCustom];
+        [_profileButton setTranslatesAutoresizingMaskIntoConstraints:YES];
+        _profileButton.frame = CGRectMake(0, 0, 30, 30);
+        _profileButton.layer.cornerRadius = _profileButton.frame.size.width /2;
+        _profileButton.layer.masksToBounds = YES;
+        _profileButton.layer.borderWidth = 0.5;
+        _profileButton.layer.borderColor = [UIColor whiteColor].CGColor;
+        [_profileButton setImage:[self imageWithImage:img scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+        [_profileButton addTarget:self action:@selector(didTapViewProfile:) forControlEvents:UIControlEventTouchUpInside];
+        self.sortOptionsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_profileButton];
+        self.navigationItem.leftBarButtonItem = self.sortOptionsBarButtonItem;
+        //
         
         // JB: 01/26/18 - Commented out for not and loading particular category directly. Will address after business discussion.
         //    [[ECAPI sharedManager] getFeedItems:^(NSArray *searchResult, NSError *error) {
@@ -191,12 +224,6 @@
     }
 }
 
-- (void)viewDidAppear:(BOOL)animated{
-    if(_currentFilter != nil){
-        [self loadFeedItemsByFilter:_currentFilter];
-    }
-}
-
 - (void)viewWillAppear:(BOOL)animated{
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.userEmail = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
@@ -206,47 +233,44 @@
     
     if (_userEmail != nil && ![_userEmail isEqualToString:@""]){
         UIImage* img;
-        if(fb_profileImageURL != nil){
-            imageURL = fb_profileImageURL;
-            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL   URLWithString:fb_profileImageURL]];
-            img = [UIImage imageWithData:data];
-            if (img == nil){
+        ECCommonClass *instance = [ECCommonClass sharedManager];
+        if (instance.isProfilePicUpdated){
+            instance.isProfilePicUpdated = false;
+            if(fb_profileImageURL != nil){
+                imageURL = fb_profileImageURL;
+                NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL   URLWithString:fb_profileImageURL]];
+                img = [UIImage imageWithData:data];
+                if (img == nil){
+                    img = [UIImage imageNamed:@"missing-profile.png"];
+                }
+            }else if(self.signedInUser.profilePicUrl != nil){
+                imageURL = self.signedInUser.profilePicUrl;
+                NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL   URLWithString:self.signedInUser.profilePicUrl]];
+                img = [UIImage imageWithData:data];
+                if (img == nil){
+                    img = [UIImage imageNamed:@"missing-profile.png"];
+                }
+            }
+            else{
                 img = [UIImage imageNamed:@"missing-profile.png"];
             }
-        }else if(self.signedInUser.profilePicUrl != nil){
-            imageURL = self.signedInUser.profilePicUrl;
-            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL   URLWithString:self.signedInUser.profilePicUrl]];
-            img = [UIImage imageWithData:data];
-            if (img == nil){
-                img = [UIImage imageNamed:@"missing-profile.png"];
-            }
+
+//            [_profileButton setImage:[self imageWithImage:img scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+            [self showProfilePicImage:self ForImageUrl:self.signedInUser.profilePicUrl ForImageView:_profileButton];
+            [_profileButton addTarget:self action:@selector(didTapViewProfile:) forControlEvents:UIControlEventTouchUpInside];
+            self.sortOptionsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_profileButton];
+            self.navigationItem.leftBarButtonItem = self.sortOptionsBarButtonItem;
+            [self updateUserProfilePic:self.signedInUser.userId URL:imageURL];
         }
-        else{
-            img = [UIImage imageNamed:@"missing-profile.png"];
-        }
-        
-        UIButton *profileButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        profileButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        [profileButton setTranslatesAutoresizingMaskIntoConstraints:YES];
-        profileButton.frame = CGRectMake(0, 0, 30, 30);
-        profileButton.layer.cornerRadius = profileButton.frame.size.width /2;
-        profileButton.layer.masksToBounds = YES;
-        profileButton.layer.borderWidth = 0.5;
-        profileButton.layer.borderColor = [UIColor whiteColor].CGColor;
-        [profileButton setImage:[self imageWithImage:img scaledToSize:CGSizeMake(30, 30)] forState:UIControlStateNormal];
-        [profileButton addTarget:self action:@selector(didTapViewProfile:) forControlEvents:UIControlEventTouchUpInside];
-        self.sortOptionsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:profileButton];
-        self.navigationItem.leftBarButtonItem = self.sortOptionsBarButtonItem;
-        [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:imageURL callback:^(NSError *error) {
-            if (error) {
-                NSLog(@"Error adding user: %@", error);
-            } else {
-                self.signedInUser.profilePicUrl = imageURL;
-            }
-        }];
     }else{
         self.navigationItem.leftBarButtonItem = nil;
         self.signedInUser = nil;
+    }
+}
+
+- (void)viewDidAppear:(BOOL)animated{
+    if(_currentFilter != nil){
+        [self loadFeedItemsByFilter:_currentFilter];
     }
 }
 
@@ -396,7 +420,7 @@
     
 }
 
-- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
+- (UIImage *)imageWithImageOld:(UIImage *)image scaledToSize:(CGSize)newSize {
     if ([[UIScreen mainScreen] respondsToSelector:@selector(scale)]) {
         if ([[UIScreen mainScreen] scale] == 2.0) {
             UIGraphicsBeginImageContextWithOptions(newSize, YES, 2.0);
@@ -406,6 +430,14 @@
     } else {
         UIGraphicsBeginImageContext(newSize);
     }
+    [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+- (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize{
+    UIGraphicsBeginImageContext(newSize);
     [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
@@ -600,9 +632,19 @@
 -(void)updateUserProfile{
     [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:self.signedInUser.profilePicUrl callback:^(NSError *error) {
         if (error) {
-            NSLog(@"Error adding user: %@", error);
+            NSLog(@"Error update user profile: %@", error);
         } else {
             [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdated" object:nil];
+        }
+    }];
+}
+
+-(void)updateUserProfilePic:(NSString *)userId URL:(NSString *)profilePicURL{
+    [[ECAPI sharedManager] updateProfilePicUrl:userId profilePicUrl:profilePicURL callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error update user profile pic: %@", error);
+        } else {
+            self.signedInUser.profilePicUrl = profilePicURL;
         }
     }];
 }
@@ -1366,6 +1408,46 @@
     }];
 }
  */
+
+-(void)showProfilePicImage:(ECFeedViewController *)vc ForImageUrl:(NSString *)url ForImageView:(UIButton *)button{
+    SDImageCache *cache = [SDImageCache sharedImageCache];
+    UIImage *inMemoryImage = [cache imageFromMemoryCacheForKey:url];
+    // resolves the SDWebImage issue of image missing
+    if (inMemoryImage)
+    {
+//        imageView.image = inMemoryImage;
+        [button setImage:[self imageWithImage:inMemoryImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+    }
+    else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
+        UIImage *image = [cache imageFromDiskCacheForKey:url];
+//        imageView.image = image;
+        [button setImage:[self imageWithImage:image scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+        
+    }else{
+        NSURL *urL = [NSURL URLWithString:url];
+        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+        [manager.imageDownloader setDownloadTimeout:20];
+        [manager downloadImageWithURL:urL
+                              options:0
+                             progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                                 // progression tracking code
+                             }
+                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                if (image) {
+//                                    imageView.image = image;
+                                    [button setImage:[self imageWithImage:image scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+                                }
+                                else {
+                                    if(error){
+                                        NSLog(@"Problem downloading Image, play try again")
+                                        ;
+                                        return;
+                                    }
+                                }
+                            }];
+    }
+    
+}
 
 #pragma mark - FBSDKSharingDelegate
 

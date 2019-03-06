@@ -5367,7 +5367,7 @@ Cg
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder.png" translatesAutoresizingMaskIntoConstraints="NO" id="51N-bR-IdA">
+                            <imageView clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="placeholder.png" translatesAutoresizingMaskIntoConstraints="NO" id="51N-bR-IdA">
                                 <rect key="frame" x="0.0" y="64" width="375" height="230"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="230" id="J8W-Ia-nmp"/>
@@ -5528,7 +5528,7 @@ Cg
                                     <action selector="actionOnFollowButton:" destination="yLA-DO-r2d" eventType="touchUpInside" id="Ihv-pe-8kQ"/>
                                 </connections>
                             </button>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="missing-profile.png" translatesAutoresizingMaskIntoConstraints="NO" id="Gbi-Dy-o8g">
+                            <imageView clipsSubviews="YES" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="missing-profile.png" translatesAutoresizingMaskIntoConstraints="NO" id="Gbi-Dy-o8g">
                                 <rect key="frame" x="127" y="229" width="120" height="120"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="120" id="AfB-cd-gLU"/>

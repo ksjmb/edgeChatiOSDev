@@ -36,6 +36,13 @@
 #import "ECAttendanceDetailsViewController.h"
 #import "DCChatReactionViewController.h"
 #import <Social/Social.h>
+//
+#import "ECSharedmedia.h"
+#import "S3UploadImage.h"
+#import "SVProgressHUD.h"
+#import "S3Constants.h"
+#import "Reachability.h"
+#import "ECAPINames.h"
 
 @interface ECNewUserProfileViewController ()
 @property (nonatomic, assign) NSString *userEmailStr;
@@ -58,6 +65,8 @@
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     [self.navigationItem setTitle:@"Profile"];
     [self initialSetup];
+    [self setupGestureForProfileImageView];
+    [self setupGestureForCoverImageView];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -195,9 +204,9 @@
         }
     }
     else{
-        NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:self.profileUser.profilePicUrl]];
-        UIImage *image = [UIImage imageWithData:data];
-        [self.userProfileImageView setImage:[self imageWithImage:image scaledToSize:CGSizeMake(30, 30)]];
+        if (self.signedInUser.profilePicUrl != nil){
+            [self showProfilePicImage:self ForImageUrl:self.signedInUser.profilePicUrl];
+        }
     }
     
     if (self.profileUser.coverPic_Url != nil){
@@ -221,6 +230,57 @@
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return newImage;
+}
+
+-(void) setupGestureForProfileImageView {
+    UILongPressGestureRecognizer *lpHandler = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleHoldGesture:)];
+    lpHandler.minimumPressDuration = 1; //seconds
+    lpHandler.delegate = self;
+    [self.userProfileImageView addGestureRecognizer:lpHandler];
+}
+
+-(void) setupGestureForCoverImageView {
+    UILongPressGestureRecognizer *lpHandler2 = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleHoldGestureTwo:)];
+    lpHandler2.minimumPressDuration = 1; //seconds
+    lpHandler2.delegate = self;
+    [self.userBGImageView addGestureRecognizer:lpHandler2];
+}
+
+- (void) handleHoldGesture:(UILongPressGestureRecognizer *)gesture {
+    if(UIGestureRecognizerStateBegan == gesture.state) {
+        // Called on start of gesture, do work here
+        NSLog(@"start of gesture");
+        self.isCoverImage = false;
+        [[ECCommonClass sharedManager]showActionSheetToSelectMediaFromGalleryOrCamFromController:self andMediaType:@"Image" andResult:^(bool flag) {
+            if (flag) {
+                NSLog(@"upload image...");
+                [self uploadImage];
+            }
+        }];
+    }
+    /*
+    if(UIGestureRecognizerStateChanged == gesture.state) {
+        // Do repeated work here (repeats continuously) while finger is down
+        NSLog(@"repeats continuously");
+    }
+     */
+    if(UIGestureRecognizerStateEnded == gesture.state) {
+        // Do end work here when finger is lifted
+        NSLog(@"finger is lifted.");
+    }
+}
+
+- (void) handleHoldGestureTwo:(UILongPressGestureRecognizer *)gesture {
+    if(UIGestureRecognizerStateBegan == gesture.state) {
+        NSLog(@"start of gesture");
+        self.isCoverImage = true;
+        [[ECCommonClass sharedManager]showActionSheetToSelectMediaFromGalleryOrCamFromController:self andMediaType:@"Image" andResult:^(bool flag) {
+            if (flag) {
+                NSLog(@"upload image...");
+                [self uploadImage];
+            }
+        }];
+    }
 }
 
 #pragma mark:- IBAction Methods
@@ -291,10 +351,107 @@
 - (IBAction)didTapPostButton:(id)sender{
     DCNewPostViewController *dcNewPostViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCNewPostViewController"];
     dcNewPostViewController.delegate = self;
-    //    UINavigationController *navigationController =
-    //    [[UINavigationController alloc] initWithRootViewController:dcNewPostViewController];
-    //    [self presentViewController:navigationController animated:YES completion:nil];
     [self.navigationController pushViewController:dcNewPostViewController animated:true];
+}
+
+#pragma mark:- Handling background Image upload
+
+- (void) beginBackgroundUpdateTask {
+    self.backgroundUpdateTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [self endBackgroundUpdateTask];
+    }];
+}
+
+- (void) endBackgroundUpdateTask {
+    [[UIApplication sharedApplication] endBackgroundTask: self.backgroundUpdateTaskId];
+    self.backgroundUpdateTaskId = UIBackgroundTaskInvalid;
+}
+
+#pragma mark:- Upload Image or Video
+
+// Uploading Image On S3
+-(void)uploadImage{
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+    [SVProgressHUD showWithStatus:@"Uploading Image"];
+    
+    NSData * thumbImageData = UIImagePNGRepresentation([[ECSharedmedia sharedManager] mediaThumbImage]);
+    [self beginBackgroundUpdateTask];
+    
+    [[S3UploadImage sharedManager] uploadImageForData:thumbImageData forFileName:[[ECSharedmedia sharedManager]mediaImageThumbURL] FromController:self andResult:^(bool flag) {
+        
+        if (flag) {
+            NSData * imgData = [[ECSharedmedia sharedManager] imageData];
+            [[S3UploadImage sharedManager]uploadImageForData:imgData forFileName:[[ECSharedmedia sharedManager] mediaImageURL] FromController:self andResult:^(bool flag) {
+                
+                if (flag) {
+                    [self endBackgroundUpdateTask];
+                    [SVProgressHUD dismiss];
+                    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+                    [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
+                    
+                    NSString *imageURL = [NSString stringWithFormat:@"%@Images/%@",awsURL,[[ECSharedmedia sharedManager]mediaImageURL]];
+                    if(imageURL != nil){
+                        ECCommonClass *instance = [ECCommonClass sharedManager];
+                        instance.isProfilePicUpdated = true;
+                        if (self.isCoverImage){
+                            self.signedInUser.coverPic_Url = imageURL;
+                            [self showImageOnTheCell:self ForImageUrl:imageURL];
+                        }else{
+                            self.signedInUser.profilePicUrl = imageURL;
+                            [self showProfilePicImage:self ForImageUrl:imageURL];
+                        }
+                    }
+                    
+                } else{
+                    // Fail Condition ask for retry and cancel through alertView
+                    [self showFailureAlert:@"Image"];
+                    [SVProgressHUD dismiss];
+                    [self endBackgroundUpdateTask];
+                }
+            }];
+        } else{
+            // Fail Condition ask for retry and cancel through alertView
+            [self showFailureAlert:@"Image"];
+            [SVProgressHUD dismiss];
+            [self endBackgroundUpdateTask];
+        }
+    }];
+}
+
+//Show Alert based on media type
+-(void)showFailureAlert:(NSString *)mediaType{
+    UIAlertController *alertController = [UIAlertController
+                                          alertControllerWithTitle:@"Evnet Chat"
+                                          message:[NSString stringWithFormat:@"%@ uploading Failed! \n Do you want to Retry?",mediaType]
+                                          preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *cancelAction = [UIAlertAction
+                                   actionWithTitle:NSLocalizedString(@"Cancel", @"Cancel action")
+                                   style:UIAlertActionStyleCancel
+                                   handler:^(UIAlertAction *action)
+                                   {
+                                       NSLog(@"Cancel action");
+                                   }];
+    
+    UIAlertAction *okAction = [UIAlertAction
+                               actionWithTitle:NSLocalizedString(@"Retry", @"OK action")
+                               style:UIAlertActionStyleDefault
+                               handler:^(UIAlertAction *action)
+                               {
+                                   NSLog(@"OK action");
+                                   // Re uploading if condition fails
+                                   if ([mediaType isEqualToString:@"Image"]) {
+                                       [self uploadImage];
+                                   }
+                                   else{
+//                                       [self uploadVideo];
+                                   }
+                               }];
+    
+    [alertController addAction:cancelAction];
+    [alertController addAction:okAction];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 #pragma mark:- API Call Methods
@@ -571,6 +728,43 @@
     
 }
 
+-(void)showProfilePicImage:(ECNewUserProfileViewController *)vc ForImageUrl:(NSString *)url{
+    SDImageCache *cache = [SDImageCache sharedImageCache];
+    UIImage *inMemoryImage = [cache imageFromMemoryCacheForKey:url];
+    // resolves the SDWebImage issue of image missing
+    if (inMemoryImage)
+    {
+        self.userProfileImageView.image = inMemoryImage;
+    }
+    else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
+        UIImage *image = [cache imageFromDiskCacheForKey:url];
+        self.userProfileImageView.image = image;
+        
+    }else{
+        NSURL *urL = [NSURL URLWithString:url];
+        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+        [manager.imageDownloader setDownloadTimeout:20];
+        [manager downloadImageWithURL:urL
+                              options:0
+                             progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                                 // progression tracking code
+                             }
+                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                if (image) {
+                                    self.userProfileImageView.image = image;
+                                }
+                                else {
+                                    if(error){
+                                        NSLog(@"Problem downloading Image, play try again")
+                                        ;
+                                        return;
+                                    }
+                                }
+                            }];
+    }
+    
+}
+
 #pragma mark:- Twitter Methods
 
 - (void)twitterSetup:(NSURL *)url :(NSString *)title{
@@ -651,26 +845,4 @@
     NSLog(@"FB: CANCELED SHARER=%@\n",[sharer debugDescription]);
 }
 
-#pragma mark:- Handling image tap which will open image in another larger view Methods
-
-/*
- - (void)handleImageTap:(UIGestureRecognizer *)sender {
- 
- CGPoint location = [sender locationInView:self.view];
- if (CGRectContainsPoint([self.view convertRect:self.mUserProfileTableView.frame fromView:self.mUserProfileTableView.superview], location))
- {
- CGPoint locationInTableview = [self.mUserProfileTableView convertPoint:location fromView:self.view];
- NSIndexPath *indexPath = [self.mUserProfileTableView indexPathForRowAtPoint:locationInTableview];
- if (indexPath){
- DCPost *postNew = [self.userPostArray objectAtIndex:index - 1];
- BOOL imageContains = [[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:postNew.imageUrl]];
- if (imageContains) {
- self.fullScreenImageVC = [[ECFullScreenImageViewController alloc] initWithNibName:@"ECFullScreenImageViewController" bundle:nil];
- self.fullScreenImageVC.imagePath = postNew.imageUrl;
- [self presentViewController:self.fullScreenImageVC animated:YES completion:nil];
- }
- }
- }
- }
- */
 @end

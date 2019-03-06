@@ -55,6 +55,7 @@ typedef void (^ResultBlock)( BOOL);
 @property (nonatomic) BOOL isAouthToken;
 
 @property (nonatomic) BOOL isFromMore;
+@property (nonatomic) BOOL isProfilePicUpdated;
 
 -(void)showActionSheetToSelectMediaFromGalleryOrCamFromController:(UIViewController *)controller andMediaType : (NSString*)type andResult:(void (^)(bool))block;
 /*

@@ -15,7 +15,7 @@
 
 @class ECUser;
 
-@interface ECNewUserProfileViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, DCNewPostViewControllerDelegate, DCInfluencersPersonDetailsTVCellDelegate, FBSDKSharingDelegate>
+@interface ECNewUserProfileViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, DCNewPostViewControllerDelegate, DCInfluencersPersonDetailsTVCellDelegate, FBSDKSharingDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UINavigationControllerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *userBGImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *userProfileImageView;
@@ -27,5 +27,8 @@
 @property (nonatomic, strong)ECUser *signedInUser;
 @property (nonatomic, strong)ECUser *profileUser;
 @property (strong, nonatomic) UIImage *fb_profile_image;
+
+@property (nonatomic) UIBackgroundTaskIdentifier backgroundUpdateTaskId;
+@property (nonatomic, assign) BOOL isCoverImage;
 
 @end

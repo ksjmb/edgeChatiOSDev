@@ -369,6 +369,8 @@
                                 [[NSUserDefaults standardUserDefaults] setObject:username forKey:@"username"];
                                 [[NSUserDefaults standardUserDefaults] setObject:tempPassword forKey:@"password"];
                                 [[NSUserDefaults standardUserDefaults] synchronize];
+                                ECCommonClass *instance = [ECCommonClass sharedManager];
+                                instance.isProfilePicUpdated = true;
                                 
                                 [[ECAuthAPI sharedClient] signInWithUsernameAndPassword:username
                                                                                password:tempPassword
@@ -454,6 +456,8 @@
                               NSString *imageStringOfLoginUser = [[[result valueForKey:@"picture"] valueForKey:@"data"] valueForKey:@"url"];
                               [[NSUserDefaults standardUserDefaults] setValue:imageStringOfLoginUser forKey:@"FB_PROFILE_PIC_URL"];
                               [[NSUserDefaults standardUserDefaults] synchronize];
+                              ECCommonClass *instance = [ECCommonClass sharedManager];
+                              instance.isProfilePicUpdated = true;
                               //
                               NSString *userId = [result objectForKey:@"id"];
                               NSString *username = [NSString stringWithFormat:@"FB_%@", userId];
@@ -546,6 +550,8 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
                      NSString *imageStringOfLoginUser = [[[result valueForKey:@"picture"] valueForKey:@"data"] valueForKey:@"url"];
                      [[NSUserDefaults standardUserDefaults] setValue:imageStringOfLoginUser forKey:@"FB_PROFILE_PIC_URL"];
                      [[NSUserDefaults standardUserDefaults] synchronize];
+                     ECCommonClass *instance = [ECCommonClass sharedManager];
+                     instance.isProfilePicUpdated = true;
                      
                      [[ECAPI sharedManager] createUserWithSocial:[result objectForKey:@"email"] firstName:[result objectForKey:@"first_name"] lastName:[result objectForKey:@"last_name"] deviceToken:[(AppDelegate *)[[UIApplication sharedApplication] delegate] getDeviceToken] facebookUserId:[result objectForKey:@"id"] googleUserId:nil twitterUserId:nil socialConnect:@"Facebook" username:username password:tempPassword callback:^(NSError *error) {
                          
@@ -679,6 +685,7 @@ didCompleteWithResult:(FBSDKLoginManagerLoginResult *)result
                                                                                    //@kj_undo_change
 //                                                                                   [(AppDelegate *)[[UIApplication sharedApplication] delegate] replaceRootViewController];
                                                                                    ECCommonClass *sharedInstance = [ECCommonClass sharedManager];
+                                                                        sharedInstance.isProfilePicUpdated = true;
                                                                                    if (sharedInstance.isUserLogoutTap == false){
                                                                                        [self.navigationController popViewControllerAnimated:false];
                                                                                        [self.delegate didTapLoginButton:_storyboardIdentifierString];
