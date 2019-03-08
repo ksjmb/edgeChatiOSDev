@@ -49,7 +49,7 @@
                         </connections>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Msg" textAlignment="justified" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ftZ-hf-lnV">
-                        <rect key="frame" x="8" y="162" width="359" height="25"/>
+                        <rect key="frame" x="8" y="158" width="359" height="33"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="0Id-v9-awN"/>
                         </constraints>
@@ -58,7 +58,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n1I-Ty-N4C">
-                        <rect key="frame" x="8" y="191" width="359" height="40.5"/>
+                        <rect key="frame" x="8" y="195" width="359" height="40.5"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00 Comments" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rw0-OP-xTT">
                                 <rect key="frame" x="38" y="8.5" width="77.5" height="21"/>
@@ -149,7 +149,7 @@
                 <constraints>
                     <constraint firstItem="ftZ-hf-lnV" firstAttribute="leading" secondItem="CU5-WK-VeT" secondAttribute="leading" constant="8" id="3MR-bo-nob"/>
                     <constraint firstItem="az3-qO-PHo" firstAttribute="top" secondItem="CU5-WK-VeT" secondAttribute="top" constant="4" id="58O-mD-jTW"/>
-                    <constraint firstItem="ftZ-hf-lnV" firstAttribute="top" secondItem="NWz-7V-Vua" secondAttribute="bottom" constant="8" id="63a-AZ-vH1"/>
+                    <constraint firstItem="ftZ-hf-lnV" firstAttribute="top" secondItem="NWz-7V-Vua" secondAttribute="bottom" constant="4" id="63a-AZ-vH1"/>
                     <constraint firstItem="n1I-Ty-N4C" firstAttribute="top" secondItem="ftZ-hf-lnV" secondAttribute="bottom" constant="4" id="ASZ-Av-W4d"/>
                     <constraint firstItem="NWz-7V-Vua" firstAttribute="leading" secondItem="CU5-WK-VeT" secondAttribute="leading" constant="4" id="H72-ST-fno"/>
                     <constraint firstAttribute="trailing" secondItem="NWz-7V-Vua" secondAttribute="trailing" constant="4" id="M4S-WX-qYL"/>
@@ -161,7 +161,7 @@
                     <constraint firstAttribute="trailing" secondItem="n1I-Ty-N4C" secondAttribute="trailing" constant="8" id="epL-3H-JaR"/>
                     <constraint firstItem="az3-qO-PHo" firstAttribute="leading" secondItem="CU5-WK-VeT" secondAttribute="leading" constant="4" id="tnM-fD-WSm"/>
                     <constraint firstItem="NWz-7V-Vua" firstAttribute="top" secondItem="CU5-WK-VeT" secondAttribute="top" constant="4" id="uYX-MR-79s"/>
-                    <constraint firstAttribute="bottom" secondItem="n1I-Ty-N4C" secondAttribute="bottom" constant="8" id="vKu-ux-mrD"/>
+                    <constraint firstAttribute="bottom" secondItem="n1I-Ty-N4C" secondAttribute="bottom" constant="4" id="vKu-ux-mrD"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

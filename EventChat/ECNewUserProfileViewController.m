@@ -53,6 +53,7 @@
 @property (strong, nonatomic) ECFullScreenImageViewController *fullScreenImageVC;
 @property (nonatomic, strong) FBSDKShareDialog *shareDialog;
 @property (nonatomic, strong) FBSDKShareLinkContent *content;
+@property (nonatomic, strong) NSMutableArray *topics;
 
 @end
 
@@ -557,6 +558,13 @@
     }
 }
 
+#pragma mark:- AddToPlaylist Delegate Methods
+
+- (void)updateUI{
+    [self.navigationController.navigationBar setUserInteractionEnabled:YES];
+    self.tabBarController.tabBar.hidden = NO;
+}
+
 #pragma mark:- DCInfluencersPerson DetailsTVCell Delegate Methods
 
 -(void)playVideoButtonTapped:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
@@ -565,6 +573,26 @@
 }
 
 - (void)didTapCommentsButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
+    /*
+    DCPost *postNew = [self.userPostArray objectAtIndex:index - 1];
+    [[ECAPI sharedManager] fetchTopicsByFeedItemId:postNew.postId callback:^(NSArray *topics, NSError *error)  {
+        if(error){
+            NSLog(@"Error: %@", error);
+        }
+        else{
+            self.topics = [[NSMutableArray alloc] initWithArray:topics];
+            ECTopic *topic = [self.topics objectAtIndex:1];
+            DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
+            dcChat.dcPost = postNew;
+            dcChat.isPost = true;
+            dcChat.selectedTopic = topic;
+            dcChat.topicId = topic.topicId;
+            dcChat.isInfluencers = true;
+            [self.navigationController pushViewController:dcChat animated:NO];
+        }
+    }];
+    */
+     
     /*
     DCPost *postNew = [self.userPostArray objectAtIndex:index - 1];
     DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
@@ -581,6 +609,24 @@
 
 - (void)didTapFavoriteButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
     DCPost *postNew = [self.userPostArray objectAtIndex:index - 1];
+    AddToPlaylistPopUpViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddToPlaylistPopUpViewController"];
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.5;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    transition.type = kCATransitionFromBottom;
+    transition.subtype = kCATransitionFromBottom;
+    [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+    [self.navigationController.navigationBar setUserInteractionEnabled:NO];
+    self.tabBarController.tabBar.hidden = YES;
+    vc.playlistDelegate = self;
+    vc.isFeedMode = true;
+    vc.mFeedItemId = postNew.postId;
+    [self addChildViewController:vc];
+    vc.view.frame = self.view.frame;
+    [self.view addSubview:vc.view];
+    [vc didMoveToParentViewController:self];
+    
+    /*
     DCPlaylistsTableViewController *dcPlaylistsTVC = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
     dcPlaylistsTVC.isFeedMode = true;
     dcPlaylistsTVC.isSignedInUser = true;
@@ -588,6 +634,7 @@
     UINavigationController *navigationController =
     [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTVC];
     [self presentViewController:navigationController animated:YES completion:nil];
+     */
 }
 
 - (void)didTapAttendanceButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{

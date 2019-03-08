@@ -12,10 +12,11 @@
 #import "DCInfluencersPersonDetailsTableViewCell.h"
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
+#import "AddToPlaylistPopUpViewController.h"
 
 @class ECUser;
 
-@interface ECNewUserProfileViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, DCNewPostViewControllerDelegate, DCInfluencersPersonDetailsTVCellDelegate, FBSDKSharingDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UINavigationControllerDelegate>
+@interface ECNewUserProfileViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, DCNewPostViewControllerDelegate, DCInfluencersPersonDetailsTVCellDelegate, FBSDKSharingDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, AddToPlaylistDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *userBGImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *userProfileImageView;
