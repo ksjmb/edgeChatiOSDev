@@ -158,7 +158,7 @@
     
     [self.mUserNameLabel setText:[NSString stringWithFormat:@"%@ %@", self.profileUser.firstName, self.profileUser.lastName]];
     
-    [self.coverImaegButton setImage:[IonIcons imageWithIcon:ion_ios_camera_outline  size:27.0 color:[UIColor whiteColor]] forState:UIControlStateNormal];
+    [self.coverImaegButton setImage:[IonIcons imageWithIcon:ion_ios_camera_outline  size:27.0 color:[UIColor darkGrayColor]] forState:UIControlStateNormal];
     [self.profileImageButton setImage:[IonIcons imageWithIcon:ion_ios_camera_outline  size:27.0 color:[UIColor darkGrayColor]] forState:UIControlStateNormal];
     
     // Apply round mask
