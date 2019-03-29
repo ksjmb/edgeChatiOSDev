@@ -77,9 +77,11 @@
     }
 //    if (self.mSelectedDCFeedItem.coverPic_Url != nil){
     if (self.signedInUser.coverPic_Url != nil){
-        [self showImageOnHeader:self.signedInUser.coverPic_Url];
+//        [self showImageOnHeader:self.signedInUser.coverPic_Url];
+        [self.mBKImageView setImage:[UIImage imageNamed:@"cover_slide"]];
     }else{
-        [self.mBKImageView setImage:[UIImage imageNamed:@"placeholder.png"]];
+        [self.mBKImageView setImage:[UIImage imageNamed:@"cover_slide"]];
+//        [self.mBKImageView setImage:[UIImage imageNamed:@"placeholder.png"]];
     }
     // Register cell
     [self.mTableView registerNib:[UINib nibWithNibName:@"DCInfluencersPersonDetailsTableViewCell" bundle:nil]

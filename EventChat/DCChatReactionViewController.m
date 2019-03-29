@@ -795,7 +795,7 @@
 #pragma mark:- IBActions Methods
 
 - (IBAction)actionOnCommentsButton:(id)sender {
-    if (!self.isInfluencers){
+//    if (!self.isInfluencers){
         self.reactionBottomLabel.backgroundColor = [UIColor whiteColor];
         self.commentsBottomLabel.backgroundColor = [UIColor colorWithRed:0.0/255.0 green:112.0/255.0 blue:169.0/255.0 alpha:0.75];
         [self.attendeeListTableView setHidden:true];
@@ -805,12 +805,12 @@
         self.attendeeList = nil;
         self.attendeeList = [[NSArray alloc] initWithArray:self.attendeeList];
         [self configureDataSource];
-    }
+//    }
 }
 
 - (IBAction)actionOnReactionsButton:(id)sender {
     [self.view endEditing:YES];
-    if (!self.isInfluencers){
+//    if (!self.isInfluencers){
         self.commentsBottomLabel.backgroundColor = [UIColor whiteColor];
         self.reactionBottomLabel.backgroundColor = [UIColor colorWithRed:0.0/255.0 green:113.0/255.0 blue:169.0/255.0 alpha:0.75];
         [self.postCommentView setHidden:true];
@@ -819,7 +819,7 @@
         [self.segmentControl setHidden:false];
         [self.messages removeAllObjects];
         [self getFeedItemAttendeeList];
-    }
+//    }
 }
 
 - (IBAction)actionOnShareButton:(id)sender {

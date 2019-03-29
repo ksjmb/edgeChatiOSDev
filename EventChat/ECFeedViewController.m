@@ -120,8 +120,11 @@
         [SVProgressHUD showWithStatus:@"Loading..."];
         self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
         self.favoriteBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]] style:UIBarButtonItemStylePlain target:self action:@selector(didTapViewFavorites:)];
+        /*
         self.searchBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[IonIcons imageWithIcon:ion_ios_search_strong  size:30.0 color:[UIColor whiteColor]] style:UIBarButtonItemStylePlain target:self action:@selector(showSearchbar:)];
         [self.navigationItem setRightBarButtonItems:@[self.favoriteBarButtonItem, self.searchBarButtonItem]];
+         */
+        [self.navigationItem setRightBarButtonItems:@[self.favoriteBarButtonItem]];
         
         //[self.favoriteBarButtonItem setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor redColor]]];
         //[self.searchBarButtonItem  setImage:[IonIcons imageWithIcon:ion_ios_search size:30.0 color:[UIColor whiteColor]]];
@@ -569,7 +572,6 @@
             
             [SVProgressHUD dismiss];
         }
-        
     }];
 }
 

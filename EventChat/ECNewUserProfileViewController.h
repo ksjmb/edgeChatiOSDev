@@ -23,6 +23,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *mFollowButton;
 @property (weak, nonatomic) IBOutlet UILabel *mUserNameLabel;
 @property (weak, nonatomic) IBOutlet UITableView *mUserProfileTableView;
+@property (weak, nonatomic) IBOutlet UIButton *coverImaegButton;
+@property (weak, nonatomic) IBOutlet UIButton *profileImageButton;
 
 @property (nonatomic, assign) BOOL isSignedInUser;
 @property (nonatomic, strong)ECUser *signedInUser;

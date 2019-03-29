@@ -25,14 +25,11 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-
     // Configure the view for the selected state
 }
 
-
 -(void)prepareForReuse{
     [super prepareForReuse];
-    
     // Then Reset here back to default values that you want.
     [_episodeTitle setText:nil];
     [_episodeDescription setText:nil];
@@ -97,10 +94,8 @@
     SDImageCache *cache = [SDImageCache sharedImageCache];
     UIImage *inMemoryImage = [cache imageFromMemoryCacheForKey:url];
     // resolves the SDWebImage issue of image missing
-    if (inMemoryImage)
-    {
+    if (inMemoryImage){
         cell.episodeImageView.image = inMemoryImage;
-        
     }
     else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
         UIImage *image = [cache imageFromDiskCacheForKey:url];
@@ -120,22 +115,18 @@
                                     cell.episodeImageView.image = image;
                                     cell.episodeImageView.layer.borderWidth = 1.0;
                                     cell.episodeImageView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor redColor]);
-                                    
                                 }
                                 else {
                                     if(error){
-                                        NSLog(@"Problem downloading Image, play try again")
-                                        ;
+                                        NSLog(@"Problem downloading Image, play try again");
                                         if (downloadFlag) {
                                             //cell.downloadButton.hidden = NO;
                                         }
                                         return;
                                     }
-                                    
                                 }
                             }];
     }
-    
 }
 
 @end

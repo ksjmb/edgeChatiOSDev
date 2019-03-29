@@ -66,8 +66,11 @@
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     [self.navigationItem setTitle:@"Profile"];
     [self initialSetup];
+    /*
+    //LongPressGestureToUpload_ProfileImage_CoverImage
     [self setupGestureForProfileImageView];
     [self setupGestureForCoverImageView];
+     */
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -154,6 +157,9 @@
     self.navigationController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     
     [self.mUserNameLabel setText:[NSString stringWithFormat:@"%@ %@", self.profileUser.firstName, self.profileUser.lastName]];
+    
+    [self.coverImaegButton setImage:[IonIcons imageWithIcon:ion_ios_camera_outline  size:27.0 color:[UIColor whiteColor]] forState:UIControlStateNormal];
+    [self.profileImageButton setImage:[IonIcons imageWithIcon:ion_ios_camera_outline  size:27.0 color:[UIColor darkGrayColor]] forState:UIControlStateNormal];
     
     // Apply round mask
     self.userProfileImageView.layer.cornerRadius = self.userProfileImageView.frame.size.width / 2;
@@ -254,7 +260,6 @@
         self.isCoverImage = false;
         [[ECCommonClass sharedManager]showActionSheetToSelectMediaFromGalleryOrCamFromController:self andMediaType:@"Image" andResult:^(bool flag) {
             if (flag) {
-                NSLog(@"upload image...");
                 [self uploadImage];
             }
         }];
@@ -277,7 +282,6 @@
         self.isCoverImage = true;
         [[ECCommonClass sharedManager]showActionSheetToSelectMediaFromGalleryOrCamFromController:self andMediaType:@"Image" andResult:^(bool flag) {
             if (flag) {
-                NSLog(@"upload image...");
                 [self uploadImage];
             }
         }];
@@ -353,6 +357,24 @@
     DCNewPostViewController *dcNewPostViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCNewPostViewController"];
     dcNewPostViewController.delegate = self;
     [self.navigationController pushViewController:dcNewPostViewController animated:true];
+}
+
+- (IBAction)actionOnCoverImageButton:(id)sender {
+    self.isCoverImage = true;
+    [[ECCommonClass sharedManager]showActionSheetToSelectMediaFromGalleryOrCamFromController:self andMediaType:@"Image" andResult:^(bool flag) {
+        if (flag) {
+            [self uploadImage];
+        }
+    }];
+}
+
+- (IBAction)actionOnProfileImageButton:(id)sender {
+    self.isCoverImage = false;
+    [[ECCommonClass sharedManager]showActionSheetToSelectMediaFromGalleryOrCamFromController:self andMediaType:@"Image" andResult:^(bool flag) {
+        if (flag) {
+            [self uploadImage];
+        }
+    }];
 }
 
 #pragma mark:- Handling background Image upload
