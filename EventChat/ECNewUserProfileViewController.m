@@ -595,7 +595,6 @@
 }
 
 - (void)didTapCommentsButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
-    /*
     DCPost *postNew = [self.userPostArray objectAtIndex:index - 1];
     [[ECAPI sharedManager] fetchTopicsByFeedItemId:postNew.postId callback:^(NSArray *topics, NSError *error)  {
         if(error){
@@ -609,24 +608,9 @@
             dcChat.isPost = true;
             dcChat.selectedTopic = topic;
             dcChat.topicId = topic.topicId;
-            dcChat.isInfluencers = true;
             [self.navigationController pushViewController:dcChat animated:NO];
         }
     }];
-    */
-     
-    /*
-    DCPost *postNew = [self.userPostArray objectAtIndex:index - 1];
-    DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
-    dcChat.isPost = true;
-    dcChat.dcPost = postNew;
-    [self.navigationController pushViewController:dcChat animated:NO];
-     
-    ECEventTopicCommentsViewController *ecEventTopicCommentsViewController = [[ECEventTopicCommentsViewController alloc] init];
-    ecEventTopicCommentsViewController.isPost = true;
-    ecEventTopicCommentsViewController.dcPost = postNew;
-    [self.navigationController pushViewController:ecEventTopicCommentsViewController animated:YES];
-     */
 }
 
 - (void)didTapFavoriteButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
@@ -660,11 +644,18 @@
 }
 
 - (void)didTapAttendanceButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
+    DCPost *postItem = [self.userPostArray objectAtIndex:index - 1];
+    if (postItem.postId != nil){
+        [self setUserAttendanceResponse:postItem.postId];
+    }
+    
+    /*
     DCPost *postNew = [self.userPostArray objectAtIndex:index - 1];
     ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
     ecAttendanceDetailsViewController.selectedPostItem = postNew;
     ecAttendanceDetailsViewController.isPost = true;
     [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+     */
 }
 
 - (void)didTapShareButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index {
@@ -742,6 +733,30 @@
     [alertController addAction:twitterAction];
     [alertController addAction:moreOptionsAction];
     [self presentViewController:alertController animated:YES completion:nil];
+}
+
+#pragma mark:- API Call Methods
+
+-(void)setUserAttendanceResponse:(NSString *)strFeedId{
+    NSString *userResponse = @"Going";
+    
+    [[ECAPI sharedManager] setAttendeeResponse:self.signedInUser.userId feedItemId:strFeedId response:userResponse callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error saving response: %@", error);
+        } else {
+            [self updateUserProfile];
+        }
+    }];
+}
+
+-(void)updateUserProfile{
+    [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:self.signedInUser.profilePicUrl callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error update user profile: %@", error);
+        } else {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
+        }
+    }];
 }
 
 #pragma mark:- Action on video tap Methods

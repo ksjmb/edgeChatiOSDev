@@ -99,9 +99,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uploadVideoToS3) name:@"uploadVideoToS3" object:nil];
     
     if(self.isPost){
-//        [self.navigationItem setTitle:[NSString stringWithFormat:@"%@", self.dcPost.content]];
         [self.navigationItem setTitle:[NSString stringWithFormat:@"%@", self.dcPost.displayName]];
-        
     }
     else{
         // EdgeTVChat custom code
@@ -140,14 +138,14 @@
     
     if([self.signedInUser.favoritedFeedItemIds containsObject:_selectedFeedItem.feedItemId]){
         [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:27.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+    }else if([self.signedInUser.favoritedFeedItemIds containsObject:_dcPost.postId]){
+        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:27.0 color:[UIColor redColor]] forState:UIControlStateNormal];
     }else{
         UIImage *btnImage = [UIImage imageNamed:@"heart_new"];
         [self.favButton setTintColor:[UIColor darkTextColor]];
         [self.favButton setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
-//        [self.favButton setImage:[IonIcons imageWithIcon:ion_ios_heart  size:30.0 color:[UIColor lightGrayColor]] forState:UIControlStateNormal];
     }
     
-//    [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]] forState:UIControlStateNormal];
     [self.shareButton setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor darkTextColor]] forState:UIControlStateNormal];
     
     // Format date
@@ -287,27 +285,22 @@
     [dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss.SSSZ"];
     NSDate *eventDate = [dateFormatter dateFromString:self.selectedFeedItem.event.startDate];
     [dateFormatter setDateFormat:@"MMM"];
-    //    NSLog(@"month is %@", [[dateFormatter stringFromDate:eventDate] uppercaseString]);
     [self.monthNameLabel setText:[[dateFormatter stringFromDate:eventDate] uppercaseString]];
     [dateFormatter setDateFormat:@"dd"];
-    //    NSLog(@"date is %@", [[dateFormatter stringFromDate:eventDate] uppercaseString]);
     [self.monthDayLabel setText:[[dateFormatter stringFromDate:eventDate] uppercaseString]];
 }
 
-- (void)setInverted:(BOOL)inverted
-{
+- (void)setInverted:(BOOL)inverted {
     if (_inverted == inverted) {
         return;
     }
     
     _inverted = inverted;
     [self slk_updateInsetAdjustmentBehavior];
-    
     self.scrollViewProxy.transform = inverted ? CGAffineTransformMake(1, 0, 0, -1, 0, 0) : CGAffineTransformIdentity;
 }
 
-- (void)slk_updateInsetAdjustmentBehavior
-{
+- (void)slk_updateInsetAdjustmentBehavior {
     // Deactivate automatic scrollView adjustment for inverted table view
     if (@available(iOS 11.0, *)) {
         if (self.isInverted) {
