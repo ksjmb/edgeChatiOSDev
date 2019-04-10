@@ -205,7 +205,12 @@
         self.nameLabel.text = self.dcPost.displayName;
         self.descriptionLabel.text = self.dcPost.content;
         if(self.dcPost.imageUrl != nil){
+            _topEpisodeImageURL = self.dcPost.imageUrl;
             [self showImageOnHeader:self.dcPost.imageUrl];
+        }
+        if (_topEpisodeTitle == nil || _topEpisodeDescription == nil){
+            _topEpisodeTitle = self.dcPost.displayName;
+            _topEpisodeDescription = self.dcPost.content;
         }
     }
     
@@ -1558,8 +1563,7 @@
 
 #pragma mark - Lifeterm
 
-- (void)dealloc
-{
+- (void)dealloc{
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
@@ -1570,10 +1574,8 @@
     SDImageCache *cache = [SDImageCache sharedImageCache];
     UIImage *inMemoryImage = [cache imageFromMemoryCacheForKey:url];
     // resolves the SDWebImage issue of image missing
-    if (inMemoryImage)
-    {
+    if (inMemoryImage) {
         _mImageView.image = inMemoryImage;
-        
     }
     else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
         UIImage *image = [cache imageFromDiskCacheForKey:url];
@@ -1645,7 +1647,7 @@
                                                           handler:^(UIAlertAction *action)
                                     {
                                         NSLog(@"Twitter action...");
-                                        [self twitterSetup:[NSURL URLWithString:_topEpisodeImageURL] :_topEpisodeTitle];
+                                        [self twitterSetup:[NSURL URLWithString:_topEpisodeImageURL] :_topEpisodeDescription];
 //                                        [self shareViaTwitter:[NSURL URLWithString:_topEpisodeImageURL] :_topEpisodeTitle];
                                     }];
     

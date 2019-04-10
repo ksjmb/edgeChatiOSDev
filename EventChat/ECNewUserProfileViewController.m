@@ -187,7 +187,7 @@
                                                   id result,
                                                   NSError *error) {
                 // Handle the result
-                NSLog(@"Results: %@", result);
+//                NSLog(@"Results: %@", result);
                 NSDictionary *responseDictionary = [result dictionaryOrNilValue];
                 
                 NSError *infoError = nil;
@@ -198,7 +198,7 @@
                 
                 //Update profilePicUrl in User Collection
                 if(self.isSignedInUser){
-                    NSLog(@"ProfilePicUrl: %@", fbUserData.url);
+//                    NSLog(@"ProfilePicUrl: %@", fbUserData.url);
                     [[ECAPI sharedManager] updateProfilePicUrl:self.profileUser.userId profilePicUrl:fbUserData.url callback:^(NSError *error) {
                         if (error) {
                             NSLog(@"Error adding user: %@", error);
@@ -821,7 +821,6 @@
                                 }
                             }];
     }
-    
 }
 
 -(void)showProfilePicImage:(ECNewUserProfileViewController *)vc ForImageUrl:(NSString *)url{
@@ -871,11 +870,9 @@
         [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
         [SVProgressHUD showWithStatus:@"Loading..."];
     });
-    
     dispatch_sync(aQueue,^{
         NSLog(@"2. %s",dispatch_queue_get_label(aQueue));
     });
-    
     dispatch_async(aQueue,^{
         NSLog(@"3. %s",dispatch_queue_get_label(aQueue));
         UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
@@ -885,7 +882,6 @@
 
 - (void)shareViaTwitter:(UIImage *)image :(NSString *)title{
     SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
-    
     [tweetSheet addImage:image];
     [tweetSheet setTitle:title];
     [SVProgressHUD dismiss];
@@ -899,13 +895,11 @@
                 UIAlertController* alert;
                 alert = [UIAlertController alertControllerWithTitle:@"Failed" message:@"Something went wrong while sharing on Twitter, Please try again later." preferredStyle:UIAlertControllerStyleAlert];
                 UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
-                    
                 }];
                 [alert addAction:defaultAction];
                 dispatch_async(dispatch_get_main_queue(), ^{
                     [self presentViewController:alert animated:YES completion:nil];
                 });
-                
                 break;
             }
             case SLComposeViewControllerResultDone:
@@ -930,15 +924,15 @@
 #pragma mark - FBSDKSharingDelegate
 
 - (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults :(NSDictionary *)results {
-    NSLog(@"FB: SHARE RESULTS=%@\n",[results debugDescription]);
+    NSLog(@"FB: didCompleteWithResults=%@\n",[results debugDescription]);
 }
 
 - (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
-    NSLog(@"FB: ERROR=%@\n",[error debugDescription]);
+    NSLog(@"FB: didFailWithError=%@\n",[error debugDescription]);
 }
 
 - (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
-    NSLog(@"FB: CANCELED SHARER=%@\n",[sharer debugDescription]);
+    NSLog(@"FB: sharerDidCancel=%@\n",[sharer debugDescription]);
 }
 
 @end

@@ -30,7 +30,7 @@
 @class DCFeedItem;
 @class MessageTableViewCell;
 
-@interface DCChatReactionViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, FCAlertViewDelegate, UITextViewDelegate, UIActionSheetDelegate, AddToPlaylistDelegate>
+@interface DCChatReactionViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, FCAlertViewDelegate, UITextViewDelegate, UIActionSheetDelegate, AddToPlaylistDelegate, FBSDKSharingDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *mImageView;
 @property (weak, nonatomic) IBOutlet UILabel *nameLabel;
