@@ -197,6 +197,11 @@
         if(self.selectedFeedItem.event.mainImage != nil){
             [self showImageOnHeader:self.selectedFeedItem.event.mainImage];
         }
+        
+        [self.segmentControl setTitle:@"Love It" forSegmentAtIndex:0];
+        [self.segmentControl setTitle:@"Hate It" forSegmentAtIndex:1];
+        [self.segmentControl setTitle:@"Ehh" forSegmentAtIndex:2];
+        
         //[self convertStringDateToNSDate:_selectedFeedItem.created_at];
     }
     
@@ -654,12 +659,22 @@
 #pragma mark:- Segment Control Action Methods
 
 - (IBAction)actionOnSegmentControl:(id)sender {
-    if (self.segmentControl.selectedSegmentIndex == 0) {
-        [self setUserAttendanceResponse:@"Going"];
-    } else if(self.segmentControl.selectedSegmentIndex == 1) {
-        [self setUserAttendanceResponse:@"Maybe"];
-    } else if(self.segmentControl.selectedSegmentIndex == 2) {
-        [self setUserAttendanceResponse:@"Can't go"];
+    if (self.isCommingFromEvent == false){
+        if (self.segmentControl.selectedSegmentIndex == 0) {
+            [self setUserAttendanceResponse:@"Going"];
+        } else if(self.segmentControl.selectedSegmentIndex == 1) {
+            [self setUserAttendanceResponse:@"Maybe"];
+        } else if(self.segmentControl.selectedSegmentIndex == 2) {
+            [self setUserAttendanceResponse:@"Can't go"];
+        }
+    }else{
+        if (self.segmentControl.selectedSegmentIndex == 0) {
+            [self setUserAttendanceResponse:@"Love It"];
+        } else if(self.segmentControl.selectedSegmentIndex == 1) {
+            [self setUserAttendanceResponse:@"Hate It"];
+        } else if(self.segmentControl.selectedSegmentIndex == 2) {
+            [self setUserAttendanceResponse:@"Ehh"];
+        }
     }
 }
 
@@ -889,6 +904,7 @@
         }else{
             [self.chatTableView setHidden:true];
             [self.noDataAvailableLabel setHidden:false];
+            [self.noDataAvailableLabel setText:@"No comments..."];
         }
         NSLog(@"self.messages.count tableView : %lu", (unsigned long)self.messages.count);
         return self.messages.count;
@@ -903,6 +919,7 @@
         }else{
             [self.attendeeListTableView setHidden:true];
             [self.noDataAvailableLabel setHidden:false];
+            [self.noDataAvailableLabel setText:@"No reactions..."];
         }
         return [self.attendeeList count];
     }
@@ -1400,11 +1417,11 @@
                 ECAttendee *attList = [self.attendeeList objectAtIndex:i];
                 responseStr = attList.response;
                 if ([attList.userId isEqualToString:self.signedInUser.userId]){
-                    if ([responseStr  isEqual: @"Going"]) {
+                    if ([responseStr  isEqual: @"Going"] || [responseStr  isEqual: @"Love It"]) {
                         [self.segmentControl setSelectedSegmentIndex:0];
-                    } else if ([responseStr  isEqual: @"Maybe"]) {
+                    } else if ([responseStr  isEqual: @"Maybe"] || [responseStr  isEqual: @"Hate It"]) {
                         [self.segmentControl setSelectedSegmentIndex:1];
-                    } else if ([responseStr  isEqual: @"Can't go"]) {
+                    } else if ([responseStr  isEqual: @"Can't go"] || [responseStr  isEqual: @"Ehh"]) {
                         [self.segmentControl setSelectedSegmentIndex:2];
                     }
                     break;

@@ -639,8 +639,6 @@ static const int kRetryCount = 3;
     };
     
     [self taskWithRetry:createTaskBlock failure:failureBlock retryCount:kRetryCount];
-    
-    
 }
 
 #pragma mark - Sign In / Out
@@ -785,8 +783,6 @@ static const int kRetryCount = 3;
     };
     
     [self taskWithRetry:createTaskBlock failure:failureBlock retryCount:kRetryCount];
-    
-    
 }
 
 - (void)signOutUser

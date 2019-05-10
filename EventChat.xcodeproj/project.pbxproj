@@ -1384,6 +1384,7 @@
 		D4EDB6F421647D9A0011761E /* icon_1024_EdgeTVChat.png in Resources */ = {isa = PBXBuildFile; fileRef = D4EDB6F021647D9A0011761E /* icon_1024_EdgeTVChat.png */; };
 		D4EDB6F521647D9A0011761E /* icon_1024_EdgeTVChat.png in Resources */ = {isa = PBXBuildFile; fileRef = D4EDB6F021647D9A0011761E /* icon_1024_EdgeTVChat.png */; };
 		D4EDB6F621647D9A0011761E /* icon_1024_EdgeTVChat.png in Resources */ = {isa = PBXBuildFile; fileRef = D4EDB6F021647D9A0011761E /* icon_1024_EdgeTVChat.png */; };
+		F92CAF0122843C6F007DD4BC /* ECCustomYoutubePlayerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F92CAF0022843C6F007DD4BC /* ECCustomYoutubePlayerViewController.m */; };
 		F935B783219B0816005A7E89 /* EdgeTVChat-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F935B782219B0816005A7E89 /* EdgeTVChat-Info.plist */; };
 		F93BCCC121C243920079242D /* DCInfluencersPersonDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F93BCCC021C243920079242D /* DCInfluencersPersonDetailsViewController.m */; };
 		F93BCCC221C243920079242D /* DCInfluencersPersonDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F93BCCC021C243920079242D /* DCInfluencersPersonDetailsViewController.m */; };
@@ -1890,6 +1891,8 @@
 		D76B8635F17200F0A7901DF0 /* Pods-defaults-P90x.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-defaults-P90x.debug.xcconfig"; path = "Pods/Target Support Files/Pods-defaults-P90x/Pods-defaults-P90x.debug.xcconfig"; sourceTree = "<group>"; };
 		DF85B4EA77B68265D259968B /* Pods-defaults-CoachellaChat.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-defaults-CoachellaChat.release.xcconfig"; path = "Pods/Target Support Files/Pods-defaults-CoachellaChat/Pods-defaults-CoachellaChat.release.xcconfig"; sourceTree = "<group>"; };
 		F3F706CB35A257375867BBE6 /* libPods-defaults-CoachellaChat.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-defaults-CoachellaChat.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F92CAEFF22843C6F007DD4BC /* ECCustomYoutubePlayerViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECCustomYoutubePlayerViewController.h; sourceTree = "<group>"; };
+		F92CAF0022843C6F007DD4BC /* ECCustomYoutubePlayerViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECCustomYoutubePlayerViewController.m; sourceTree = "<group>"; };
 		F935B782219B0816005A7E89 /* EdgeTVChat-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "EdgeTVChat-Info.plist"; sourceTree = "<group>"; };
 		F93BCCBF21C243920079242D /* DCInfluencersPersonDetailsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCInfluencersPersonDetailsViewController.h; sourceTree = "<group>"; };
 		F93BCCC021C243920079242D /* DCInfluencersPersonDetailsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCInfluencersPersonDetailsViewController.m; sourceTree = "<group>"; };
@@ -2660,6 +2663,7 @@
 		36A218FA1F2549EF00FC3380 /* FeedItem */ = {
 			isa = PBXGroup;
 			children = (
+				F92CAEFE22843C0F007DD4BC /* YoutubePlayerVC */,
 				F9E9A89F21C7C7F0003FFAF4 /* UserProfile */,
 				F93BCCBE21C243350079242D /* InfluPersonDetails */,
 				F9F10D1721A2CEE0005C21FD /* DCChatAndReaction */,
@@ -2835,6 +2839,15 @@
 				DF85B4EA77B68265D259968B /* Pods-defaults-CoachellaChat.release.xcconfig */,
 			);
 			name = Pods;
+			sourceTree = "<group>";
+		};
+		F92CAEFE22843C0F007DD4BC /* YoutubePlayerVC */ = {
+			isa = PBXGroup;
+			children = (
+				F92CAEFF22843C6F007DD4BC /* ECCustomYoutubePlayerViewController.h */,
+				F92CAF0022843C6F007DD4BC /* ECCustomYoutubePlayerViewController.m */,
+			);
+			name = YoutubePlayerVC;
 			sourceTree = "<group>";
 		};
 		F93BCCBE21C243350079242D /* InfluPersonDetails */ = {
@@ -4304,6 +4317,7 @@
 				36D9CA53201E9F9F00199618 /* DCPersonDetailWebViewController.m in Sources */,
 				87662FE61E93B33200FF21E4 /* S3Constants.m in Sources */,
 				3632D58F20054B630081ED09 /* DCRelatedFeedItems.m in Sources */,
+				F92CAF0122843C6F007DD4BC /* ECCustomYoutubePlayerViewController.m in Sources */,
 				0E3FAE071C5B43D5005C28AA /* SecondViewController.m in Sources */,
 				735CFED51DA4755C006E0A38 /* ECUserListCell.m in Sources */,
 				361684352043E78A00F6740B /* DCEventTableViewCell.m in Sources */,
@@ -5732,6 +5746,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = 55QQP72PTY;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"${PODS_ROOT}/Google/Headers",
@@ -5785,6 +5800,7 @@
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 55QQP72PTY;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"${PODS_ROOT}/Google/Headers",

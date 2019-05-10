@@ -26,6 +26,7 @@
 #import <AVKit/AVKit.h>
 #import "SVProgressHUD.h"
 #import "AddToPlaylistPopUpViewController.h"
+#import "ECCustomYoutubePlayerViewController.h"
 
 @interface DCNewTVShowViewController () <HTHorizontalSelectionListDataSource, HTHorizontalSelectionListDelegate>
 
@@ -44,6 +45,8 @@
 @property (nonatomic, strong) NSMutableArray *topics;
 //
 @property (nonatomic, assign) NSString *userEmail;
+@property (weak, nonatomic) UIImageView *imgforLeft;
+- (void)addSubviews:(NSArray *)views;
 
 @end
 
@@ -156,15 +159,60 @@
 
 - (void)playVideoForSelectedEpisode:(DCNewTVShowEpisodeTableViewCell *)dcTVShowEpisodeTableViewCell index:(NSInteger)index{
     DCFeedItem *dcFeedItem = [_episodesInSeason objectAtIndex:index];
-//    NSLog(@"CID: %@", [[dcFeedItem.digital.imageUrl componentsSeparatedByString:@"/"] objectAtIndex:8]);
+    
+    //1.
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(4, 20, 140, 120)];
+    self.imgforLeft = imgView;
+    [self.imgforLeft setAlpha:1.0];
+    if (dcFeedItem.digital.imageUrl != nil){
+        [self showOverlayImage:dcFeedItem.digital.imageUrl];
+    }else{
+        [self.imgforLeft setImage:[UIImage imageNamed:@"missing-profile.png"]];
+    }
+    
+    //2.
+    UIFont *customFont = [UIFont italicSystemFontOfSize:12];
+    NSString *text = dcFeedItem.digital.episodeDescription;
+    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(150, 20, self.view.bounds.size.width - 170, 120)];
+    fromLabel.text = text;
+    fromLabel.font = customFont;
+    fromLabel.numberOfLines = 10;
+    fromLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines; // or UIBaselineAdjustmentAlignCenters, or UIBaselineAdjustmentNone
+    fromLabel.adjustsFontSizeToFitWidth = YES;
+    fromLabel.adjustsLetterSpacingToFitWidth = YES;
+    fromLabel.minimumScaleFactor = 10.0f/12.0f;
+    fromLabel.clipsToBounds = YES;
+    fromLabel.backgroundColor = [UIColor clearColor];
+    fromLabel.textColor = [UIColor blackColor];
+    fromLabel.textAlignment = NSTextAlignmentLeft;
+    
+    //3.
+    UIView *paintView=[[UIView alloc]initWithFrame:CGRectMake(8, 50, self.view.bounds.size.width - 16, 160)];
+    [paintView setBackgroundColor:[UIColor lightGrayColor]];
+    [paintView setAlpha:0.7];
+    [paintView addSubview:self.imgforLeft];
+    [paintView addSubview:fromLabel];
+    paintView.layer.cornerRadius = 05;
+    paintView.clipsToBounds = true;
     
     [[ECAPI sharedManager] getPlaybackUrl:[[dcFeedItem.digital.imageUrl componentsSeparatedByString:@"/"] objectAtIndex:8] callback:^(NSString *aPlaybackUrl, NSError *error) {
+
+        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:aPlaybackUrl]];
+        AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
+        AVPlayerViewController *avvc = [AVPlayerViewController new];
+        avvc.player = player;
+        [avvc.contentOverlayView addSubview:paintView];
+        [player play];
+        [self presentViewController:avvc animated:YES completion:nil];
+        
+        /*
         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:aPlaybackUrl]];
         AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
         AVPlayerViewController *avvc = [AVPlayerViewController new];
         avvc.player = player;
         [player play];
         [self presentViewController:avvc animated:YES completion:nil];
+         */
     }];
 }
 
@@ -404,13 +452,47 @@
 #pragma mark:- IBAction Methods
 
 - (IBAction)didTapPlayVideo:(id)sender {
-//    NSLog(@"_selectedFeedItem.digital.imageUrl: %@", [[_selectedFeedItem.digital.imageUrl componentsSeparatedByString:@"/"] objectAtIndex:8]);
+    //1.
+    UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(4, 20, 140, 120)];
+    self.imgforLeft = imgView;
+    [self.imgforLeft setAlpha:1.0];
+    if (_selectedFeedItem.digital.imageUrl != nil){
+        [self showOverlayImage:_selectedFeedItem.digital.imageUrl];
+    }else{
+        [self.imgforLeft setImage:[UIImage imageNamed:@"missing-profile.png"]];
+    }
+    
+    //2.
+    UIFont *customFont = [UIFont italicSystemFontOfSize:12];
+    NSString *text = _selectedFeedItem.digital.episodeDescription;
+    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(150, 20, self.view.bounds.size.width - 170, 120)];
+    fromLabel.text = text;
+    fromLabel.font = customFont;
+    fromLabel.numberOfLines = 10;
+    fromLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines; // or UIBaselineAdjustmentAlignCenters, or UIBaselineAdjustmentNone
+    fromLabel.adjustsFontSizeToFitWidth = YES;
+    fromLabel.adjustsLetterSpacingToFitWidth = YES;
+    fromLabel.minimumScaleFactor = 10.0f/12.0f;
+    fromLabel.clipsToBounds = YES;
+    fromLabel.backgroundColor = [UIColor clearColor];
+    fromLabel.textColor = [UIColor blackColor];
+    fromLabel.textAlignment = NSTextAlignmentLeft;
+    
+    //3.
+    UIView *paintView=[[UIView alloc]initWithFrame:CGRectMake(8, 50, self.view.bounds.size.width - 16, 160)];
+    [paintView setBackgroundColor:[UIColor lightGrayColor]];
+    [paintView setAlpha:0.7];
+    [paintView addSubview:self.imgforLeft];
+    [paintView addSubview:fromLabel];
+    paintView.layer.cornerRadius = 05;
+    paintView.clipsToBounds = true;
     
     [[ECAPI sharedManager] getPlaybackUrl:[[_selectedFeedItem.digital.imageUrl componentsSeparatedByString:@"/"] objectAtIndex:8] callback:^(NSString *aPlaybackUrl, NSError *error) {
         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:aPlaybackUrl]];
         AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
         AVPlayerViewController *avvc = [AVPlayerViewController new];
         avvc.player = player;
+        [avvc.contentOverlayView addSubview:paintView];
         [player play];
         [self presentViewController:avvc animated:YES completion:nil];
     }];
@@ -803,6 +885,44 @@
     [view.layer insertSublayer: gradient atIndex: 0];
     [_topImageView addSubview: view];
     [_topImageView bringSubviewToFront: view];
+}
+
+-(void)showOverlayImage:(NSString *)url{
+    SDImageCache *cache = [SDImageCache sharedImageCache];
+    UIImage *inMemoryImage = [cache imageFromMemoryCacheForKey:url];
+    
+    if (inMemoryImage)
+    {
+        self.imgforLeft.image = inMemoryImage;
+        
+    }
+    else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
+        UIImage *image = [cache imageFromDiskCacheForKey:url];
+        self.imgforLeft.image = image;
+        
+    }else{
+        NSURL *urL = [NSURL URLWithString:url];
+        SDWebImageManager *manager = [SDWebImageManager sharedManager];
+        [manager.imageDownloader setDownloadTimeout:20];
+        [manager downloadImageWithURL:urL
+                              options:0
+                             progress:^(NSInteger receivedSize, NSInteger expectedSize) {
+                                 // progression tracking code
+                             }
+                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
+                                if (image) {
+                                    self.imgforLeft.image = image;
+                                    self.imgforLeft.layer.borderWidth = 1.0;
+                                    self.imgforLeft.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor redColor]);
+                                }
+                                else {
+                                    if(error){
+                                        NSLog(@"Problem downloading Image, play try again");
+                                        return;
+                                    }
+                                }
+                            }];
+    }
 }
 
 @end
