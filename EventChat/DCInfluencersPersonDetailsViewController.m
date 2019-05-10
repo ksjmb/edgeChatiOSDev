@@ -85,7 +85,6 @@
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateInflurenceTableView) name:@"updateInflurenceTableView" object:nil];
-
     
     // Register cell
     [self.mTableView registerNib:[UINib nibWithNibName:@"DCInfluencersPersonDetailsTableViewCell" bundle:nil]
@@ -353,7 +352,6 @@
         [alertController addAction:moreOptionsAction];
         [self presentViewController:alertController animated:YES completion:nil];
     }else{
-        
         [self pushToSignInViewController:@"sameVC2"];
     }
 }

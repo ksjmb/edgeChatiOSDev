@@ -281,12 +281,16 @@
 
 - (void)mainFeedDidTapAttendanceButton:(DCNewTVShowEpisodeTableViewCell *)dcTVNewShowEpisodeTableViewCell index:(NSInteger)index{
     if (self.userEmail != nil){
+          [self setUserAttendanceResponse:dcTVNewShowEpisodeTableViewCell.feedItem.feedItemId];
+        /*
         ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
         ecAttendanceDetailsViewController.selectedFeedItem = dcTVNewShowEpisodeTableViewCell.feedItem;
         [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+         */
     }else{
         self.saveFeedItem = dcTVNewShowEpisodeTableViewCell.feedItem;
-        [self pushToSignInVC:@"ECAttendanceDetailsViewController"];
+        [self pushToSignInVC:@"sameVC"];
+//        [self pushToSignInVC:@"ECAttendanceDetailsViewController"];
     }
 }
 
@@ -374,13 +378,43 @@
         
         [self presentViewController:alertController animated:YES completion:nil];
     }else{
-        [self pushToSignInVC:@"sameVC"];
+        [self pushToSignInVC:@"sameVC2"];
     }
 }
 
 - (void)viewMoreButtonTapped:(DCNewTVShowEpisodeTableViewCell *)dcTVNewShowEpisodeTableViewCell{
     [self.episodeTableView beginUpdates];
     [self.episodeTableView endUpdates];
+}
+
+-(void)setUserAttendanceResponse:(NSString *)strFeedId{
+    NSString *userResponse = @"Going";
+    
+    [[ECAPI sharedManager] setAttendeeResponse:self.signedInUser.userId feedItemId:strFeedId response:userResponse callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error saving response: %@", error);
+        } else {
+            [self updateUserProfile];
+        }
+    }];
+}
+
+-(void)updateUserProfile{
+    [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:self.signedInUser.profilePicUrl callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error update user profile: %@", error);
+        } else {
+//            [self updateTVShowTableView];
+            [self profileUpdatedNew];
+        }
+    }];
+}
+
+#pragma mark:- Post Notification Methods
+
+-(void)updateTVShowTableView {
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    [self.episodeTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 #pragma mark:- Twitter Methods
@@ -502,7 +536,7 @@
     if (self.userEmail != nil){
         [self openShareSheet];
     }else{
-        [self pushToSignInVC:@"sameVC"];
+        [self pushToSignInVC:@"sameVC2"];
     }
 }
 
@@ -673,10 +707,13 @@
         }
          */
     }
-    else if([identifier isEqualToString:@"ECAttendanceDetailsViewController"]) {
+    else if([identifier isEqualToString:@"sameVC"]) {
+        [self setUserAttendanceResponse:self.saveFeedItem.feedItemId];
+        /*
         ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
         ecAttendanceDetailsViewController.selectedFeedItem = self.saveFeedItem;
         [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+         */
     }
 }
 
