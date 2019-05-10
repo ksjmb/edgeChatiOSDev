@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UITableView *mTableView;
 //
 @property (nonatomic, strong) DCFeedItem *mSelectedDCFeedItem;
-//@property (nonatomic, strong) DCFeedItem *saveSelectedFeedItem;
+@property (nonatomic, strong) DCFeedItem *saveSelectedFeedItem;
 
 - (void)pushToSignInViewController :(NSString*)stbIdentifier;
 @end

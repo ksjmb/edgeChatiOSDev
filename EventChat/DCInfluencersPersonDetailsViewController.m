@@ -83,6 +83,10 @@
         [self.mBKImageView setImage:[UIImage imageNamed:@"cover_slide"]];
 //        [self.mBKImageView setImage:[UIImage imageNamed:@"placeholder.png"]];
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateInflurenceTableView) name:@"updateInflurenceTableView" object:nil];
+
+    
     // Register cell
     [self.mTableView registerNib:[UINib nibWithNibName:@"DCInfluencersPersonDetailsTableViewCell" bundle:nil]
          forCellReuseIdentifier:@"DCInfluencersPersonDetailsTableViewCell"];
@@ -142,8 +146,7 @@
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if(indexPath.row == 0){
         return 50.0;
     }
@@ -234,10 +237,13 @@
             [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
          */
     }
-    else if([identifier isEqualToString:@"ECAttendanceDetailsViewController"]) {
+    else if([identifier isEqualToString:@"SameVC"]) {
+        [self setUserAttendanceResponse:self.saveSelectedFeedItem.feedItemId];
+        /*
         ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
         ecAttendanceDetailsViewController.selectedFeedItem = self.mSelectedDCFeedItem;
         [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+         */
     }
 }
 
@@ -347,7 +353,8 @@
         [alertController addAction:moreOptionsAction];
         [self presentViewController:alertController animated:YES completion:nil];
     }else{
-        [self pushToSignInViewController:@"sameVC"];
+        
+        [self pushToSignInViewController:@"sameVC2"];
     }
 }
 
@@ -410,13 +417,48 @@
 
 - (void)didTapAttendanceButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
     if (![self.userEmailStr  isEqual: @""] && self.userEmailStr != nil){
+        
+        [self setUserAttendanceResponse:dcPersonDetailsCell.mDCFeedItem.feedItemId];
+        
+        /*
         ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
         ecAttendanceDetailsViewController.selectedFeedItem = self.mSelectedDCFeedItem;
         [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
+         */
     }else{
-//        self.saveFeedItem = dcTVNewShowEpisodeTableViewCell.feedItem;
-        [self pushToSignInViewController:@"ECAttendanceDetailsViewController"];
+        self.saveSelectedFeedItem = dcPersonDetailsCell.mDCFeedItem;
+        [self pushToSignInViewController:@"SameVC"];
+//        [self pushToSignInViewController:@"ECAttendanceDetailsViewController"];
     }
+}
+
+-(void)setUserAttendanceResponse:(NSString *)strFeedId{
+    NSString *userResponse = @"Going";
+    
+    [[ECAPI sharedManager] setAttendeeResponse:self.signedInUser.userId feedItemId:strFeedId response:userResponse callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error saving response: %@", error);
+        } else {
+            [self updateUserProfile];
+        }
+    }];
+}
+
+-(void)updateUserProfile{
+    [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:self.signedInUser.profilePicUrl callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error update user profile: %@", error);
+        } else {
+            [self updateInflurenceTableView];
+        }
+    }];
+}
+
+#pragma mark:- Post Notification Methods
+
+-(void)updateInflurenceTableView {
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    [self.mTableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationNone];
 }
 
 #pragma mark:- AddToPlaylist Delegate Methods

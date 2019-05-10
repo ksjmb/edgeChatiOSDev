@@ -185,6 +185,7 @@
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateEventTV" object:nil];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateChatReaction" object:nil];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"updateInflurenceTableView" object:nil];
                     [self removeAnimation];
                 }
             }];
