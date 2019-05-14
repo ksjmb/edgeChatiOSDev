@@ -300,7 +300,7 @@
      } else {
      UIAlertView *alertView = [[UIAlertView alloc]
      initWithTitle:@"Unfollow"
-     message:[NSString stringWithFormat:@"You have stopped following %@ %@.", self.profileUser.firstName, self.profileUser.lastName]
+     message:[NSString stringWithFormat:@"   %@ %@.", self.profileUser.firstName, self.profileUser.lastName]
      delegate:nil
      cancelButtonTitle:@"Okay"
      otherButtonTitles:nil];

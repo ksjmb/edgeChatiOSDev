@@ -32,6 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 //
 @property (nonatomic, strong) DCFeedItem *mSelectedDCFeedItem;
 @property (nonatomic, strong) DCFeedItem *saveSelectedFeedItem;
+@property (nonatomic, assign) BOOL isFollow;
 
 - (void)pushToSignInViewController :(NSString*)stbIdentifier;
 @end

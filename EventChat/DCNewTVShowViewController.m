@@ -164,6 +164,7 @@
     UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(4, 20, 140, 120)];
     self.imgforLeft = imgView;
     [self.imgforLeft setAlpha:1.0];
+    self.imgforLeft.layer.cornerRadius = 05;
     if (dcFeedItem.digital.imageUrl != nil){
         [self showOverlayImage:dcFeedItem.digital.imageUrl];
     }else{
@@ -183,13 +184,14 @@
     fromLabel.minimumScaleFactor = 10.0f/12.0f;
     fromLabel.clipsToBounds = YES;
     fromLabel.backgroundColor = [UIColor clearColor];
-    fromLabel.textColor = [UIColor blackColor];
+    fromLabel.textColor = [UIColor whiteColor];
     fromLabel.textAlignment = NSTextAlignmentLeft;
     
     //3.
-    UIView *paintView=[[UIView alloc]initWithFrame:CGRectMake(8, 50, self.view.bounds.size.width - 16, 160)];
-    [paintView setBackgroundColor:[UIColor lightGrayColor]];
-    [paintView setAlpha:0.7];
+    UIView *paintView=[[UIView alloc]initWithFrame:CGRectMake(8, 220, self.view.bounds.size.width - 16, 160)];
+//    [paintView setBackgroundColor:[UIColor lightGrayColor]];
+    [paintView setBackgroundColor:[UIColor clearColor]];
+    [paintView setAlpha:0.3];
     [paintView addSubview:self.imgforLeft];
     [paintView addSubview:fromLabel];
     paintView.layer.cornerRadius = 05;
@@ -201,9 +203,31 @@
         AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
         AVPlayerViewController *avvc = [AVPlayerViewController new];
         avvc.player = player;
-        [avvc.contentOverlayView addSubview:paintView];
+//        [avvc.contentOverlayView addSubview:paintView];
         [player play];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            //Here your non-main thread.
+            [NSThread sleepForTimeInterval:5.0f];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                //Here you returns to main thread.
+                [UIView transitionWithView:paintView
+                                  duration:0.7
+                                   options:UIViewAnimationOptionTransitionFlipFromTop
+                                animations:^{
+                                    [avvc.contentOverlayView addSubview:paintView];
+                                }
+                                completion:Nil];
+            });
+        });
+        
         [self presentViewController:avvc animated:YES completion:nil];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [NSThread sleepForTimeInterval:21.0f];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [paintView setHidden:YES];
+            });
+        });
         
         /*
         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:aPlaybackUrl]];
@@ -490,6 +514,7 @@
     UIImageView *imgView = [[UIImageView alloc] initWithFrame:CGRectMake(4, 20, 140, 120)];
     self.imgforLeft = imgView;
     [self.imgforLeft setAlpha:1.0];
+    self.imgforLeft.layer.cornerRadius = 05;
     if (_selectedFeedItem.digital.imageUrl != nil){
         [self showOverlayImage:_selectedFeedItem.digital.imageUrl];
     }else{
@@ -509,13 +534,13 @@
     fromLabel.minimumScaleFactor = 10.0f/12.0f;
     fromLabel.clipsToBounds = YES;
     fromLabel.backgroundColor = [UIColor clearColor];
-    fromLabel.textColor = [UIColor blackColor];
+    fromLabel.textColor = [UIColor whiteColor];
     fromLabel.textAlignment = NSTextAlignmentLeft;
     
     //3.
-    UIView *paintView=[[UIView alloc]initWithFrame:CGRectMake(8, 50, self.view.bounds.size.width - 16, 160)];
+    UIView *paintView=[[UIView alloc]initWithFrame:CGRectMake(8, 220, self.view.bounds.size.width - 16, 160)];
     [paintView setBackgroundColor:[UIColor lightGrayColor]];
-    [paintView setAlpha:0.7];
+    [paintView setAlpha:0.3];
     [paintView addSubview:self.imgforLeft];
     [paintView addSubview:fromLabel];
     paintView.layer.cornerRadius = 05;
@@ -528,6 +553,27 @@
         avvc.player = player;
         [avvc.contentOverlayView addSubview:paintView];
         [player play];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [NSThread sleepForTimeInterval:5.0f];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [UIView transitionWithView:paintView
+                                  duration:0.7
+                                   options:UIViewAnimationOptionTransitionFlipFromTop
+                                animations:^{
+                                    [avvc.contentOverlayView addSubview:paintView];
+                                }
+                                completion:Nil];
+            });
+        });
+        
+        [self presentViewController:avvc animated:YES completion:nil];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            [NSThread sleepForTimeInterval:21.0f];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [paintView setHidden:YES];
+            });
+        });
+        
         [self presentViewController:avvc animated:YES completion:nil];
     }];
 }

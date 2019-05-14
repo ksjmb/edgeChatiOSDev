@@ -74,7 +74,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>10</string>
+	<string>11</string>
 	<key>DBName</key>
 	<string>edgetvchat_stage</string>
 	<key>Fabric</key>

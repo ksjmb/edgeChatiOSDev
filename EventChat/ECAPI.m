@@ -1106,7 +1106,7 @@ static const int kRetryCount = 3;
                                                    ECUser *responseUser = [[ECUser alloc] initWithDictionary:responseDictionary[@"data"] error:&infoError];
                                                    
                                                    if (infoError) {
-                                                       NSLog(@"Error fetching user by email: %@", infoError);
+                                                       NSLog(@"Error followUserByUserId: %@", infoError);
                                                        callback(infoError);
                                                        return;
                                                    }

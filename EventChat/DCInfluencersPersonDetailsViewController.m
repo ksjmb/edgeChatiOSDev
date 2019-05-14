@@ -84,6 +84,14 @@
 //        [self.mBKImageView setImage:[UIImage imageNamed:@"placeholder.png"]];
     }
     
+    if([self.signedInUser.followeeIds containsObject:self.signedInUser.userId]){
+          [self.mFollowbtn setTitle:@"Unfollow" forState:UIControlStateNormal];
+        self.isFollow = true;
+    }else{
+          [self.mFollowbtn setTitle:@"Follow" forState:UIControlStateNormal];
+        self.isFollow = false;
+    }
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateInflurenceTableView) name:@"updateInflurenceTableView" object:nil];
     
     // Register cell
@@ -264,6 +272,18 @@
 
 - (IBAction)actionOnFollowBtn:(id)sender {
     [[ECCommonClass sharedManager] alertViewTitle:@"Alert" message:@"Comming soon..."];
+   /*
+    if ([self.mFollowbtn.titleLabel.text isEqualToString:@"Follow"]){
+        [self callToFollowByUserIdAPI];
+        [self.mFollowbtn setTitle:@"Unfollow" forState:UIControlStateNormal];
+    }else{
+        if (self.isFollow){
+            [self callToUnfollowByUserIdAPI];
+            [self.mFollowbtn setTitle:@"Follow" forState:UIControlStateNormal];
+        }
+    }
+    */
+    
     /*
     UIAlertController* alert;
     alert = [UIAlertController alertControllerWithTitle:@"Alert" message:@"Comming soon..." preferredStyle:UIAlertControllerStyleAlert];
@@ -273,6 +293,38 @@
         [self presentViewController:alert animated:YES completion:nil];
     });
      */
+}
+
+- (void)callToFollowByUserIdAPI{
+    [[ECAPI sharedManager] followUserByUserId:self.signedInUser.userId followeeId:self.mSelectedDCFeedItem.feedItemId callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error followUserByUserId: %@", error);
+        } else {
+            UIAlertView *alertView = [[UIAlertView alloc]
+                                      initWithTitle:@"New Follow"
+                                      message:[NSString stringWithFormat:@"You have just started following %@ %@.", self.signedInUser.firstName, self.signedInUser.lastName]
+                                      delegate:nil
+                                      cancelButtonTitle:@"Okay"
+                                      otherButtonTitles:nil];
+            [alertView show];
+        }
+    }];
+}
+
+- (void)callToUnfollowByUserIdAPI{
+    [[ECAPI sharedManager] unfollowUserByUserId:self.signedInUser.userId followeeId:self.mSelectedDCFeedItem.feedItemId callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error unfollowUserByUserId: %@", error);
+        } else {
+            UIAlertView *alertView = [[UIAlertView alloc]
+                                      initWithTitle:@"Unfollow"
+                                      message:[NSString stringWithFormat:@"You have stopped following %@ %@.", self.signedInUser.firstName, self.signedInUser.lastName]
+                                      delegate:nil
+                                      cancelButtonTitle:@"Okay"
+                                      otherButtonTitles:nil];
+            [alertView show];
+        }
+    }];
 }
 
 #pragma mark:- Delegate Methods
