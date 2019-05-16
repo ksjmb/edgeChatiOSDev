@@ -1273,8 +1273,8 @@ static const int kRetryCount = 3;
     };
     
     [self taskWithRetry:createTaskBlock failure:failureBlock retryCount:kRetryCount];
-    
 }
+
 - (void)likeComment:(NSString *)commentId
              userId:(NSString *)userId
            callback:(void (^)(NSDictionary *jsonDictionary, NSError *error))callback{

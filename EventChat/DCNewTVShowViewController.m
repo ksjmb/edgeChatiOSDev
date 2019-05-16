@@ -174,28 +174,26 @@
     //2.
     UIFont *customFont = [UIFont italicSystemFontOfSize:12];
     NSString *text = dcFeedItem.digital.episodeDescription;
-    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(150, 20, self.view.bounds.size.width - 170, 120)];
-    fromLabel.text = text;
-    fromLabel.font = customFont;
-    fromLabel.numberOfLines = 10;
-    fromLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines; // or UIBaselineAdjustmentAlignCenters, or UIBaselineAdjustmentNone
-    fromLabel.adjustsFontSizeToFitWidth = YES;
-    fromLabel.adjustsLetterSpacingToFitWidth = YES;
-    fromLabel.minimumScaleFactor = 10.0f/12.0f;
-    fromLabel.clipsToBounds = YES;
-    fromLabel.backgroundColor = [UIColor clearColor];
-    fromLabel.textColor = [UIColor whiteColor];
-    fromLabel.textAlignment = NSTextAlignmentLeft;
+    UILabel *descriptionLabel = [[UILabel alloc]initWithFrame:CGRectMake(150, 20, self.view.bounds.size.width - 170, 120)];
+    descriptionLabel.text = text;
+    descriptionLabel.font = customFont;
+    descriptionLabel.numberOfLines = 10;
+    descriptionLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines; // or UIBaselineAdjustmentAlignCenters, or UIBaselineAdjustmentNone
+    descriptionLabel.adjustsFontSizeToFitWidth = YES;
+    descriptionLabel.adjustsLetterSpacingToFitWidth = YES;
+    descriptionLabel.minimumScaleFactor = 10.0f/12.0f;
+    descriptionLabel.clipsToBounds = YES;
+    descriptionLabel.backgroundColor = [UIColor clearColor];
+    descriptionLabel.textColor = [UIColor whiteColor];
+    descriptionLabel.textAlignment = NSTextAlignmentLeft;
     
     //3.
-    UIView *paintView=[[UIView alloc]initWithFrame:CGRectMake(8, 220, self.view.bounds.size.width - 16, 160)];
-//    [paintView setBackgroundColor:[UIColor lightGrayColor]];
-    [paintView setBackgroundColor:[UIColor clearColor]];
-    [paintView setAlpha:0.3];
-    [paintView addSubview:self.imgforLeft];
-    [paintView addSubview:fromLabel];
-    paintView.layer.cornerRadius = 05;
-    paintView.clipsToBounds = true;
+    UIView *mOverlayView=[[UIView alloc]initWithFrame:CGRectMake(8, 220, self.view.bounds.size.width - 16, 160)];
+    [mOverlayView setBackgroundColor:[UIColor clearColor]];
+    [mOverlayView addSubview:self.imgforLeft];
+    [mOverlayView addSubview:descriptionLabel];
+    mOverlayView.layer.cornerRadius = 05;
+    mOverlayView.clipsToBounds = true;
     
     [[ECAPI sharedManager] getPlaybackUrl:[[dcFeedItem.digital.imageUrl componentsSeparatedByString:@"/"] objectAtIndex:8] callback:^(NSString *aPlaybackUrl, NSError *error) {
 
@@ -203,31 +201,20 @@
         AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
         AVPlayerViewController *avvc = [AVPlayerViewController new];
         avvc.player = player;
-//        [avvc.contentOverlayView addSubview:paintView];
         [player play];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             //Here your non-main thread.
-            [NSThread sleepForTimeInterval:5.0f];
+            [NSThread sleepForTimeInterval:7.0f];
             dispatch_async(dispatch_get_main_queue(), ^{
                 //Here you returns to main thread.
-                [UIView transitionWithView:paintView
-                                  duration:0.7
-                                   options:UIViewAnimationOptionTransitionFlipFromTop
-                                animations:^{
-                                    [avvc.contentOverlayView addSubview:paintView];
-                                }
-                                completion:Nil];
+                [avvc.contentOverlayView addSubview:mOverlayView];
+                mOverlayView.alpha = 0.0;
+                [self viewAnimationWith:mOverlayView];
             });
         });
         
         [self presentViewController:avvc animated:YES completion:nil];
-        
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [NSThread sleepForTimeInterval:21.0f];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [paintView setHidden:YES];
-            });
-        });
+        [self hideOverlayViewWithSomeDelay:mOverlayView];
         
         /*
         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:aPlaybackUrl]];
@@ -238,6 +225,30 @@
         [self presentViewController:avvc animated:YES completion:nil];
          */
     }];
+}
+
+#pragma mark:- UIView Animation Methods
+
+-(void)viewAnimationWith:(UIView *)mView{
+    [UIView animateWithDuration:2.0
+                          delay:0
+         usingSpringWithDamping:0.5
+          initialSpringVelocity:0.5
+                        options:UIViewAnimationOptionAllowAnimatedContent & UIViewAnimationOptionLayoutSubviews
+                     animations:^{
+                         mView.alpha = 0.5;
+                         [self.view layoutIfNeeded];
+                     }
+                     completion:nil];
+}
+
+-(void)hideOverlayViewWithSomeDelay:(UIView *)mView{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [NSThread sleepForTimeInterval:16.0f];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [mView setHidden:YES];
+        });
+    });
 }
 
 - (void)didTapCommentsButton:(DCNewTVShowEpisodeTableViewCell *)dcTVNewShowEpisodeTableViewCell index:(NSInteger)index {
@@ -524,57 +535,47 @@
     //2.
     UIFont *customFont = [UIFont italicSystemFontOfSize:12];
     NSString *text = _selectedFeedItem.digital.episodeDescription;
-    UILabel *fromLabel = [[UILabel alloc]initWithFrame:CGRectMake(150, 20, self.view.bounds.size.width - 170, 120)];
-    fromLabel.text = text;
-    fromLabel.font = customFont;
-    fromLabel.numberOfLines = 10;
-    fromLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines; // or UIBaselineAdjustmentAlignCenters, or UIBaselineAdjustmentNone
-    fromLabel.adjustsFontSizeToFitWidth = YES;
-    fromLabel.adjustsLetterSpacingToFitWidth = YES;
-    fromLabel.minimumScaleFactor = 10.0f/12.0f;
-    fromLabel.clipsToBounds = YES;
-    fromLabel.backgroundColor = [UIColor clearColor];
-    fromLabel.textColor = [UIColor whiteColor];
-    fromLabel.textAlignment = NSTextAlignmentLeft;
+    UILabel *descriptionLabel = [[UILabel alloc]initWithFrame:CGRectMake(150, 20, self.view.bounds.size.width - 170, 120)];
+    descriptionLabel.text = text;
+    descriptionLabel.font = customFont;
+    descriptionLabel.numberOfLines = 10;
+    descriptionLabel.baselineAdjustment = UIBaselineAdjustmentAlignBaselines; // or UIBaselineAdjustmentAlignCenters, or UIBaselineAdjustmentNone
+    descriptionLabel.adjustsFontSizeToFitWidth = YES;
+    descriptionLabel.adjustsLetterSpacingToFitWidth = YES;
+    descriptionLabel.minimumScaleFactor = 10.0f/12.0f;
+    descriptionLabel.clipsToBounds = YES;
+    descriptionLabel.backgroundColor = [UIColor clearColor];
+    descriptionLabel.textColor = [UIColor whiteColor];
+    descriptionLabel.textAlignment = NSTextAlignmentLeft;
     
     //3.
-    UIView *paintView=[[UIView alloc]initWithFrame:CGRectMake(8, 220, self.view.bounds.size.width - 16, 160)];
-    [paintView setBackgroundColor:[UIColor lightGrayColor]];
-    [paintView setAlpha:0.3];
-    [paintView addSubview:self.imgforLeft];
-    [paintView addSubview:fromLabel];
-    paintView.layer.cornerRadius = 05;
-    paintView.clipsToBounds = true;
+    UIView *mOverlayView=[[UIView alloc]initWithFrame:CGRectMake(8, 220, self.view.bounds.size.width - 16, 160)];
+    [mOverlayView setBackgroundColor:[UIColor clearColor]];
+    [mOverlayView addSubview:self.imgforLeft];
+    [mOverlayView addSubview:descriptionLabel];
+    mOverlayView.layer.cornerRadius = 05;
+    mOverlayView.clipsToBounds = true;
     
     [[ECAPI sharedManager] getPlaybackUrl:[[_selectedFeedItem.digital.imageUrl componentsSeparatedByString:@"/"] objectAtIndex:8] callback:^(NSString *aPlaybackUrl, NSError *error) {
         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:aPlaybackUrl]];
         AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
         AVPlayerViewController *avvc = [AVPlayerViewController new];
         avvc.player = player;
-        [avvc.contentOverlayView addSubview:paintView];
+//        [avvc.contentOverlayView addSubview:mOverlayView];
         [player play];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [NSThread sleepForTimeInterval:5.0f];
+            //Here your non-main thread.
+            [NSThread sleepForTimeInterval:7.0f];
             dispatch_async(dispatch_get_main_queue(), ^{
-                [UIView transitionWithView:paintView
-                                  duration:0.7
-                                   options:UIViewAnimationOptionTransitionFlipFromTop
-                                animations:^{
-                                    [avvc.contentOverlayView addSubview:paintView];
-                                }
-                                completion:Nil];
+                //Here you returns to main thread.
+                [avvc.contentOverlayView addSubview:mOverlayView];
+                mOverlayView.alpha = 0.0;
+                [self viewAnimationWith:mOverlayView];
             });
         });
         
         [self presentViewController:avvc animated:YES completion:nil];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            [NSThread sleepForTimeInterval:21.0f];
-            dispatch_async(dispatch_get_main_queue(), ^{
-                [paintView setHidden:YES];
-            });
-        });
-        
-        [self presentViewController:avvc animated:YES completion:nil];
+        [self hideOverlayViewWithSomeDelay:mOverlayView];
     }];
 }
 

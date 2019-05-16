@@ -271,8 +271,8 @@
 #pragma mark:- IBAction Methods
 
 - (IBAction)actionOnFollowBtn:(id)sender {
-    [[ECCommonClass sharedManager] alertViewTitle:@"Alert" message:@"Comming soon..."];
-   /*
+//    [[ECCommonClass sharedManager] alertViewTitle:@"Alert" message:@"Comming soon..."];
+   
     if ([self.mFollowbtn.titleLabel.text isEqualToString:@"Follow"]){
         [self callToFollowByUserIdAPI];
         [self.mFollowbtn setTitle:@"Unfollow" forState:UIControlStateNormal];
@@ -282,7 +282,7 @@
             [self.mFollowbtn setTitle:@"Follow" forState:UIControlStateNormal];
         }
     }
-    */
+
     
     /*
     UIAlertController* alert;
