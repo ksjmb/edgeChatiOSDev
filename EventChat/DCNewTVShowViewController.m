@@ -43,10 +43,11 @@
 @property (nonatomic, strong) NSString* topEpisodeImageURL;
 @property (nonatomic, strong) NSString* selectedFeedItemId;
 @property (nonatomic, strong) NSMutableArray *topics;
-//
+
 @property (nonatomic, assign) NSString *userEmail;
 @property (weak, nonatomic) UIImageView *imgforLeft;
-- (void)addSubviews:(NSArray *)views;
+
+//@property (nonatomic, strong) AVPlayerViewController *mPlayerObj;
 
 @end
 
@@ -578,6 +579,7 @@
         [self hideOverlayViewWithSomeDelay:mOverlayView];
     }];
 }
+
 
 - (IBAction)didTapShareButton:(id)sender {
     if (self.userEmail != nil){

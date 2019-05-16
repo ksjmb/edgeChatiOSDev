@@ -19,7 +19,7 @@
 #import <FBSDKCoreKit/FBSDKCoreKit.h>
 #import <FBSDKShareKit/FBSDKShareKit.h>
 
-@interface DCNewTVShowViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, DCNewTVShowEpisodeTableViewCellDelegate, DCSeasonSelectorTableViewControllerDelegate, SignUpLoginViewControllerDelegate, RegisterViewControllerDelegate, AddToPlaylistDelegate>
+@interface DCNewTVShowViewController : UIViewController <UITableViewDataSource, UITableViewDelegate, DCNewTVShowEpisodeTableViewCellDelegate, DCSeasonSelectorTableViewControllerDelegate, SignUpLoginViewControllerDelegate, RegisterViewControllerDelegate, AddToPlaylistDelegate, UIGestureRecognizerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *topImageView;
 @property (weak, nonatomic) IBOutlet UILabel *topDescriptionLabel;
