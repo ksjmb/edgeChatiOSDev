@@ -50,6 +50,7 @@
 #import "ECNewPlaylistTableViewController.h"
 #import "AddToPlaylistPopUpViewController.h"
 #import "ECCommonClass.h"
+#import "IndividualFeedDetailsViewController.h"
 
 @interface ECFeedViewController () <HTHorizontalSelectionListDataSource, HTHorizontalSelectionListDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *eventFeedTableView;
@@ -1134,9 +1135,20 @@
         //[self presentViewController:navigationController animated:YES completion:nil];
        */
         
+        if (index == 0 || index == 1  || index == 2){
+            IndividualFeedDetailsViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"IndividualFeedDetailsViewController"];
+            vc.mFeedItem = ecFeedCell.feedItem;
+            [self.navigationController pushViewController:vc animated:YES];
+        }else{
+            DCInfluencersPersonDetailsViewController * dcInfluencersPersonDetailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"DCInfluencersPersonDetailsViewController"];
+            dcInfluencersPersonDetailsVC.mSelectedDCFeedItem = ecFeedCell.feedItem;
+            [self.navigationController pushViewController:dcInfluencersPersonDetailsVC animated:YES];
+        }
+        /*
         DCInfluencersPersonDetailsViewController * dcInfluencersPersonDetailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"DCInfluencersPersonDetailsViewController"];
         dcInfluencersPersonDetailsVC.mSelectedDCFeedItem = ecFeedCell.feedItem;
         [self.navigationController pushViewController:dcInfluencersPersonDetailsVC animated:YES];
+         */
     }
 }
 

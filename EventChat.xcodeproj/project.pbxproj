@@ -1394,6 +1394,8 @@
 		F93BCCC921C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = F93BCCC521C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib */; };
 		F93BCCCC21C248610079242D /* DCSocialTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F93BCCCB21C248610079242D /* DCSocialTableViewCell.m */; };
 		F93BCCCD21C248610079242D /* DCSocialTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F93BCCCB21C248610079242D /* DCSocialTableViewCell.m */; };
+		F96DC5A622A6AC9D0042D0CB /* IndividualFeedDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F96DC5A522A6AC9D0042D0CB /* IndividualFeedDetailsViewController.m */; };
+		F96DC5A722A6AC9D0042D0CB /* IndividualFeedDetailsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F96DC5A522A6AC9D0042D0CB /* IndividualFeedDetailsViewController.m */; };
 		F988566721EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F988566621EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m */; };
 		F988566821EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F988566621EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m */; };
 		F9940D24219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9940D23219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.m */; };
@@ -1901,6 +1903,8 @@
 		F93BCCC521C243C70079242D /* DCInfluencersPersonDetailsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = DCInfluencersPersonDetailsTableViewCell.xib; sourceTree = "<group>"; };
 		F93BCCCA21C248610079242D /* DCSocialTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCSocialTableViewCell.h; sourceTree = "<group>"; };
 		F93BCCCB21C248610079242D /* DCSocialTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCSocialTableViewCell.m; sourceTree = "<group>"; };
+		F96DC5A422A6AC9D0042D0CB /* IndividualFeedDetailsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IndividualFeedDetailsViewController.h; sourceTree = "<group>"; };
+		F96DC5A522A6AC9D0042D0CB /* IndividualFeedDetailsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IndividualFeedDetailsViewController.m; sourceTree = "<group>"; };
 		F988566521EC8B580037DC34 /* ECUserProfileSocialTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECUserProfileSocialTableViewCell.h; sourceTree = "<group>"; };
 		F988566621EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECUserProfileSocialTableViewCell.m; sourceTree = "<group>"; };
 		F9940D22219D8259009977C3 /* DCNewTVShowEpisodeTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DCNewTVShowEpisodeTableViewCell.h; sourceTree = "<group>"; };
@@ -2663,6 +2667,7 @@
 		36A218FA1F2549EF00FC3380 /* FeedItem */ = {
 			isa = PBXGroup;
 			children = (
+				F96DC5A322A6AA450042D0CB /* IndividualFeedDetails */,
 				F92CAEFE22843C0F007DD4BC /* YoutubePlayerVC */,
 				F9E9A89F21C7C7F0003FFAF4 /* UserProfile */,
 				F93BCCBE21C243350079242D /* InfluPersonDetails */,
@@ -2862,6 +2867,15 @@
 				F93BCCCB21C248610079242D /* DCSocialTableViewCell.m */,
 			);
 			name = InfluPersonDetails;
+			sourceTree = "<group>";
+		};
+		F96DC5A322A6AA450042D0CB /* IndividualFeedDetails */ = {
+			isa = PBXGroup;
+			children = (
+				F96DC5A422A6AC9D0042D0CB /* IndividualFeedDetailsViewController.h */,
+				F96DC5A522A6AC9D0042D0CB /* IndividualFeedDetailsViewController.m */,
+			);
+			name = IndividualFeedDetails;
 			sourceTree = "<group>";
 		};
 		F9BAE2F6219C1CB600921566 /* DCTVShow */ = {
@@ -4274,6 +4288,7 @@
 				360175B32004A6E90042FB3F /* KeepTypes.m in Sources */,
 				F9CAEF3421EC760B00CF9152 /* ECNewUserProfileViewController.m in Sources */,
 				87305C491EA0F84B008F5958 /* ConnectionManager.m in Sources */,
+				F96DC5A622A6AC9D0042D0CB /* IndividualFeedDetailsViewController.m in Sources */,
 				731807801D8A284D00CC9ADF /* ECAttendeeListTableViewCell.m in Sources */,
 				0E0820BB1C691A1B001C40F0 /* ECEventBriteEvent.m in Sources */,
 				87662FE91E93B4AC00FF21E4 /* S3UploadServices.m in Sources */,
@@ -4861,6 +4876,7 @@
 				369B9CBC1F18900000DA883D /* ECNotificationsViewController.m in Sources */,
 				362FDB452024E48100D436AB /* DCFollowOrMessageCell.m in Sources */,
 				3686FF831F241AB7000B85F8 /* DCLocationEntityObject.m in Sources */,
+				F96DC5A722A6AC9D0042D0CB /* IndividualFeedDetailsViewController.m in Sources */,
 				3653931E201C04990066A986 /* DCSocialButtonTableViewCell.m in Sources */,
 				3688572620278B86004DE2AA /* DCPost.m in Sources */,
 				369B9CBD1F18900000DA883D /* AppDelegate.m in Sources */,
