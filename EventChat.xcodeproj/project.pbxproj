@@ -1405,6 +1405,8 @@
 		F9AD5C3021A67AD20074C43B /* DCReactionTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9AD5C2E21A67AD20074C43B /* DCReactionTableViewCell.m */; };
 		F9CAEF3421EC760B00CF9152 /* ECNewUserProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9CAEF3321EC760B00CF9152 /* ECNewUserProfileViewController.m */; };
 		F9CAEF3521EC760B00CF9152 /* ECNewUserProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9CAEF3321EC760B00CF9152 /* ECNewUserProfileViewController.m */; };
+		F9D9858922D71F6C001EB011 /* ECIndividualProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9D9858822D71F6C001EB011 /* ECIndividualProfileViewController.m */; };
+		F9D9858A22D71F6C001EB011 /* ECIndividualProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9D9858822D71F6C001EB011 /* ECIndividualProfileViewController.m */; };
 		F9E67C1F219D5C20000081AB /* libAFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E67C1E219D5C20000081AB /* libAFNetworking.a */; };
 		F9E67C21219D5C4F000081AB /* libAFOAuth2Manager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E67C20219D5C4F000081AB /* libAFOAuth2Manager.a */; };
 		F9E67C23219D5C73000081AB /* libAWSCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E67C22219D5C73000081AB /* libAWSCore.a */; };
@@ -1916,6 +1918,8 @@
 		F9BAE2F8219C1CEF00921566 /* DCNewTVShowViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DCNewTVShowViewController.m; sourceTree = "<group>"; };
 		F9CAEF3221EC760B00CF9152 /* ECNewUserProfileViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECNewUserProfileViewController.h; sourceTree = "<group>"; };
 		F9CAEF3321EC760B00CF9152 /* ECNewUserProfileViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECNewUserProfileViewController.m; sourceTree = "<group>"; };
+		F9D9858722D71F6C001EB011 /* ECIndividualProfileViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECIndividualProfileViewController.h; sourceTree = "<group>"; };
+		F9D9858822D71F6C001EB011 /* ECIndividualProfileViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECIndividualProfileViewController.m; sourceTree = "<group>"; };
 		F9E67C1E219D5C20000081AB /* libAFNetworking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libAFNetworking.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9E67C20219D5C4F000081AB /* libAFOAuth2Manager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libAFOAuth2Manager.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9E67C22219D5C73000081AB /* libAWSCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libAWSCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2896,6 +2900,8 @@
 				F9CAEF3321EC760B00CF9152 /* ECNewUserProfileViewController.m */,
 				F988566521EC8B580037DC34 /* ECUserProfileSocialTableViewCell.h */,
 				F988566621EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m */,
+				F9D9858722D71F6C001EB011 /* ECIndividualProfileViewController.h */,
+				F9D9858822D71F6C001EB011 /* ECIndividualProfileViewController.m */,
 			);
 			name = UserProfile;
 			sourceTree = "<group>";
@@ -4312,6 +4318,7 @@
 				F9F7781C21F5F9CB00006A47 /* AddToPlaylistPopUpCollectionViewCell.m in Sources */,
 				0E148E7A1C86CD8F0012021A /* MessageTextView.m in Sources */,
 				0E0820A31C63449E001C40F0 /* ECJSONModel.m in Sources */,
+				F9D9858922D71F6C001EB011 /* ECIndividualProfileViewController.m in Sources */,
 				735CFEC91DA43320006E0A38 /* NotificationSettingsViewController.m in Sources */,
 				3619B1B92006B419002811B2 /* MediaBrowser.m in Sources */,
 				F9F7781321F5AA1700006A47 /* ECNewPlaylistTableViewCell.m in Sources */,
@@ -4914,6 +4921,7 @@
 				369B9CCC1F18900000DA883D /* ECAttendanceDetailsViewController.m in Sources */,
 				3696A7672050613900CE742B /* DCLaunchScreenViewController.m in Sources */,
 				369B9CCD1F18900000DA883D /* ECFeedCell.m in Sources */,
+				F9D9858A22D71F6C001EB011 /* ECIndividualProfileViewController.m in Sources */,
 				369B9CCE1F18900000DA883D /* ECMapPinAnnotation.m in Sources */,
 				360175EA2004A7D50042FB3F /* DCStreamingPlayerViewController.m in Sources */,
 				369B9CCF1F18900000DA883D /* MessageViewController.m in Sources */,
