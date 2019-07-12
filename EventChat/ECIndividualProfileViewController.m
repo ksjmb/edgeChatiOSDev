@@ -25,25 +25,14 @@
 #import "DCNewPostViewController.h"
 #import "DCPlaylistsTableViewController.h"
 #import "DCInfluencersPersonDetailsTableViewCell.h"
-//
-//#import <MediaPlayer/MediaPlayer.h>
-//#import <AVFoundation/AVFoundation.h>
-//#import <AVKit/AVKit.h>
-//#import "ECFullScreenImageViewController.h"
 #import "ECEventTopicCommentsViewController.h"
 #import "ECAttendanceDetailsViewController.h"
 #import "DCChatReactionViewController.h"
 #import <Social/Social.h>
-//
-//#import "ECSharedmedia.h"
-//#import "S3UploadImage.h"
 #import "SVProgressHUD.h"
-//#import "S3Constants.h"
-//#import "Reachability.h"
 #import "ECAPINames.h"
 
 @interface ECIndividualProfileViewController ()
-@property (nonatomic, assign) NSString *userEmail;
 @property (nonatomic, strong) NSArray *mFollowingUsersArr;
 @property (nonatomic, strong) NSArray *mFollowerUsersArr;
 @property (nonatomic, strong) NSMutableArray *userPostArr;
@@ -59,6 +48,7 @@
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.title = @"Profile";
     [self initialSetup];
+    // After search bar functionality, please need to do height of search bar = 56 from storyboard, now it is = 0.
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -100,13 +90,12 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (indexPath.row != 0){
+        /*
         DCPost *mDCPost = [self.userPostArr objectAtIndex:indexPath.row - 1];
         if ([mDCPost.postType  isEqual: @"image"]){
             
-        }
-        /*
-         else if ([mDCPost.postType  isEqual: @"video"]){
-         [self playButtonPressed:mDCPost.videoUrl];
+        }else if ([mDCPost.postType  isEqual: @"video"]){
+            [self playButtonPressed:mDCPost.videoUrl];
          }
          */
     }
@@ -123,23 +112,16 @@
 #pragma mark:- Instance Methods
 
 - (void)initialSetup{
-    [self.mFollowBtn setHidden:true];
-    
-    if([self.signedInUser.followeeIds containsObject:self.signedInUser.userId]){
+    if([self.selectedEcUser.followeeIds containsObject:self.signedInUser.userId]){
         [self.mFollowBtn setTitle:@"Unfollow" forState:UIControlStateNormal];
     }
     else{
         [self.mFollowBtn setTitle:@"Follow" forState:UIControlStateNormal];
     }
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableView) name:@"updateTableView" object:nil];
-    
     self.navigationController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     
-    [self.mUserNmLabel setText:[NSString stringWithFormat:@"%@ %@", self.signedInUser.firstName, self.signedInUser.lastName]];
-    
-//    [self.coverImaegButton setImage:[IonIcons imageWithIcon:ion_ios_camera_outline  size:27.0 color:[UIColor darkGrayColor]] forState:UIControlStateNormal];
-//    [self.profileImageButton setImage:[IonIcons imageWithIcon:ion_ios_camera_outline  size:27.0 color:[UIColor darkGrayColor]] forState:UIControlStateNormal];
+    [self.mUserNmLabel setText:[NSString stringWithFormat:@"%@ %@", self.selectedEcUser.firstName, self.selectedEcUser.lastName]];
     
     // Apply round mask
     self.mUserProfileIV.layer.cornerRadius = self.mUserProfileIV.frame.size.width / 2;
@@ -153,13 +135,14 @@
     self.mBackgroundIV.layer.borderColor = [UIColor whiteColor].CGColor;
     
     self.mFollowBtn.layer.cornerRadius = 5.0;
+    
     // Register cell
     [self.mTableView registerNib:[UINib nibWithNibName:@"DCInfluencersPersonDetailsTableViewCell" bundle:nil] forCellReuseIdentifier:@"DCInfluencersPersonDetailsTableViewCell"];
     
-    if(self.signedInUser.profilePicUrl == nil || [self.signedInUser.profilePicUrl length] == 0){
-        if(self.signedInUser.facebookUserId != nil){
+    if(self.selectedEcUser.profilePicUrl == nil || [self.selectedEcUser.profilePicUrl length] == 0){
+        if(self.selectedEcUser.facebookUserId != nil){
             FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
-                                          initWithGraphPath:[NSString stringWithFormat:@"/%@/picture?type=large&redirect=false", self.signedInUser.facebookUserId]
+                                          initWithGraphPath:[NSString stringWithFormat:@"/%@/picture?type=large&redirect=false", self.selectedEcUser.   facebookUserId]
                                           parameters:nil
                                           HTTPMethod:@"GET"];
             [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
@@ -187,16 +170,19 @@
         }
     }
     else{
-        if (self.signedInUser.profilePicUrl != nil){
-            [self showProfilePicImage:self ForImageUrl:self.signedInUser.profilePicUrl];
+        if (self.selectedEcUser.profilePicUrl != nil){
+            [self showProfilePicImage:self ForImageUrl:self.selectedEcUser.profilePicUrl];
         }
     }
     
-    if (self.signedInUser.coverPic_Url != nil){
-        [self showImageOnTheCell:self ForImageUrl:self.signedInUser.coverPic_Url];
+    if (self.selectedEcUser.coverPic_Url != nil){
+        [self showImageOnTheCell:self ForImageUrl:self.selectedEcUser.coverPic_Url];
+    }else{
+        [self.mBackgroundIV setImage:[UIImage imageNamed:@"cover_slide"]];
     }
     self.mTableView.estimatedRowHeight = 240.0;
     self.mTableView.rowHeight = UITableViewAutomaticDimension;
+    self.mTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
@@ -213,6 +199,14 @@
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return newImage;
+}
+
+-(void)updateTableView {
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    [self loadUserPosts];
+    [self loadFollowing];
+    [self loadFollowers];
+    [self.mTableView reloadData];
 }
 
 #pragma mark:- Handling background Image upload
@@ -240,7 +234,7 @@
 #pragma mark:- API Call Methods
 
 - (void)loadFollowing{
-    [[ECAPI sharedManager] getFollowing:self.signedInUser.userId callback:^(NSArray *users, NSError *error) {
+    [[ECAPI sharedManager] getFollowing:self.selectedEcUser.userId callback:^(NSArray *users, NSError *error) {
         if (error) {
             NSLog(@"Error getFollowing: %@", error);
         } else {
@@ -251,18 +245,19 @@
 }
 
 - (void)loadFollowers{
-    [[ECAPI sharedManager] getFollowers:self.signedInUser.userId callback:^(NSArray *users, NSError *error) {
+    [[ECAPI sharedManager] getFollowers:self.selectedEcUser.userId callback:^(NSArray *users, NSError *error) {
         if (error) {
             NSLog(@"Error getFollowers: %@", error);
         } else {
             NSLog(@"%@", users);
             self.mFollowerUsersArr = [[NSArray alloc] initWithArray:users];
+            [self.mTableView reloadData];
         }
     }];
 }
 
 - (void)loadUserPosts{
-    [[ECAPI sharedManager] getPostByUserId:self.signedInUser.userId callback:^(NSArray *posts, NSError *error) {
+    [[ECAPI sharedManager] getPostByUserId:self.selectedEcUser.userId callback:^(NSArray *posts, NSError *error) {
         if (error) {
             NSLog(@"Error getPostByUserId: %@", error);
         } else {
@@ -276,7 +271,7 @@
 -(void)setUserAttendanceResponse:(NSString *)strFeedId{
     NSString *userResponse = @"Going";
     
-    [[ECAPI sharedManager] setAttendeeResponse:self.signedInUser.userId feedItemId:strFeedId response:userResponse callback:^(NSError *error) {
+    [[ECAPI sharedManager] setAttendeeResponse:self.selectedEcUser.userId feedItemId:strFeedId response:userResponse callback:^(NSError *error) {
         if (error) {
             NSLog(@"Error saving response: %@", error);
         } else {
@@ -286,21 +281,11 @@
 }
 
 -(void)updateUserProfile{
-    [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:self.signedInUser.profilePicUrl callback:^(NSError *error) {
+    [[ECAPI sharedManager] updateProfilePicUrl:self.selectedEcUser.userId profilePicUrl:self.selectedEcUser.profilePicUrl callback:^(NSError *error) {
         if (error) {
             NSLog(@"Error update user profile: %@", error);
         } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
-        }
-    }];
-}
-
--(void)updateUser{
-    [[ECAPI sharedManager] updateUser:self.signedInUser callback:^(ECUser *ecUser, NSError *error) {
-        if (error) {
-            NSLog(@"Error update user: %@", error);
-        } else {
-            self.signedInUser = ecUser;
+            [self updateTableView];
         }
     }];
 }
@@ -315,7 +300,7 @@
     ECFollowViewController *ecFollowViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECFollowViewController"];
     ecFollowViewController.showFollowing = true;
     ecFollowViewController.usersArray = self.mFollowingUsersArr;
-    ecFollowViewController.dcUser = self.signedInUser;
+    ecFollowViewController.dcUser = self.selectedEcUser;
     [self.navigationController pushViewController:ecFollowViewController animated:YES];
 }
 
@@ -323,7 +308,7 @@
     ECFollowViewController *ecFollowViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECFollowViewController"];
     ecFollowViewController.showFollowing = false;
     ecFollowViewController.usersArray = self.mFollowerUsersArr;
-    ecFollowViewController.dcUser = self.signedInUser;
+    ecFollowViewController.dcUser = self.selectedEcUser;
     [self.navigationController pushViewController:ecFollowViewController animated:YES];
 }
 
@@ -332,7 +317,7 @@
     dcPlaylistsTableViewController.isFeedMode = false;
     dcPlaylistsTableViewController.isSignedInUser = self.isSignedInUser;
     dcPlaylistsTableViewController.signedInUser = self.signedInUser;
-    dcPlaylistsTableViewController.profileUser = self.signedInUser;
+    dcPlaylistsTableViewController.profileUser = self.selectedEcUser;
     [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
 }
 
@@ -370,7 +355,7 @@
                                     }
                                 }
                             }];
-        }
+            }
 }
 
 -(void)showProfilePicImage:(ECIndividualProfileViewController *)vc ForImageUrl:(NSString *)url{

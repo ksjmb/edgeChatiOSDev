@@ -37,6 +37,7 @@
 #import "DCPost.h"
 #import "DCEventEntityObject.h"
 #import "DCPlaylistsTableViewController.h"
+#import "ECIndividualProfileViewController.h"
 #import "MessageTableViewCell.h"
 #import "DCReactionTableViewCell.h"
 #import "AppDelegate.h"
@@ -234,7 +235,6 @@
      */
     
     self.inverted = YES;
-    
     self.mTextView.layer.borderWidth = 0.50f;
     self.mTextView.layer.borderColor = [[UIColor lightGrayColor] CGColor];
     
@@ -884,7 +884,15 @@
 #pragma mark:- Message TableView Cell Delegate Methods
 
 - (void)didTapLikeComment:(MessageTableViewCell *)messageTableViewCell {
-    NSLog(@"IndexPath: %ld", (long)messageTableViewCell.indexPath.row);
+    NSLog(@"didTapLikeComment: IndexPath: %ld", (long)messageTableViewCell.indexPath.row);
+}
+
+- (void)didTapTitleLabel:(Message *)message{
+    NSLog(@"message.user.userId: %@", message.user.userId);
+    ECIndividualProfileViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECIndividualProfileViewController"];
+    vc.isSignedInUser = false;
+    vc.selectedEcUser = message.user;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 #pragma mark - UITableViewDataSource Methods

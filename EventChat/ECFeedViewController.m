@@ -1137,17 +1137,16 @@
        */
         
         if (index == 0 || index == 1  || index == 2){
+            /*
             ECIndividualProfileViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECIndividualProfileViewController"];
-//            vc.dcFeedItems = ecFeedCell.feedItem;
             vc.isSignedInUser = true;
             vc.signedInUser = self.signedInUser;
             [self.navigationController pushViewController:vc animated:YES];
+            */
             
-            /*
             IndividualFeedDetailsViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"IndividualFeedDetailsViewController"];
             vc.mFeedItem = ecFeedCell.feedItem;
             [self.navigationController pushViewController:vc animated:YES];
-             */
         }else{
             DCInfluencersPersonDetailsViewController * dcInfluencersPersonDetailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"DCInfluencersPersonDetailsViewController"];
             dcInfluencersPersonDetailsVC.mSelectedDCFeedItem = ecFeedCell.feedItem;

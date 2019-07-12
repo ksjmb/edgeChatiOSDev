@@ -27,6 +27,7 @@ static NSString *messengerMediaCellIdentifier = @"MessengerMediaCell";
 -(void)hideAllCommentsByUser:(Message *)message;
 -(void)viewReplyByUser:(Message *)message;
 -(void)didTapFavImageViewByUser:(MessageTableViewCell *)messageTableViewCell;
+-(void)didTapTitleLabel:(Message *)message;
 @end
 
 @interface MessageTableViewCell : UITableViewCell

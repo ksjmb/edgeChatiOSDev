@@ -133,12 +133,16 @@
     
 }
 
-- (void)configureSubviews
-{
+- (void)configureSubviews {
     // Handle touchUpInside event for Like label
     self.likeCountLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *likeLabelTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapLikeComment:)];
     [self.likeCountLabel addGestureRecognizer:likeLabelTapGesture];
+    
+    // Handle touchUpInside event for Title label
+    self.titleLabel.userInteractionEnabled = YES;
+    UITapGestureRecognizer *titleLabelTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapTitleLabel:)];
+    [self.titleLabel addGestureRecognizer:titleLabelTapGesture];
     
     //Handle touchUpInside event for reply label
     self.replyLabel.userInteractionEnabled = YES;
@@ -210,6 +214,11 @@
     self.likeCountLabel.userInteractionEnabled = NO;
     UITapGestureRecognizer *likeLabelTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapLikeComment:)];
     [self.likeCountLabel addGestureRecognizer:likeLabelTapGesture];
+    
+    // Handle touchUpInside event for Title label
+    self.titleLabel.userInteractionEnabled = YES;
+    UITapGestureRecognizer *titleLabelTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapTitleLabel:)];
+    [self.titleLabel addGestureRecognizer:titleLabelTapGesture];
     
     //Handle touchUpInside event for reply label
     self.replyLabel.userInteractionEnabled = YES;
@@ -329,6 +338,11 @@
 //    self.likeCountLabel.userInteractionEnabled = YES;
     UITapGestureRecognizer *likeLabelTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapLikeComment:)];
     [self.likeCountLabel addGestureRecognizer:likeLabelTapGesture];
+    
+    // Handle touchUpInside event for Title label
+    self.titleLabel.userInteractionEnabled = YES;
+    UITapGestureRecognizer *titleLabelTapGesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(didTapTitleLabel:)];
+    [self.titleLabel addGestureRecognizer:titleLabelTapGesture];
     
     //Handle touchUpInside event for reply label
     self.replyLabel.userInteractionEnabled = YES;
@@ -699,6 +713,11 @@
      */
 }
 
+-(void)didTapTitleLabel:(id)sender{
+    if ([self.delegate respondsToSelector:@selector(didTapTitleLabel:)]) {
+        [[self delegate] didTapTitleLabel:self.message];
+    }
+}
 
 -(void)didTapReportComment:(id)sender {
     NSLog(@"Report Tapped");
