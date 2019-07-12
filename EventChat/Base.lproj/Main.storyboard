@@ -6029,7 +6029,7 @@ Cg
                                                                 </attributedString>
                                                             </state>
                                                             <connections>
-                                                                <action selector="actionOnFacebookButton:" destination="yLA-DO-r2d" eventType="touchUpInside" id="9Wf-rN-vrx"/>
+                                                                <action selector="actionOnFbBtn:" destination="a3v-6w-lyJ" eventType="touchUpInside" id="5nN-io-KrK"/>
                                                             </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" buttonType="roundedRect" reversesTitleShadowWhenHighlighted="YES" showsTouchWhenHighlighted="YES" lineBreakMode="wordWrap" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MKK-Gv-yjM" customClass="CustomButton">
@@ -6056,7 +6056,7 @@ Cg
                                                                 </attributedString>
                                                             </state>
                                                             <connections>
-                                                                <action selector="actionOnTwitterButton:" destination="yLA-DO-r2d" eventType="touchUpInside" id="VYg-yc-O8C"/>
+                                                                <action selector="actionOnTwtBtn:" destination="a3v-6w-lyJ" eventType="touchUpInside" id="Av2-2o-Yty"/>
                                                             </connections>
                                                         </button>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" buttonType="roundedRect" reversesTitleShadowWhenHighlighted="YES" showsTouchWhenHighlighted="YES" lineBreakMode="wordWrap" hasAttributedTitle="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lrp-JZ-d6t" customClass="CustomButton">
@@ -6084,7 +6084,7 @@ Cg
                                                                 </attributedString>
                                                             </state>
                                                             <connections>
-                                                                <action selector="actionOnInstagramButton:" destination="yLA-DO-r2d" eventType="touchUpInside" id="EEg-eC-x2s"/>
+                                                                <action selector="actionOnInstaBtn:" destination="a3v-6w-lyJ" eventType="touchUpInside" id="MnU-cy-dbH"/>
                                                             </connections>
                                                         </button>
                                                     </subviews>

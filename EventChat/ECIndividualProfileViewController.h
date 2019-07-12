@@ -27,6 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL isSignedInUser;
 @property (nonatomic, strong)ECUser *signedInUser;
+@property (nonatomic, strong) DCFeedItem *dcFeedItems;
 
 @property (nonatomic) UIBackgroundTaskIdentifier bkUptTaskId;
 

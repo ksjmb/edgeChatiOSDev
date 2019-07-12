@@ -26,20 +26,20 @@
 #import "DCPlaylistsTableViewController.h"
 #import "DCInfluencersPersonDetailsTableViewCell.h"
 //
-#import <MediaPlayer/MediaPlayer.h>
-#import <AVFoundation/AVFoundation.h>
-#import <AVKit/AVKit.h>
-#import "ECFullScreenImageViewController.h"
+//#import <MediaPlayer/MediaPlayer.h>
+//#import <AVFoundation/AVFoundation.h>
+//#import <AVKit/AVKit.h>
+//#import "ECFullScreenImageViewController.h"
 #import "ECEventTopicCommentsViewController.h"
 #import "ECAttendanceDetailsViewController.h"
 #import "DCChatReactionViewController.h"
 #import <Social/Social.h>
 //
 //#import "ECSharedmedia.h"
-#import "S3UploadImage.h"
+//#import "S3UploadImage.h"
 #import "SVProgressHUD.h"
-#import "S3Constants.h"
-#import "Reachability.h"
+//#import "S3Constants.h"
+//#import "Reachability.h"
 #import "ECAPINames.h"
 
 @interface ECIndividualProfileViewController ()
@@ -112,8 +112,7 @@
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (indexPath.row == 0){
         return 50.0;
     }else{
@@ -309,7 +308,32 @@
 #pragma mark:- IBAction Methods
 
 - (IBAction)actionOnFollowButton:(id)sender {
-    
+    NSLog(@"actionOnFollowButton");
+}
+
+- (IBAction)actionOnFbBtn:(id)sender {
+    ECFollowViewController *ecFollowViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECFollowViewController"];
+    ecFollowViewController.showFollowing = true;
+    ecFollowViewController.usersArray = self.mFollowingUsersArr;
+    ecFollowViewController.dcUser = self.signedInUser;
+    [self.navigationController pushViewController:ecFollowViewController animated:YES];
+}
+
+- (IBAction)actionOnTwtBtn:(id)sender {
+    ECFollowViewController *ecFollowViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECFollowViewController"];
+    ecFollowViewController.showFollowing = false;
+    ecFollowViewController.usersArray = self.mFollowerUsersArr;
+    ecFollowViewController.dcUser = self.signedInUser;
+    [self.navigationController pushViewController:ecFollowViewController animated:YES];
+}
+
+- (IBAction)actionOnInstaBtn:(id)sender {
+    DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
+    dcPlaylistsTableViewController.isFeedMode = false;
+    dcPlaylistsTableViewController.isSignedInUser = self.isSignedInUser;
+    dcPlaylistsTableViewController.signedInUser = self.signedInUser;
+    dcPlaylistsTableViewController.profileUser = self.signedInUser;
+    [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
 }
 
 #pragma mark - SDWebImage

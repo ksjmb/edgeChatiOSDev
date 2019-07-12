@@ -49,7 +49,7 @@
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     self.commentBarBtnItem = [[UIBarButtonItem alloc] initWithImage:[IonIcons imageWithIcon:ion_chatboxes  size:30.0 color:[UIColor whiteColor]] style:UIBarButtonItemStylePlain target:self action:@selector(didTapComment:)];
-    [self.navigationItem setRightBarButtonItem:self.commentBarBtnItem];
+    [self.navigationItem  setRightBarButtonItem:self.commentBarBtnItem];
     
     self.mProfilePhotoImageView.layer.cornerRadius = self.mProfilePhotoImageView.frame.size.width / 2;
     self.mProfilePhotoImageView.layer.borderWidth = 5;
