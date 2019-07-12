@@ -1136,14 +1136,7 @@
         //[self presentViewController:navigationController animated:YES completion:nil];
        */
         
-        if (index == 0 || index == 1  || index == 2){
-            /*
-            ECIndividualProfileViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECIndividualProfileViewController"];
-            vc.isSignedInUser = true;
-            vc.signedInUser = self.signedInUser;
-            [self.navigationController pushViewController:vc animated:YES];
-            */
-            
+        if (index == 0 || index == 1  || index == 2){            
             IndividualFeedDetailsViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"IndividualFeedDetailsViewController"];
             vc.mFeedItem = ecFeedCell.feedItem;
             [self.navigationController pushViewController:vc animated:YES];

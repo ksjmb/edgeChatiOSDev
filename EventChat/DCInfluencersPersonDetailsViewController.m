@@ -100,6 +100,7 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+    [self.mFollowbtn setHidden:true];
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.userEmailStr = [[NSUserDefaults standardUserDefaults] valueForKey:@"username"];
     [[NSUserDefaults standardUserDefaults] synchronize];

@@ -52,9 +52,9 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-    [self loadUserPosts];
-    [self loadFollowing];
-    [self loadFollowers];
+//    [self updateTableView];
+//    [self updateUserProfile];
+    [self updateUser];
 }
 
 #pragma mark:- UITableView DataSource and Delegate Methods
@@ -71,7 +71,8 @@
     if (indexPath.row == 0){
         static NSString *CellIdentifier = @"ECUserProfileSocialTableViewCell";
         ECUserProfileSocialTableViewCell *mCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        [mCell configureSocialCell:self.signedInUser :self.signedInUser];
+//        [mCell configureSocialCell:self.signedInUser :self.signedInUser];
+        [mCell configureSocialCell:self.selectedEcUser :self.signedInUser];
         return mCell;
     }else{
         static NSString *CellIdentifierNew = @"DCInfluencersPersonDetailsTableViewCell";
@@ -83,7 +84,8 @@
         }
         
         cell.dcPersonDelegate = self;
-        [cell configureWithPost:post signedInUser:self.signedInUser];
+//        [cell configureWithPost:post signedInUser:self.signedInUser];
+        [cell configureWithPost:post signedInUser:self.selectedEcUser];
         return cell;
     }
 }
@@ -112,7 +114,7 @@
 #pragma mark:- Instance Methods
 
 - (void)initialSetup{
-    if([self.selectedEcUser.followeeIds containsObject:self.signedInUser.userId]){
+    if([self.signedInUser.followeeIds containsObject:self.selectedEcUser.userId]){
         [self.mFollowBtn setTitle:@"Unfollow" forState:UIControlStateNormal];
     }
     else{
@@ -251,7 +253,6 @@
         } else {
             NSLog(@"%@", users);
             self.mFollowerUsersArr = [[NSArray alloc] initWithArray:users];
-            [self.mTableView reloadData];
         }
     }];
 }
@@ -275,7 +276,8 @@
         if (error) {
             NSLog(@"Error saving response: %@", error);
         } else {
-            [self updateUserProfile];
+//            [self updateUserProfile];
+            [self updateUser];
         }
     }];
 }
@@ -290,10 +292,60 @@
     }];
 }
 
+-(void)updateUser{
+    [[ECAPI sharedManager] updateUser:self.selectedEcUser callback:^(ECUser *ecUser, NSError *error) {
+        if (error) {
+            NSLog(@"Error update user: %@", error);
+        } else {
+            self.selectedEcUser = ecUser;
+            [self updateTableView];
+        }
+    }];
+}
+
+- (void)followByUserIdAPICall{
+    [[ECAPI sharedManager] followUserByUserId:self.signedInUser.userId followeeId:self.selectedEcUser.userId callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error followUserByUserId: %@", error);
+        } else {
+            UIAlertView *alertView = [[UIAlertView alloc]
+                                      initWithTitle:@"New Follow"
+                                      message:[NSString stringWithFormat:@"You have just started following %@ %@.", self.selectedEcUser.firstName, self.selectedEcUser.lastName]
+                                      delegate:nil
+                                      cancelButtonTitle:@"Okay"
+                                      otherButtonTitles:nil];
+            [alertView show];
+        }
+    }];
+}
+
+- (void)unfollowByUserIdAPICall{
+    [[ECAPI sharedManager] unfollowUserByUserId:self.signedInUser.userId followeeId:self.selectedEcUser.userId callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error unfollowUserByUserId: %@", error);
+        } else {
+            UIAlertView *alertView = [[UIAlertView alloc]
+                                      initWithTitle:@"Unfollow"
+                                      message:[NSString stringWithFormat:@"You have stopped following %@ %@.", self.selectedEcUser.firstName, self.selectedEcUser.lastName]
+                                      delegate:nil
+                                      cancelButtonTitle:@"Okay"
+                                      otherButtonTitles:nil];
+            [alertView show];
+        }
+    }];
+}
+
 #pragma mark:- IBAction Methods
 
 - (IBAction)actionOnFollowButton:(id)sender {
-    NSLog(@"actionOnFollowButton");
+    if ([self.mFollowBtn.titleLabel.text isEqualToString:@"Unfollow"]){
+        [self unfollowByUserIdAPICall];
+        [self.mFollowBtn setTitle:@"Follow" forState:UIControlStateNormal];
+    }
+    else{
+        [self followByUserIdAPICall];
+        [self.mFollowBtn setTitle:@"Unfollow" forState:UIControlStateNormal];
+    }
 }
 
 - (IBAction)actionOnFbBtn:(id)sender {
