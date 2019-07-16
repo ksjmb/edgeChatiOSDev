@@ -5958,6 +5958,7 @@ Cg
                                 <constraints>
                                     <constraint firstAttribute="height" constant="50" id="fr1-XP-aIW"/>
                                 </constraints>
+                                <color key="barTintColor" red="0.0" green="0.44313725490196076" blue="0.66274509803921566" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <outlet property="delegate" destination="a3v-6w-lyJ" id="waQ-uh-xaT"/>

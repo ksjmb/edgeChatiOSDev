@@ -74,7 +74,7 @@
         self.isFiltered = true;
         self.filterResultArray = [[NSMutableArray alloc]init];
         for (NSArray *userObjet in _resultArray) {
-            if ([userObjet valueForKey:@"firstName"]){
+            if ([userObjet valueForKey:@"firstName"] && [userObjet valueForKey:@"lastName"]){
                 NSRange range = [[userObjet valueForKey:@"firstName"] rangeOfString:searchText options:NSCaseInsensitiveSearch];
                 if (range.length > 0) {
                     [self.filterResultArray addObject:userObjet];
@@ -86,14 +86,12 @@
 }
 
 - (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
-    NSLog(@"searchBarCancelButtonClicked");
     [self.mSearchResultTableView setHidden:true];
     [self.mSearchBar endEditing:YES];
     self.mSearchBar.text = @"";
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
-    NSLog(@"searchBarSearchButtonClicked");
     [self.mSearchBar endEditing:YES];
 }
 
@@ -160,8 +158,18 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (tableView == self.mSearchResultTableView){
         NSArray *mUser = [self.filterResultArray objectAtIndex:indexPath.row];
-        NSString *profilePicUrl = [mUser valueForKey:@"profilePicUrl"];
-        NSLog(@"profilePicUrl %@", profilePicUrl);
+        
+        self.selectedEcUser.userId = [mUser valueForKey:@"_id"];
+        self.selectedEcUser.profilePicUrl = [mUser valueForKey:@"profilePicUrl"];
+        self.selectedEcUser.firstName = [mUser valueForKey:@"firstName"];
+        self.selectedEcUser.lastName = [mUser valueForKey:@"lastName"];
+        
+        [self.mSearchResultTableView setHidden:true];
+        [self.mSearchBar endEditing:YES];
+        self.mSearchBar.text = @"";
+        [self initialSetup];
+        [self updateTableView];
+        
     }else{
         if (indexPath.row != 0){
             /*
