@@ -761,8 +761,7 @@
 
 #pragma mark:- Action on video tap Methods
 
--(void)playButtonPressed:(NSString *)videoURLStr
-{
+-(void)playButtonPressed:(NSString *)videoURLStr {
     BOOL isInternetAvailable = [[ECCommonClass sharedManager]isInternetAvailabel];
     if (isInternetAvailable) {
         AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:videoURLStr]];

@@ -2342,4 +2342,40 @@ static const int kRetryCount = 3;
                callback:(void (^)(NSString *aPlaybackUrl, NSError *error))callback{
     
 }
+
+#pragma mark:- Get All Filter User List
+
+- (void)getAllUserListAPI:(void (^)(NSArray *searchResult, NSError *error))callback{
+//    NSString *endpoint = @"/rest/v4/feeditems/all";
+    NSString *endpoint = @"/rest/v4/users/list/all";
+    
+    DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
+        AFHTTPRequestOperation *createdTask = [[ECHTTPRequestOperationManager sharedManagerDC]
+                                               GET:endpoint
+                                               parameters:nil
+                                               success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                   NSDictionary *responseDictionary = [responseObject dictionaryOrNilValue];
+                                                   NSArray *dcFeedItemDictionaries = responseDictionary[@"data"];
+                                                   /*
+                                                   NSError *dcFeedItemError = nil;
+                                                   NSArray *dcFeedItems = [DCFeedItem arrayOfModelsFromDictionaries:dcFeedItemDictionaries error:&dcFeedItemError];
+                                                   if (dcFeedItemError) {
+                                                       NSLog(@"Error fetching app info: %@", dcFeedItemError);
+                                                   }
+                                                    */
+                                                   callback(dcFeedItemDictionaries, nil);
+                                               }
+                                               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                                   callback(nil, error);
+                                               }];
+        return createdTask;
+    };
+    
+    DCNodeApiClientFailure failureBlock = ^(AFHTTPRequestOperation *task, NSError *error) {
+        NSLog(@"[DCNodeApiClient getFeedItems]: error %@", error);
+    };
+    
+    [self taskWithRetry:createTaskBlock failure:failureBlock retryCount:kRetryCount];
+}
+
 @end

@@ -36,6 +36,9 @@
 @property (nonatomic, strong) NSArray *mFollowingUsersArr;
 @property (nonatomic, strong) NSArray *mFollowerUsersArr;
 @property (nonatomic, strong) NSMutableArray *userPostArr;
+@property (nonatomic, strong) NSMutableArray *resultArray;
+@property (nonatomic, strong) NSMutableArray *filterResultArray;
+@property (nonatomic, assign) BOOL isFiltered;
 
 @end
 
@@ -48,13 +51,49 @@
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.title = @"Profile";
     [self initialSetup];
-    // After search bar functionality, please need to do height of search bar = 56 from storyboard, now it is = 0.
+    [self getAllUserList];
 }
 
 - (void)viewWillAppear:(BOOL)animated{
 //    [self updateTableView];
 //    [self updateUserProfile];
     [self updateUser];
+}
+
+#pragma mark:- SearchBar Delegate Methods
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
+    [self.mSearchResultTableView setHidden:false];
+    if (searchText.length == 0) {
+        self.isFiltered = false;
+        [self.mSearchBar endEditing:YES];
+        [self.mSearchResultTableView setHidden:true];
+    }
+    else {
+        self.isFiltered = true;
+        self.filterResultArray = [[NSMutableArray alloc]init];
+        for (NSArray *userObjet in _resultArray) {
+            if ([userObjet valueForKey:@"firstName"]){
+                NSRange range = [[userObjet valueForKey:@"firstName"] rangeOfString:searchText options:NSCaseInsensitiveSearch];
+                if (range.length > 0) {
+                    [self.filterResultArray addObject:userObjet];
+                }
+            }
+        }
+    }
+    [self.mSearchResultTableView reloadData];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+    NSLog(@"searchBarCancelButtonClicked");
+    [self.mSearchResultTableView setHidden:true];
+    [self.mSearchBar endEditing:YES];
+    self.mSearchBar.text = @"";
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
+    NSLog(@"searchBarSearchButtonClicked");
+    [self.mSearchBar endEditing:YES];
 }
 
 #pragma mark:- UITableView DataSource and Delegate Methods
@@ -64,50 +103,76 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1 + [self.userPostArr count];
+    if (tableView == self.mSearchResultTableView){
+        return [self.filterResultArray count];
+    }else{
+        return 1 + [self.userPostArr count];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == 0){
-        static NSString *CellIdentifier = @"ECUserProfileSocialTableViewCell";
-        ECUserProfileSocialTableViewCell *mCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-//        [mCell configureSocialCell:self.signedInUser :self.signedInUser];
-        [mCell configureSocialCell:self.selectedEcUser :self.signedInUser];
+    
+    if (tableView == self.mSearchResultTableView){
+        static NSString *CellIdentifier = @"cell";
+        UITableViewCell *mCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        NSArray *mUser = [self.filterResultArray objectAtIndex:indexPath.row];
+        NSString *fn = [mUser valueForKey:@"firstName"];
+        NSString *ln = [mUser valueForKey:@"lastName"];
+
+        [mCell.textLabel setText:[NSString stringWithFormat:@"%@ %@", fn, ln]];
         return mCell;
+        
     }else{
-        static NSString *CellIdentifierNew = @"DCInfluencersPersonDetailsTableViewCell";
-        DCInfluencersPersonDetailsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierNew];
-        DCPost *post = [self.userPostArr objectAtIndex:indexPath.row - 1];
-        
-        if (!cell) {
-            cell = [[DCInfluencersPersonDetailsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifierNew];
+        if (indexPath.row == 0){
+            static NSString *CellIdentifier = @"ECUserProfileSocialTableViewCell";
+            ECUserProfileSocialTableViewCell *mCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+            //        [mCell configureSocialCell:self.signedInUser :self.signedInUser];
+            [mCell configureSocialCell:self.selectedEcUser :self.signedInUser];
+            return mCell;
+        }else{
+            static NSString *CellIdentifierNew = @"DCInfluencersPersonDetailsTableViewCell";
+            DCInfluencersPersonDetailsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierNew];
+            DCPost *post = [self.userPostArr objectAtIndex:indexPath.row - 1];
+            //        DCPost *post_new = [self.resultArray objectAtIndex:indexPath.row - 1];
+            if (!cell) {
+                cell = [[DCInfluencersPersonDetailsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifierNew];
+            }
+            
+            cell.dcPersonDelegate = self;
+            //        [cell configureWithPost:post signedInUser:self.signedInUser];
+            [cell configureWithPost:post signedInUser:self.selectedEcUser];
+            return cell;
         }
-        
-        cell.dcPersonDelegate = self;
-//        [cell configureWithPost:post signedInUser:self.signedInUser];
-        [cell configureWithPost:post signedInUser:self.selectedEcUser];
-        return cell;
     }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (indexPath.row != 0){
-        /*
-        DCPost *mDCPost = [self.userPostArr objectAtIndex:indexPath.row - 1];
-        if ([mDCPost.postType  isEqual: @"image"]){
-            
-        }else if ([mDCPost.postType  isEqual: @"video"]){
-            [self playButtonPressed:mDCPost.videoUrl];
-         }
-         */
+    if (tableView == self.mSearchResultTableView){
+        ECUser *mUser = [self.filterResultArray objectAtIndex:indexPath.row];
+        NSLog(@"Profile Pic URL: %@", mUser.profilePicUrl);
+    }else{
+        if (indexPath.row != 0){
+            /*
+             DCPost *mDCPost = [self.userPostArr objectAtIndex:indexPath.row - 1];
+             if ([mDCPost.postType  isEqual: @"image"]){
+             
+             }else if ([mDCPost.postType  isEqual: @"video"]){
+             [self playButtonPressed:mDCPost.videoUrl];
+             }
+             */
+        }
     }
 }
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == 0){
-        return 50.0;
+    if (tableView == self.mSearchResultTableView){
+        return 40.0;
     }else{
-        return UITableViewAutomaticDimension;
+        if (indexPath.row == 0){
+            return 50.0;
+        }else{
+            return UITableViewAutomaticDimension;
+        }
     }
 }
 
@@ -120,6 +185,9 @@
     else{
         [self.mFollowBtn setTitle:@"Follow" forState:UIControlStateNormal];
     }
+    
+    self.mSearchBar.showsCancelButton = true;
+    self.mSearchBar.delegate = self;
     
     self.navigationController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     
@@ -234,6 +302,17 @@
 }
 
 #pragma mark:- API Call Methods
+
+- (void)getAllUserList{
+    [[ECAPI sharedManager] getAllUserListAPI:^(NSArray *searchResult, NSError *error) {
+        if (error) {
+            NSLog(@"Error getAllUserList: %@", error);
+        } else {
+            self.resultArray = [[NSMutableArray alloc] initWithArray:searchResult];
+            [self.mSearchResultTableView reloadData];
+        }
+    }];
+}
 
 - (void)loadFollowing{
     [[ECAPI sharedManager] getFollowing:self.selectedEcUser.userId callback:^(NSArray *users, NSError *error) {

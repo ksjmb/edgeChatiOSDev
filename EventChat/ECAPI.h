@@ -213,4 +213,7 @@ typedef void (^DCNodeApiClientFailure)(AFHTTPRequestOperation *task, NSError *er
               callback:(void (^)(NSString *aPlaybackUrl, NSError *error))callback;
 - (void)testPlaybackUrl:(NSString *)cid
                callback:(void (^)(NSString *aPlaybackUrl, NSError *error))callback;
+
+#pragma mark - Get All User List
+- (void)getAllUserListAPI:(void (^)(NSArray *searchResult, NSError *error))callback;
 @end
