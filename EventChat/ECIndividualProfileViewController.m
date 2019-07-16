@@ -28,6 +28,7 @@
 #import "ECEventTopicCommentsViewController.h"
 #import "ECAttendanceDetailsViewController.h"
 #import "DCChatReactionViewController.h"
+#import "ECIndividualProfileTableViewCell.h"
 #import <Social/Social.h>
 #import "SVProgressHUD.h"
 #import "ECAPINames.h"
@@ -113,13 +114,23 @@
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
     if (tableView == self.mSearchResultTableView){
-        static NSString *CellIdentifier = @"cell";
-        UITableViewCell *mCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        static NSString *CellIdentifier = @"ECIndividualProfileTableViewCell";
+        ECIndividualProfileTableViewCell *mCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        
+        mCell.mProfileImageView.layer.cornerRadius = mCell.mProfileImageView.frame.size.width / 2;
+        mCell.mProfileImageView.layer.borderWidth = 5;
+        mCell.mProfileImageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+        mCell.mProfileImageView.layer.masksToBounds = YES;
+        
         NSArray *mUser = [self.filterResultArray objectAtIndex:indexPath.row];
-        NSString *fn = [mUser valueForKey:@"firstName"];
-        NSString *ln = [mUser valueForKey:@"lastName"];
-
-        [mCell.textLabel setText:[NSString stringWithFormat:@"%@ %@", fn, ln]];
+        
+        NSString *fName = [mUser valueForKey:@"firstName"];
+        NSString *lName = [mUser valueForKey:@"lastName"];
+        NSString *fullName = [NSString stringWithFormat: @"%@ ", fName];
+        fullName = [fullName stringByAppendingString:lName];
+        
+        [mCell configureCellWithUserItem:fullName profileURL:[mUser valueForKey:@"profilePicUrl"] cellIndex:indexPath];
+        
         return mCell;
         
     }else{
@@ -148,8 +159,9 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     if (tableView == self.mSearchResultTableView){
-        ECUser *mUser = [self.filterResultArray objectAtIndex:indexPath.row];
-        NSLog(@"Profile Pic URL: %@", mUser.profilePicUrl);
+        NSArray *mUser = [self.filterResultArray objectAtIndex:indexPath.row];
+        NSString *profilePicUrl = [mUser valueForKey:@"profilePicUrl"];
+        NSLog(@"profilePicUrl %@", profilePicUrl);
     }else{
         if (indexPath.row != 0){
             /*
@@ -166,7 +178,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     if (tableView == self.mSearchResultTableView){
-        return 40.0;
+        return 60.0;
     }else{
         if (indexPath.row == 0){
             return 50.0;
@@ -253,6 +265,7 @@
     self.mTableView.estimatedRowHeight = 240.0;
     self.mTableView.rowHeight = UITableViewAutomaticDimension;
     self.mTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.mSearchResultTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {

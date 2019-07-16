@@ -6132,13 +6132,39 @@ Cg
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="separatorColor" white="0.66666666666666663" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="cell" rowHeight="40" id="Tog-KO-HFw">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="40"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="none" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="ECIndividualProfileTableViewCell" rowHeight="60" id="Tog-KO-HFw" customClass="ECIndividualProfileTableViewCell">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="Tog-KO-HFw" id="RNR-kF-vFk">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="39.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="59.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="missing-profile.png" translatesAutoresizingMaskIntoConstraints="NO" id="x6E-Sf-yG5">
+                                                    <rect key="frame" x="15" y="4" width="50" height="50"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="50" id="Gcd-UQ-vk4"/>
+                                                        <constraint firstAttribute="width" constant="50" id="zuK-RR-pOJ"/>
+                                                    </constraints>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="User Name" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Jm1-Op-gg7">
+                                                    <rect key="frame" x="81" y="16.5" width="292" height="25"/>
+                                                    <fontDescription key="fontDescription" name="AvenirNext-Medium" family="Avenir Next" pointSize="18"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="Jm1-Op-gg7" firstAttribute="leading" secondItem="x6E-Sf-yG5" secondAttribute="trailing" constant="16" id="1Xx-f0-VOG"/>
+                                                <constraint firstAttribute="trailing" secondItem="Jm1-Op-gg7" secondAttribute="trailing" constant="2" id="ZIb-8j-JeB"/>
+                                                <constraint firstItem="x6E-Sf-yG5" firstAttribute="leading" secondItem="RNR-kF-vFk" secondAttribute="leading" constant="15" id="iDJ-DO-hKi"/>
+                                                <constraint firstItem="Jm1-Op-gg7" firstAttribute="centerY" secondItem="x6E-Sf-yG5" secondAttribute="centerY" id="oVM-IE-JkK"/>
+                                                <constraint firstItem="x6E-Sf-yG5" firstAttribute="top" secondItem="RNR-kF-vFk" secondAttribute="top" constant="4" id="pCG-u5-k4R"/>
+                                            </constraints>
                                         </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="mProfileImageView" destination="x6E-Sf-yG5" id="hIp-7v-jQl"/>
+                                            <outlet property="mUserNameLabel" destination="Jm1-Op-gg7" id="1ps-uN-5BQ"/>
+                                        </connections>
                                     </tableViewCell>
                                 </prototypes>
                                 <connections>

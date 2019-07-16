@@ -1407,6 +1407,8 @@
 		F9CAEF3521EC760B00CF9152 /* ECNewUserProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9CAEF3321EC760B00CF9152 /* ECNewUserProfileViewController.m */; };
 		F9D9858922D71F6C001EB011 /* ECIndividualProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9D9858822D71F6C001EB011 /* ECIndividualProfileViewController.m */; };
 		F9D9858A22D71F6C001EB011 /* ECIndividualProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F9D9858822D71F6C001EB011 /* ECIndividualProfileViewController.m */; };
+		F9DC10C622DDE90900B76383 /* ECIndividualProfileTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9DC10C522DDE90900B76383 /* ECIndividualProfileTableViewCell.m */; };
+		F9DC10C722DDE90900B76383 /* ECIndividualProfileTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = F9DC10C522DDE90900B76383 /* ECIndividualProfileTableViewCell.m */; };
 		F9E67C1F219D5C20000081AB /* libAFNetworking.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E67C1E219D5C20000081AB /* libAFNetworking.a */; };
 		F9E67C21219D5C4F000081AB /* libAFOAuth2Manager.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E67C20219D5C4F000081AB /* libAFOAuth2Manager.a */; };
 		F9E67C23219D5C73000081AB /* libAWSCore.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F9E67C22219D5C73000081AB /* libAWSCore.a */; };
@@ -1920,6 +1922,8 @@
 		F9CAEF3321EC760B00CF9152 /* ECNewUserProfileViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECNewUserProfileViewController.m; sourceTree = "<group>"; };
 		F9D9858722D71F6C001EB011 /* ECIndividualProfileViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECIndividualProfileViewController.h; sourceTree = "<group>"; };
 		F9D9858822D71F6C001EB011 /* ECIndividualProfileViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECIndividualProfileViewController.m; sourceTree = "<group>"; };
+		F9DC10C422DDE90900B76383 /* ECIndividualProfileTableViewCell.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ECIndividualProfileTableViewCell.h; sourceTree = "<group>"; };
+		F9DC10C522DDE90900B76383 /* ECIndividualProfileTableViewCell.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ECIndividualProfileTableViewCell.m; sourceTree = "<group>"; };
 		F9E67C1E219D5C20000081AB /* libAFNetworking.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libAFNetworking.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9E67C20219D5C4F000081AB /* libAFOAuth2Manager.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libAFOAuth2Manager.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		F9E67C22219D5C73000081AB /* libAWSCore.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libAWSCore.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2902,6 +2906,8 @@
 				F988566621EC8B580037DC34 /* ECUserProfileSocialTableViewCell.m */,
 				F9D9858722D71F6C001EB011 /* ECIndividualProfileViewController.h */,
 				F9D9858822D71F6C001EB011 /* ECIndividualProfileViewController.m */,
+				F9DC10C422DDE90900B76383 /* ECIndividualProfileTableViewCell.h */,
+				F9DC10C522DDE90900B76383 /* ECIndividualProfileTableViewCell.m */,
 			);
 			name = UserProfile;
 			sourceTree = "<group>";
@@ -4440,6 +4446,7 @@
 				0E18B4D41CB37D3700D25518 /* ECComment.m in Sources */,
 				3641C3C51FB3567000850B31 /* DCPlaylistsTableViewController.m in Sources */,
 				362BF321201B0B45003DF01C /* DCPersonEntityObject.m in Sources */,
+				F9DC10C622DDE90900B76383 /* ECIndividualProfileTableViewCell.m in Sources */,
 				87662FE21E93B25E00FF21E4 /* S3ServiceHandler.m in Sources */,
 				7318077D1D8A210600CC9ADF /* ECAttendanceResponseTableViewCell.m in Sources */,
 				3636C85A2020F2B4007DE121 /* DCFollowPostButtonCell.m in Sources */,
@@ -4945,6 +4952,7 @@
 				369B9CD81F18900000DA883D /* ECEventBriteDescription.m in Sources */,
 				364098D52016B2BA00CBB9F8 /* TextFieldValidator.m in Sources */,
 				369B9CD91F18900000DA883D /* ECAddTopicViewController.m in Sources */,
+				F9DC10C722DDE90900B76383 /* ECIndividualProfileTableViewCell.m in Sources */,
 				369B9CDA1F18900000DA883D /* ECHTTPRequestOperationManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
