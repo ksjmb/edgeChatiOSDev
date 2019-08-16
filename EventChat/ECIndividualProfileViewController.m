@@ -89,6 +89,7 @@
     [self.mSearchResultTableView setHidden:true];
     [self.mSearchBar endEditing:YES];
     self.mSearchBar.text = @"";
+    self.searchBarHeightConst.constant = 0.0;
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
@@ -206,7 +207,7 @@
         [self.mFollowBtn setTitle:@"Follow" forState:UIControlStateNormal];
     }
     
-    self.mSearchBar.showsCancelButton = true;
+//    self.mSearchBar.showsCancelButton = true;
     self.mSearchBar.delegate = self;
     
     self.navigationController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
@@ -471,6 +472,11 @@
     dcPlaylistsTableViewController.signedInUser = self.signedInUser;
     dcPlaylistsTableViewController.profileUser = self.selectedEcUser;
     [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+}
+
+- (IBAction)actionOnSearchBtnClick:(id)sender {
+    self.searchBarHeightConst.constant = 40.0;
+//    [self.mSearchBar endEditing:YES];
 }
 
 #pragma mark - SDWebImage

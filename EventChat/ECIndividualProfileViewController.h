@@ -26,6 +26,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet UISearchBar *mSearchBar;
 @property (weak, nonatomic) IBOutlet UITableView *mSearchResultTableView;
 
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *mSearchBarBtnItem;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bkImageViewToSearchBarTopConst;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *searchBarHeightConst;
+
+
 @property (nonatomic, assign) BOOL isSignedInUser;
 @property (nonatomic, strong)ECUser *signedInUser;
 @property (nonatomic, strong)ECUser *selectedEcUser;
