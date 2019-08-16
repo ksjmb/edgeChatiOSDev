@@ -43,6 +43,7 @@
 #import "S3Constants.h"
 #import "Reachability.h"
 #import "ECAPINames.h"
+#import "ECIndividualProfileTableViewCell.h"
 
 @interface ECNewUserProfileViewController ()
 @property (nonatomic, assign) NSString *userEmailStr;
@@ -54,6 +55,10 @@
 @property (nonatomic, strong) FBSDKShareDialog *shareDialog;
 @property (nonatomic, strong) FBSDKShareLinkContent *content;
 @property (nonatomic, strong) NSMutableArray *topics;
+
+@property (nonatomic, strong) NSMutableArray *resultArray;
+@property (nonatomic, strong) NSMutableArray *filterResultArray;
+@property (nonatomic, assign) BOOL isFiltered;
 
 @end
 
@@ -74,9 +79,45 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated{
+    [self getAllUserList];
     [self loadUserPosts];
     [self loadFollowing];
     [self loadFollowers];
+}
+
+#pragma mark:- SearchBar Delegate Methods
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
+    [self.mTableView setHidden:false];
+    if (searchText.length == 0) {
+        self.isFiltered = false;
+        [self.mSearchBar endEditing:YES];
+        [self.mTableView setHidden:true];
+    }
+    else {
+        self.isFiltered = true;
+        self.filterResultArray = [[NSMutableArray alloc]init];
+        for (NSArray *userObjet in _resultArray) {
+            if ([userObjet valueForKey:@"firstName"] && [userObjet valueForKey:@"lastName"]){
+                NSRange range = [[userObjet valueForKey:@"firstName"] rangeOfString:searchText options:NSCaseInsensitiveSearch];
+                if (range.length > 0) {
+                    [self.filterResultArray addObject:userObjet];
+                }
+            }
+        }
+    }
+    [self.mTableView reloadData];
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+    [self.mTableView setHidden:true];
+    [self.mSearchBar endEditing:YES];
+    self.mSearchBar.text = @"";
+    self.searchBarHeightConst.constant = 0.0;
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar{
+    [self.mSearchBar endEditing:YES];
 }
 
 #pragma mark:- UITableView DataSource and Delegate Methods
@@ -86,54 +127,101 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return 1 + [self.userPostArray count];
+    if (tableView == self.mTableView){
+        return [self.filterResultArray count];
+    }else{
+        return 1 + [self.userPostArray count];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row == 0){
-        static NSString *CellIdentifier = @"ECUserProfileSocialTableViewCell";
-        ECUserProfileSocialTableViewCell *mCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-        [mCell configureSocialCell:self.profileUser :self.signedInUser];
+    
+    if (tableView == self.mTableView){
+        static NSString *CellIdentifier = @"ECIndividualProfileTableViewCell";
+        ECIndividualProfileTableViewCell *mCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        
+        mCell.mProfileImageView.layer.cornerRadius = mCell.mProfileImageView.frame.size.width / 2;
+        mCell.mProfileImageView.layer.borderWidth = 5;
+        mCell.mProfileImageView.layer.borderColor = [UIColor lightGrayColor].CGColor;
+        mCell.mProfileImageView.layer.masksToBounds = YES;
+        
+        NSArray *mUser = [self.filterResultArray objectAtIndex:indexPath.row];
+        
+        NSString *fName = [mUser valueForKey:@"firstName"];
+        NSString *lName = [mUser valueForKey:@"lastName"];
+        NSString *fullName = [NSString stringWithFormat: @"%@ ", fName];
+        fullName = [fullName stringByAppendingString:lName];
+        
+        [mCell configureCellWithUserItem:fullName profileURL:[mUser valueForKey:@"profilePicUrl"] cellIndex:indexPath];
+        
         return mCell;
+        
     }else{
-        static NSString *CellIdentifierNew = @"DCInfluencersPersonDetailsTableViewCell";
-        DCInfluencersPersonDetailsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierNew];
-        DCPost *post = [self.userPostArray objectAtIndex:indexPath.row - 1];
-        
-        if (!cell) {
-            cell = [[DCInfluencersPersonDetailsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifierNew];
+        if (indexPath.row == 0){
+            static NSString *CellIdentifier = @"ECUserProfileSocialTableViewCell";
+            ECUserProfileSocialTableViewCell *mCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+            [mCell configureSocialCell:self.profileUser :self.signedInUser];
+            return mCell;
+        }else{
+            static NSString *CellIdentifierNew = @"DCInfluencersPersonDetailsTableViewCell";
+            DCInfluencersPersonDetailsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifierNew];
+            DCPost *post = [self.userPostArray objectAtIndex:indexPath.row - 1];
+            
+            if (!cell) {
+                cell = [[DCInfluencersPersonDetailsTableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifierNew];
+            }
+            
+            cell.dcPersonDelegate = self;
+            [cell configureWithPost:post signedInUser:self.signedInUser];
+            return cell;
         }
-        
-        cell.dcPersonDelegate = self;
-        [cell configureWithPost:post signedInUser:self.signedInUser];
-        return cell;
     }
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    if (indexPath.row != 0){
-        DCPost *mDCPost = [self.userPostArray objectAtIndex:indexPath.row - 1];
-        if ([mDCPost.postType  isEqual: @"image"]){
-            if (mDCPost.imageUrl != nil){
-                self.fullScreenImageVC = [[ECFullScreenImageViewController alloc] initWithNibName:@"ECFullScreenImageViewController" bundle:nil];
-                self.fullScreenImageVC.imagePath = mDCPost.imageUrl;
-                [self presentViewController:self.fullScreenImageVC animated:YES completion:nil];
+    
+    if (tableView == self.mTableView){
+        NSArray *mUser = [self.filterResultArray objectAtIndex:indexPath.row];
+        
+        self.profileUser.userId = [mUser valueForKey:@"_id"];
+        self.profileUser.profilePicUrl = [mUser valueForKey:@"profilePicUrl"];
+        self.profileUser.firstName = [mUser valueForKey:@"firstName"];
+        self.profileUser.lastName = [mUser valueForKey:@"lastName"];
+        
+        [self.mTableView setHidden:true];
+        [self.mSearchBar endEditing:YES];
+        self.mSearchBar.text = @"";
+        [self initialSetup];
+        [self updateTableView];
+        
+    }else{
+        if (indexPath.row != 0){
+            DCPost *mDCPost = [self.userPostArray objectAtIndex:indexPath.row - 1];
+            if ([mDCPost.postType  isEqual: @"image"]){
+                if (mDCPost.imageUrl != nil){
+                    self.fullScreenImageVC = [[ECFullScreenImageViewController alloc] initWithNibName:@"ECFullScreenImageViewController" bundle:nil];
+                    self.fullScreenImageVC.imagePath = mDCPost.imageUrl;
+                    [self presentViewController:self.fullScreenImageVC animated:YES completion:nil];
+                }
             }
+            /*
+             else if ([mDCPost.postType  isEqual: @"video"]){
+             [self playButtonPressed:mDCPost.videoUrl];
+             }
+             */
         }
-        /*
-         else if ([mDCPost.postType  isEqual: @"video"]){
-         [self playButtonPressed:mDCPost.videoUrl];
-         }
-         */
     }
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (indexPath.row == 0){
-        return 50.0;
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (tableView == self.mTableView){
+        return 60.0;
     }else{
-        return UITableViewAutomaticDimension;
+        if (indexPath.row == 0){
+            return 50.0;
+        }else{
+            return UITableViewAutomaticDimension;
+        }
     }
 }
 
@@ -152,8 +240,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableView) name:@"updateTableView" object:nil];
     
     self.postBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Post" style:UIBarButtonItemStylePlain target:self action:@selector(didTapPostButton:)];
-    //    self.postBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor whiteColor]] style:UIBarButtonItemStylePlain target:self action:@selector(didTapPostButton:)];
-    [self.navigationItem setRightBarButtonItem:self.postBarButtonItem];
+    
+    self.mSearchBar.delegate = self;
+    
+    //    self.postBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor whiteColor]] style:UIBarButtonItemStylePlain target:self  action:@selector(didTapPostButton:)];
+//    [self.navigationItem setRightBarButtonItem:self.postBarButtonItem];
+    self.navigationItem.rightBarButtonItems=@[self.postBarButtonItem, self.mSearchBarBtnItem];
+    
     self.navigationController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     
     [self.mUserNameLabel setText:[NSString stringWithFormat:@"%@ %@", self.profileUser.firstName, self.profileUser.lastName]];
@@ -221,6 +314,8 @@
     }
     self.mUserProfileTableView.estimatedRowHeight = 240.0;
     self.mUserProfileTableView.rowHeight = UITableViewAutomaticDimension;
+    self.mUserProfileTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+    self.mTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
 }
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize {
@@ -377,6 +472,10 @@
     }];
 }
 
+- (IBAction)actionOnSearchBarBtnClick:(id)sender {
+    self.searchBarHeightConst.constant = 40.0;
+}
+
 #pragma mark:- Handling background Image upload
 
 - (void) beginBackgroundUpdateTask {
@@ -521,6 +620,18 @@
             NSLog(@"Error update user: %@", error);
         } else {
             self.signedInUser = ecUser;
+        }
+    }];
+}
+
+
+- (void)getAllUserList{
+    [[ECAPI sharedManager] getAllUserListAPI:^(NSArray *searchResult, NSError *error) {
+        if (error) {
+            NSLog(@"Error getAllUserList: %@", error);
+        } else {
+            self.resultArray = [[NSMutableArray alloc] initWithArray:searchResult];
+            [self.mTableView reloadData];
         }
     }];
 }

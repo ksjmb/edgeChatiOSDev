@@ -16,7 +16,7 @@
 
 @class ECUser;
 
-@interface ECNewUserProfileViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, DCNewPostViewControllerDelegate, DCInfluencersPersonDetailsTVCellDelegate, FBSDKSharingDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, AddToPlaylistDelegate>
+@interface ECNewUserProfileViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, DCNewPostViewControllerDelegate, DCInfluencersPersonDetailsTVCellDelegate, FBSDKSharingDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, AddToPlaylistDelegate, UISearchBarDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *userBGImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *userProfileImageView;
@@ -25,6 +25,11 @@
 @property (weak, nonatomic) IBOutlet UITableView *mUserProfileTableView;
 @property (weak, nonatomic) IBOutlet UIButton *coverImaegButton;
 @property (weak, nonatomic) IBOutlet UIButton *profileImageButton;
+
+@property (weak, nonatomic) IBOutlet UISearchBar *mSearchBar;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *mSearchBarBtnItem;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *searchBarHeightConst;
+@property (weak, nonatomic) IBOutlet UITableView *mTableView;
 
 @property (nonatomic, assign) BOOL isSignedInUser;
 @property (nonatomic, strong)ECUser *signedInUser;
