@@ -127,6 +127,7 @@
             ECNewUserProfileViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewUserProfileViewController"];
             dcProfileTableViewController.isSignedInUser = true;
             dcProfileTableViewController.profileUser = self.signedInUser;
+//            dcProfileTableViewController.mLoginUser = self.signedInUser;
             [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
             
         }else{

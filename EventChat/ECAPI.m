@@ -40,6 +40,7 @@ static const int kRetryCount = 3;
 
 @interface ECAPI()
 @property (nonatomic, strong) ECUser *signedInUser;
+@property (nonatomic, strong) ECUser *mLogInUser;
 @end
 
 @implementation ECAPI
@@ -592,6 +593,8 @@ static const int kRetryCount = 3;
                                                    NSError *infoError = nil;
                                                    ECUser *aECUser = [[ECUser alloc] initWithDictionary:responseDictionary[@"data"] error:&infoError];
                                                    self.signedInUser = aECUser;
+                                                   self.mLogInUser = aECUser;
+                                                   
                                                    if (infoError) {
                                                        NSLog(@"Error fetching app info: %@", infoError);
                                                    }
@@ -623,6 +626,7 @@ static const int kRetryCount = 3;
                                                    NSError *infoError = nil;
                                                    ECUser *aECUser = [[ECUser alloc] initWithDictionary:responseDictionary[@"data"] error:&infoError];
                                                    self.signedInUser = aECUser;
+                                                   self.mLogInUser = aECUser;
                                                    if (infoError) {
                                                        NSLog(@"Error fetching app info: %@", infoError);
                                                    }
@@ -667,6 +671,7 @@ static const int kRetryCount = 3;
                                                    }
                                                    
                                                    self.signedInUser = aUser;
+                                                   self.mLogInUser = aUser;
                                                    if (!self.signedInUser) {
                                                        NSLog(@"No user returned");
                                                        callback([NSError errorWithDomain:@"com.eventhat" code:0 userInfo:nil]);
@@ -714,6 +719,7 @@ static const int kRetryCount = 3;
                                                    }
                                                    
                                                    self.signedInUser = aUser;
+                                                   self.mLogInUser = aUser;
                                                    if (!self.signedInUser) {
                                                        NSLog(@"No user returned");
                                                        callback([NSError errorWithDomain:@"com.eventhcat" code:0 userInfo:nil]);
@@ -762,6 +768,7 @@ static const int kRetryCount = 3;
                                                    }
                                                    
                                                    self.signedInUser = aUser;
+                                                   self.mLogInUser = aUser;
                                                    if (!self.signedInUser) {
                                                        NSLog(@"No user returned");
                                                        callback([NSError errorWithDomain:@"com.eventhat" code:0 userInfo:nil]);
@@ -792,6 +799,7 @@ static const int kRetryCount = 3;
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
     
     self.signedInUser = nil;
+    self.mLogInUser = nil;
 }
 
 #pragma mark - User
@@ -815,6 +823,7 @@ static const int kRetryCount = 3;
                                                        return;
                                                    }
                                                    self.signedInUser = responseUser;
+                                                   self.mLogInUser = responseUser;
                                                    callback(nil);
                                                }
                                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -883,6 +892,7 @@ static const int kRetryCount = 3;
              return;
          }
          self.signedInUser = responseUser;
+         self.mLogInUser = responseUser;
          callback(nil);
      }
      failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -918,6 +928,7 @@ static const int kRetryCount = 3;
                                                        return;
                                                    }
                                                    self.signedInUser = responseUser;
+                                                   self.mLogInUser = responseUser;
                                                    callback(nil);
                                                }
                                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -1111,6 +1122,7 @@ static const int kRetryCount = 3;
                                                        return;
                                                    }
                                                    self.signedInUser = responseUser;
+                                                   self.mLogInUser = responseUser;
                                                    callback(nil);
                                                }
                                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -1145,6 +1157,7 @@ static const int kRetryCount = 3;
                                                        return;
                                                    }
                                                    self.signedInUser = responseUser;
+                                                   self.mLogInUser = responseUser;
                                                    callback(nil);
                                                }
                                                failure:^(AFHTTPRequestOperation *operation, NSError *error) {

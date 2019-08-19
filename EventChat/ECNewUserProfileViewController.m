@@ -60,6 +60,10 @@
 @property (nonatomic, strong) NSMutableArray *filterResultArray;
 @property (nonatomic, assign) BOOL isFiltered;
 
+@property (nonatomic, assign) BOOL isProfileChanges;
+
+@property (nonatomic, strong) NSArray *mFollowingArr;
+
 @end
 
 @implementation ECNewUserProfileViewController
@@ -68,7 +72,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    
+    self.mLoginUser = [[ECAPI sharedManager] mLogInUser];
+    self.mFollowingArr = self.mLoginUser.followeeIds;
+    self.userIdStr = self.mLoginUser.userId;
+    self.isProfileChanges = false;
     [self.navigationItem setTitle:@"Profile"];
     [self initialSetup];
     /*
@@ -80,10 +88,17 @@
 
 - (void)viewWillAppear:(BOOL)animated{
     [self getAllUserList];
-    [self loadUserPosts];
-    [self loadFollowing];
-    [self loadFollowers];
+    [self loadUserPosts:self.mLoginUser.userId];
+    [self loadFollowers:self.mLoginUser.userId];
+    [self loadFollowing:self.mLoginUser.userId];
+//    [self loadUserPosts];
+//    [self loadFollowing];
+//    [self loadFollowers];
 }
+
+//- (void)viewDidDisappear:(BOOL)animated{
+//    self.profileUser.userId = @"5c1cbe775c18b440070b3ff4";
+//}
 
 #pragma mark:- SearchBar Delegate Methods
 
@@ -160,7 +175,14 @@
         if (indexPath.row == 0){
             static NSString *CellIdentifier = @"ECUserProfileSocialTableViewCell";
             ECUserProfileSocialTableViewCell *mCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-            [mCell configureSocialCell:self.profileUser :self.signedInUser];
+            if (self.isProfileChanges == false){
+                [mCell configureSocialCell:self.profileUser :self.signedInUser];
+            }else{
+                [mCell.mFacebookButton setAttributedTitle:[self loadFacebookData:self.mFolloweeIDs] forState:UIControlStateNormal];
+                [mCell.mTwitterButton setAttributedTitle:[self loadTwitterData:self.mFollowerIDs] forState:UIControlStateNormal];
+                [mCell.mInstagramButton setAttributedTitle:[self loadInstagramData] forState:UIControlStateNormal];
+            }
+            
             return mCell;
         }else{
             static NSString *CellIdentifierNew = @"DCInfluencersPersonDetailsTableViewCell";
@@ -183,6 +205,34 @@
     if (tableView == self.mTableView){
         NSArray *mUser = [self.filterResultArray objectAtIndex:indexPath.row];
         
+        self.mLoginUId = [mUser valueForKey:@"_id"];
+        if ([self.userIdStr isEqualToString:[mUser valueForKey:@"_id"]]){
+            [self.mFollowButton setHidden:true];
+            [self.coverImaegButton setHidden:false];
+            [self.profileImageButton setHidden:false];
+        }else{
+            [self.mFollowButton setHidden:false];
+            [self.coverImaegButton setHidden:true];
+            [self.profileImageButton setHidden:true];
+        }
+        if([self.mFollowingArr containsObject:[mUser valueForKey:@"_id"]]){
+            [self.mFollowButton setTitle:@"Unfollow" forState:UIControlStateNormal];
+        }
+        else{
+            [self.mFollowButton setTitle:@"Follow" forState:UIControlStateNormal];
+        }
+        
+        [self.mUserNameLabel setText:[NSString stringWithFormat:@"%@ %@", [mUser valueForKey:@"firstName"], [mUser valueForKey:@"lastName"]]];
+        
+        if ([mUser valueForKey:@"profilePicUrl"] != nil){
+            [self showProfilePicImage:self ForImageUrl:[mUser valueForKey:@"profilePicUrl"]];
+        }
+        
+        self.mFolloweeIDs = [mUser valueForKey:@"followeeIds"];
+        self.mFollowerIDs = [mUser valueForKey:@"followerIds"];// value not present in response
+        self.mFavCount = [[mUser valueForKey:@"favoriteCount"] intValue];
+        
+        /*
         self.profileUser.userId = [mUser valueForKey:@"_id"];
         self.profileUser.profilePicUrl = [mUser valueForKey:@"profilePicUrl"];
         self.profileUser.firstName = [mUser valueForKey:@"firstName"];
@@ -190,11 +240,12 @@
         self.profileUser.followeeIds = [mUser valueForKey:@"followeeIds"];
         self.profileUser.followerIds = [mUser valueForKey:@"followerIds"];// value not present in response
         self.profileUser.favoriteCount = [[mUser valueForKey:@"favoriteCount"] intValue];
-
+         */
+        
+        self.isProfileChanges = true;
         [self.mTableView setHidden:true];
         [self.mSearchBar endEditing:YES];
         self.mSearchBar.text = @"";
-        [self initialSetup];
         [self updateTableView];
         
     }else{
@@ -232,13 +283,14 @@
 
 - (void)initialSetup{
     [self.mFollowButton setHidden:true];
-    
-    if([self.signedInUser.followeeIds containsObject:self.profileUser.userId]){
+    /*
+    if([self.mLoginUser.followeeIds containsObject:self.mLoginUser.userId]){
         [self.mFollowButton setTitle:@"Unfollow" forState:UIControlStateNormal];
     }
     else{
         [self.mFollowButton setTitle:@"Follow" forState:UIControlStateNormal];
     }
+    */
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableView) name:@"updateTableView" object:nil];
     
@@ -252,7 +304,7 @@
     
     self.navigationController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
     
-    [self.mUserNameLabel setText:[NSString stringWithFormat:@"%@ %@", self.profileUser.firstName, self.profileUser.lastName]];
+    [self.mUserNameLabel setText:[NSString stringWithFormat:@"%@ %@", self.mLoginUser.firstName, self.mLoginUser.lastName]];
     
     [self.coverImaegButton setImage:[IonIcons imageWithIcon:ion_ios_camera_outline  size:27.0 color:[UIColor darkGrayColor]] forState:UIControlStateNormal];
     [self.profileImageButton setImage:[IonIcons imageWithIcon:ion_ios_camera_outline  size:27.0 color:[UIColor darkGrayColor]] forState:UIControlStateNormal];
@@ -273,10 +325,10 @@
     [self.mUserProfileTableView registerNib:[UINib nibWithNibName:@"DCInfluencersPersonDetailsTableViewCell" bundle:nil]
                      forCellReuseIdentifier:@"DCInfluencersPersonDetailsTableViewCell"];
     
-    if(self.profileUser.profilePicUrl == nil || [self.profileUser.profilePicUrl length] == 0){
-        if(self.profileUser.facebookUserId != nil){
+    if(self.mLoginUser.profilePicUrl == nil || [self.mLoginUser.profilePicUrl length] == 0){
+        if(self.mLoginUser.facebookUserId != nil){
             FBSDKGraphRequest *request = [[FBSDKGraphRequest alloc]
-                                          initWithGraphPath:[NSString stringWithFormat:@"/%@/picture?type=large&redirect=false", self.profileUser.facebookUserId]
+                                          initWithGraphPath:[NSString stringWithFormat:@"/%@/picture?type=large&redirect=false", self.mLoginUser.facebookUserId]
                                           parameters:nil
                                           HTTPMethod:@"GET"];
             [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
@@ -295,7 +347,7 @@
                 //Update profilePicUrl in User Collection
                 if(self.isSignedInUser){
 //                    NSLog(@"ProfilePicUrl: %@", fbUserData.url);
-                    [[ECAPI sharedManager] updateProfilePicUrl:self.profileUser.userId profilePicUrl:fbUserData.url callback:^(NSError *error) {
+                    [[ECAPI sharedManager] updateProfilePicUrl:self.mLoginUser.userId profilePicUrl:fbUserData.url callback:^(NSError *error) {
                         if (error) {
                             NSLog(@"Error adding user: %@", error);
                         } else {
@@ -307,13 +359,13 @@
         }
     }
     else{
-        if (self.signedInUser.profilePicUrl != nil){
-            [self showProfilePicImage:self ForImageUrl:self.signedInUser.profilePicUrl];
+        if (self.mLoginUser.profilePicUrl != nil){
+            [self showProfilePicImage:self ForImageUrl:self.mLoginUser.profilePicUrl];
         }
     }
     
-    if (self.profileUser.coverPic_Url != nil){
-        [self showImageOnTheCell:self ForImageUrl:self.profileUser.coverPic_Url];
+    if (self.mLoginUser.coverPic_Url != nil){
+        [self showImageOnTheCell:self ForImageUrl:self.mLoginUser.coverPic_Url];
     }
     self.mUserProfileTableView.estimatedRowHeight = 240.0;
     self.mUserProfileTableView.rowHeight = UITableViewAutomaticDimension;
@@ -389,7 +441,14 @@
 #pragma mark:- IBAction Methods
 
 - (IBAction)actionOnFollowButton:(id)sender {
-    NSLog(@"Comming soon...");
+    if ([self.mFollowButton.titleLabel.text isEqualToString:@"Unfollow"]){
+        [self unfollowByUserIdAPICall];
+        [self.mFollowButton setTitle:@"Follow" forState:UIControlStateNormal];
+    }
+    else{
+        [self followByUserIdAPICall];
+        [self.mFollowButton setTitle:@"Unfollow" forState:UIControlStateNormal];
+    }
     /*
      if([self.signedInUser.followeeIds containsObject:self.profileUser.userId]){
      [[ECAPI sharedManager] unfollowUserByUserId:self.signedInUser.userId followeeId:self.profileUser.userId callback:^(NSError *error) {
@@ -583,8 +642,8 @@
 
 #pragma mark:- API Call Methods
 
-- (void)loadFollowing{
-    [[ECAPI sharedManager] getFollowing:self.profileUser.userId callback:^(NSArray *users, NSError *error) {
+- (void)loadFollowing:(NSString *)userId{
+    [[ECAPI sharedManager] getFollowing:userId callback:^(NSArray *users, NSError *error) {
         if (error) {
             NSLog(@"Error getFollowing: %@", error);
         } else {
@@ -594,8 +653,8 @@
     }];
 }
 
-- (void)loadFollowers{
-    [[ECAPI sharedManager] getFollowers:self.profileUser.userId callback:^(NSArray *users, NSError *error) {
+- (void)loadFollowers:(NSString *)userId{
+    [[ECAPI sharedManager] getFollowers:userId callback:^(NSArray *users, NSError *error) {
         if (error) {
             NSLog(@"Error getFollowers: %@", error);
         } else {
@@ -605,8 +664,8 @@
     }];
 }
 
-- (void)loadUserPosts{
-    [[ECAPI sharedManager] getPostByUserId:self.profileUser.userId callback:^(NSArray *posts, NSError *error) {
+- (void)loadUserPosts:(NSString *)userId{
+    [[ECAPI sharedManager] getPostByUserId:userId callback:^(NSArray *posts, NSError *error) {
         if (error) {
             NSLog(@"Error getPostByUserId: %@", error);
         } else {
@@ -617,6 +676,7 @@
     }];
 }
 
+/*
 -(void)updateUser{
     [[ECAPI sharedManager] updateUser:self.signedInUser callback:^(ECUser *ecUser, NSError *error) {
         if (error) {
@@ -626,7 +686,7 @@
         }
     }];
 }
-
+*/
 
 - (void)getAllUserList{
     [[ECAPI sharedManager] getAllUserListAPI:^(NSArray *searchResult, NSError *error) {
@@ -639,20 +699,51 @@
     }];
 }
 
+- (void)followByUserIdAPICall{
+    [[ECAPI sharedManager] followUserByUserId:self.signedInUser.userId followeeId:self.mLoginUId callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error followUserByUserId: %@", error);
+        } else {
+            UIAlertView *alertView = [[UIAlertView alloc]
+                                      initWithTitle:@"New Follow"
+                                      message:[NSString stringWithFormat:@"You have just started following %@ %@.", self.profileUser.firstName, self.profileUser.lastName]
+                                      delegate:nil
+                                      cancelButtonTitle:@"Okay"
+                                      otherButtonTitles:nil];
+            [alertView show];
+        }
+    }];
+}
+
+- (void)unfollowByUserIdAPICall{
+    [[ECAPI sharedManager] unfollowUserByUserId:self.signedInUser.userId followeeId:self.mLoginUId callback:^(NSError *error) {
+        if (error) {
+            NSLog(@"Error unfollowUserByUserId: %@", error);
+        } else {
+            UIAlertView *alertView = [[UIAlertView alloc]
+                                      initWithTitle:@"Unfollow"
+                                      message:[NSString stringWithFormat:@"You have stopped following %@ %@.", self.profileUser.firstName, self.profileUser.lastName]
+                                      delegate:nil
+                                      cancelButtonTitle:@"Okay"
+                                      otherButtonTitles:nil];
+            [alertView show];
+        }
+    }];
+}
+
 #pragma mark:- Post Notification Methods
 
 -(void)updateTableView {
-    self.signedInUser = [[ECAPI sharedManager] signedInUser];
-    [self loadUserPosts];
-    [self loadFollowing];
-    [self loadFollowers];
+    [self loadUserPosts:self.mLoginUId];
+    [self loadFollowers:self.mLoginUId];
+    [self loadFollowing:self.mLoginUId];
     [self.mUserProfileTableView reloadData];
 }
 
 #pragma mark:- Post Delegate Methods
 
 - (void)refreshPostStream {
-    [self loadUserPosts];
+    [self loadUserPosts:self.profileUser.userId];
 }
 
 #pragma mark:- SDWebImage
@@ -1046,6 +1137,71 @@
 
 - (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
     NSLog(@"FB: sharerDidCancel=%@\n",[sharer debugDescription]);
+}
+
+#pragma mark - API Delegate
+
+- (NSMutableAttributedString*)loadFacebookData:(NSArray *)arr{
+    NSString *likesCount = [NSString stringWithFormat:@"%lu", (unsigned long)[arr count]];
+    NSMutableAttributedString * titleText = [[NSMutableAttributedString alloc] initWithString:@""];
+
+    if(likesCount != nil){
+        titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFOLLOWING", likesCount]];
+        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [likesCount length])];
+        [titleText addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [likesCount length])];
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        [paragraphStyle setAlignment:NSTextAlignmentCenter];
+        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [likesCount length])];
+        
+        // Normal font for the rest of the text
+        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:10.0] forKey:NSFontAttributeName] range:NSMakeRange([likesCount length], 10)];
+        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor ecSubTextGrayColor] range:NSMakeRange([likesCount length], 10)];
+        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange([likesCount length], 10)];
+//        [self.mFacebookButton setAttributedTitle:titleText forState:UIControlStateNormal];
+    }
+    return titleText;
+}
+
+- (NSMutableAttributedString*)loadTwitterData:(NSArray *)arr{
+    NSString *followerCount = [NSString stringWithFormat:@"%lu", (unsigned long)[arr count]];
+        NSMutableAttributedString * titleText = [[NSMutableAttributedString alloc] initWithString:@""];
+    if(followerCount != nil){
+        // Setup the string
+        titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFOLLOWERS", followerCount]];
+        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [followerCount length])];
+        [titleText addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [followerCount length])];
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        [paragraphStyle setAlignment:NSTextAlignmentCenter];
+        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [followerCount length])];
+        
+        // Normal font for the rest of the text
+        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:10.0] forKey:NSFontAttributeName] range:NSMakeRange([followerCount length], 10)];
+        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor ecSubTextGrayColor] range:NSMakeRange([followerCount length], 10)];
+        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange([followerCount length], 10)];
+//        [self.mTwitterButton setAttributedTitle:titleText forState:UIControlStateNormal];
+    }
+    return titleText;
+}
+
+- (NSMutableAttributedString*)loadInstagramData{
+    NSString *followerCount;
+    followerCount = [NSString stringWithFormat:@"%d",self.mFavCount];
+    NSMutableAttributedString * titleText = [[NSMutableAttributedString alloc] initWithString:@""];
+    if(followerCount != nil){
+        titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFAVORITES", followerCount]];
+        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [followerCount length])];
+        [titleText addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [followerCount length])];
+        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
+        [paragraphStyle setAlignment:NSTextAlignmentCenter];
+        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [followerCount length])];
+        
+        // Normal font for the rest of the text
+        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:10.0] forKey:NSFontAttributeName] range:NSMakeRange([followerCount length], 10)];
+        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor ecSubTextGrayColor] range:NSMakeRange([followerCount length], 10)];
+        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange([followerCount length], 10)];
+//        [self.mInstagramButton setAttributedTitle:titleText forState:UIControlStateNormal];
+    }
+    return titleText;
 }
 
 @end

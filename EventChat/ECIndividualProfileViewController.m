@@ -50,6 +50,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    self.loginUserIdStr = self.signedInUser.userId;
     self.title = @"Profile";
     [self initialSetup];
     [self getAllUserList];
@@ -58,6 +59,7 @@
 - (void)viewWillAppear:(BOOL)animated{
 //    [self updateTableView];
 //    [self updateUserProfile];
+//    [self initialSetup];
     [self updateUser];
 }
 
@@ -203,6 +205,12 @@
 #pragma mark:- Instance Methods
 
 - (void)initialSetup{
+    if ([self.loginUserIdStr isEqualToString:self.selectedEcUser.userId]){
+        [self.mFollowBtn setHidden:true];
+    }else{
+        [self.mFollowBtn setHidden:false];
+    }
+    
     if([self.signedInUser.followeeIds containsObject:self.selectedEcUser.userId]){
         [self.mFollowBtn setTitle:@"Unfollow" forState:UIControlStateNormal];
     }

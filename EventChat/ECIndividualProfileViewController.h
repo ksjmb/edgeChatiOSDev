@@ -38,6 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong)ECUser *searchResultUser;
 
 @property (nonatomic) UIBackgroundTaskIdentifier bkUptTaskId;
+@property (nonatomic, retain) NSString *loginUserIdStr;
 
 @end
 

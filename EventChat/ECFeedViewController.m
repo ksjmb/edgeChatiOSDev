@@ -883,6 +883,7 @@
 //    DCProfileTableViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCProfileTableViewController"];
     dcProfileTableViewController.isSignedInUser = true;
     dcProfileTableViewController.profileUser = self.signedInUser;
+//    dcProfileTableViewController.mLoginUser = self.signedInUser;
     [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
 }
 
