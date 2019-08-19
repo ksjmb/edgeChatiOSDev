@@ -164,6 +164,9 @@
         self.selectedEcUser.profilePicUrl = [mUser valueForKey:@"profilePicUrl"];
         self.selectedEcUser.firstName = [mUser valueForKey:@"firstName"];
         self.selectedEcUser.lastName = [mUser valueForKey:@"lastName"];
+        self.selectedEcUser.followeeIds = [mUser valueForKey:@"followeeIds"];
+        self.selectedEcUser.followerIds = [mUser valueForKey:@"followerIds"];// value not present in response
+        self.selectedEcUser.favoriteCount = [[mUser valueForKey:@"favoriteCount"] intValue];
         
         [self.mSearchResultTableView setHidden:true];
         [self.mSearchBar endEditing:YES];

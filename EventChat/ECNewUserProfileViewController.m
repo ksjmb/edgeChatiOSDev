@@ -187,7 +187,10 @@
         self.profileUser.profilePicUrl = [mUser valueForKey:@"profilePicUrl"];
         self.profileUser.firstName = [mUser valueForKey:@"firstName"];
         self.profileUser.lastName = [mUser valueForKey:@"lastName"];
-        
+        self.profileUser.followeeIds = [mUser valueForKey:@"followeeIds"];
+        self.profileUser.followerIds = [mUser valueForKey:@"followerIds"];// value not present in response
+        self.profileUser.favoriteCount = [[mUser valueForKey:@"favoriteCount"] intValue];
+
         [self.mTableView setHidden:true];
         [self.mSearchBar endEditing:YES];
         self.mSearchBar.text = @"";
@@ -519,7 +522,7 @@
                             instance.isProfilePicUpdated = false;
                             self.signedInUser.coverPic_Url = imageURL;
                             [self showImageOnTheCell:self ForImageUrl:imageURL];
-                            [self updateUser];
+//                            [self updateUser];
                         }else{
                             instance.isProfilePicUpdated = true;
                             self.signedInUser.profilePicUrl = imageURL;

@@ -5379,6 +5379,17 @@ Cg
                                     <constraint firstAttribute="height" constant="230" id="J8W-Ia-nmp"/>
                                 </constraints>
                             </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZL8-wj-rwH">
+                                <rect key="frame" x="330" y="76" width="29" height="29"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="29" id="djW-fK-2ER"/>
+                                    <constraint firstAttribute="height" constant="29" id="vIR-U8-Msj"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <connections>
+                                    <action selector="actionOnCoverImageButton:" destination="yLA-DO-r2d" eventType="touchUpInside" id="YgT-Lk-5rH"/>
+                                </connections>
+                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Andre Phillip" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gkx-ki-nuA">
                                 <rect key="frame" x="8" y="357" width="359" height="21"/>
                                 <constraints>
@@ -5597,17 +5608,6 @@ Cg
                                     <outlet property="delegate" destination="yLA-DO-r2d" id="3Xa-vd-P4a"/>
                                 </connections>
                             </tableView>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZL8-wj-rwH">
-                                <rect key="frame" x="330" y="76" width="29" height="29"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="29" id="djW-fK-2ER"/>
-                                    <constraint firstAttribute="height" constant="29" id="vIR-U8-Msj"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                <connections>
-                                    <action selector="actionOnCoverImageButton:" destination="yLA-DO-r2d" eventType="touchUpInside" id="YgT-Lk-5rH"/>
-                                </connections>
-                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
@@ -6294,8 +6294,8 @@ Cg
                         <viewLayoutGuide key="safeArea" id="wa7-nn-5CH"/>
                         <variation key="default">
                             <mask key="constraints">
-                                <exclude reference="IpC-yo-rrb"/>
                                 <exclude reference="HP5-br-kXo"/>
+                                <exclude reference="IpC-yo-rrb"/>
                                 <exclude reference="sJo-sK-HVA"/>
                             </mask>
                         </variation>
