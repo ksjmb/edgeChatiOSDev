@@ -30,7 +30,6 @@ typedef void (^DCNodeApiClientFailure)(AFHTTPRequestOperation *task, NSError *er
 @interface ECAPI : NSObject
 
 @property (nonatomic, readonly) ECUser *signedInUser;
-@property (nonatomic, readonly) ECUser *mLogInUser;
 
 + (id)sharedManager;
 - (AFOAuthCredential *)getCurrentCredentials;

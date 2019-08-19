@@ -42,13 +42,9 @@
 @property (nonatomic, retain) NSString *userIdStr;
 @property (nonatomic, strong)ECUser *mLoginUser;
 
-
-
 @property (nonatomic, retain) NSString *mLoginUId;
 @property (nonatomic, retain) NSString *mfName;
 @property (nonatomic, retain) NSString *mlName;
-@property (nonatomic, retain) NSString *mProfileURL;
-
 @property (nonatomic, copy) NSArray *mFolloweeIDs;
 @property (nonatomic, copy) NSArray *mFollowerIDs;
 @property (nonatomic, assign) int mFavCount;
