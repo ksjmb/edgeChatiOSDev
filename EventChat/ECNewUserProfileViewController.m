@@ -92,23 +92,16 @@
      */
 }
 
-/*
-- (void)viewWillAppear:(BOOL)animated{
-    [self getAllUserList];
-    [self loadUserPosts:self.mLoginUser.userId];
-    [self loadFollowers:self.mLoginUser.userId];
-    [self loadFollowing:self.mLoginUser.userId];
-}
-*/
-
 #pragma mark:- SearchBar Delegate Methods
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
     [self.mTableView setHidden:false];
     if (searchText.length == 0) {
+        /*
         self.isFiltered = false;
         [self.mSearchBar endEditing:YES];
         [self.mTableView setHidden:true];
+        */
     }
     else {
         self.isFiltered = true;
@@ -177,11 +170,6 @@
             static NSString *CellIdentifier = @"ECUserProfileSocialTableViewCell";
             ECUserProfileSocialTableViewCell *mCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
             if (self.isProfileChanges){
-                /*
-                [mCell.mFacebookButton setAttributedTitle:[self loadFacebookData:self.mFolloweeIDs] forState:UIControlStateNormal];
-                [mCell.mTwitterButton setAttributedTitle:[self loadTwitterData:self.mFollowerIDs] forState:UIControlStateNormal];
-                [mCell.mInstagramButton setAttributedTitle:[self loadInstagramData] forState:UIControlStateNormal];
-                 */
                 [mCell configureSocialCell:self.mSelectedECUser :self.mSelectedECUser];
             }else{
                 [mCell configureSocialCell:self.profileUser :self.signedInUser];
@@ -507,7 +495,21 @@
     self.searchBarHeightConst.constant = 40.0;
     //If you want to enable cancel button always.
     [[self.mSearchBar valueForKey:@"_cancelButton"] setEnabled:YES];
+    [self.mTableView setHidden:false];
+    
+    self.isFiltered = true;
+    self.filterResultArray = [[NSMutableArray alloc]init];
+    for (NSArray *userObjet in _resultArray) {
+        if ([userObjet valueForKey:@"firstName"] && [userObjet valueForKey:@"lastName"]){
+            NSRange range = [[userObjet valueForKey:@"firstName"] rangeOfString:@"a" options:NSCaseInsensitiveSearch];
+            if (range.length > 0) {
+                [self.filterResultArray addObject:userObjet];
+            }
+        }
+    }
+    [self.mTableView reloadData];
 }
+
 
 #pragma mark:- Handling background Image upload
 
@@ -1111,73 +1113,5 @@
 - (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
     NSLog(@"FB: sharerDidCancel=%@\n",[sharer debugDescription]);
 }
-
-/*
-#pragma mark - Social TableViewCell Methods
-
-- (NSMutableAttributedString*)loadFacebookData:(NSArray *)arr{
-//    NSString *likesCount = [NSString stringWithFormat:@"%lu", (unsigned long)[arr count]];
-    NSString *likesCount = [NSString stringWithFormat:@"%lu", (unsigned long)[self.mSelectedECUser.followeeIds count]];
-    NSMutableAttributedString * titleText = [[NSMutableAttributedString alloc] initWithString:@""];
-
-    if(likesCount != nil){
-        titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFOLLOWING", likesCount]];
-        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [likesCount length])];
-        [titleText addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [likesCount length])];
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        [paragraphStyle setAlignment:NSTextAlignmentCenter];
-        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [likesCount length])];
-        
-        // Normal font for the rest of the text
-        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:10.0] forKey:NSFontAttributeName] range:NSMakeRange([likesCount length], 10)];
-        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor ecSubTextGrayColor] range:NSMakeRange([likesCount length], 10)];
-        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange([likesCount length], 10)];
-    }
-    return titleText;
-}
-
-- (NSMutableAttributedString*)loadTwitterData:(NSArray *)arr{
-//    NSString *followerCount = [NSString stringWithFormat:@"%lu", (unsigned long)[arr count]];
-    NSString *followerCount = [NSString stringWithFormat:@"%lu", (unsigned long)[self.mSelectedECUser.followerIds count]];;
-    NSMutableAttributedString * titleText = [[NSMutableAttributedString alloc] initWithString:@""];
-    if(followerCount != nil){
-        // Setup the string
-        titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFOLLOWERS", followerCount]];
-        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [followerCount length])];
-        [titleText addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [followerCount length])];
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        [paragraphStyle setAlignment:NSTextAlignmentCenter];
-        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [followerCount length])];
-        
-        // Normal font for the rest of the text
-        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:10.0] forKey:NSFontAttributeName] range:NSMakeRange([followerCount length], 10)];
-        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor ecSubTextGrayColor] range:NSMakeRange([followerCount length], 10)];
-        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange([followerCount length], 10)];
-    }
-    return titleText;
-}
-
-- (NSMutableAttributedString*)loadInstagramData{
-//    followerCount = [NSString stringWithFormat:@"%lu", (unsigned long)[self.mSelectedECUser.followeeIds count]];
-    
-    NSString *followerCount = [NSString stringWithFormat:@"%d", self.mSelectedECUser.favoriteCount];
-//    followerCount = [NSString stringWithFormat:@"%d",self.mFavCount];
-    NSMutableAttributedString * titleText = [[NSMutableAttributedString alloc] initWithString:@""];
-    if(followerCount != nil){
-        titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFAVORITES", followerCount]];
-        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:16.0] forKey:NSFontAttributeName] range:NSMakeRange(0, [followerCount length])];
-        [titleText addAttribute:NSForegroundColorAttributeName value:[UIColor blackColor] range:NSMakeRange(0, [followerCount length])];
-        NSMutableParagraphStyle *paragraphStyle = [[NSMutableParagraphStyle alloc] init];
-        [paragraphStyle setAlignment:NSTextAlignmentCenter];
-        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange(0, [followerCount length])];
-        
-        // Normal font for the rest of the text
-        [titleText addAttributes:[NSDictionary dictionaryWithObject:[UIFont fontWithName:@"HelveticaNeue-Bold" size:10.0] forKey:NSFontAttributeName] range:NSMakeRange([followerCount length], 10)];
-        [titleText addAttribute:NSForegroundColorAttributeName value:[ECColor ecSubTextGrayColor] range:NSMakeRange([followerCount length], 10)];
-        [titleText addAttribute:NSParagraphStyleAttributeName value:paragraphStyle range:NSMakeRange([followerCount length], 10)];
-    }
-    return titleText;
-}
-*/
 
 @end
