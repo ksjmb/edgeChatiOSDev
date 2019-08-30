@@ -48,5 +48,6 @@
 @property (nonatomic, copy) NSArray *mFolloweeIDs;
 @property (nonatomic, copy) NSArray *mFollowerIDs;
 @property (nonatomic, assign) int mFavCount;
+@property (nonatomic, strong)ECUser *mSelectedECUser;
 
 @end

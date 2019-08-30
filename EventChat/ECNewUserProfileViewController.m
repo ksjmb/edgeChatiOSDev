@@ -72,6 +72,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.mLoginUser = [[ECAPI sharedManager] signedInUser];
+    self.mSelectedECUser = self.mLoginUser;
     self.mFollowingArr = self.mLoginUser.followeeIds;
     self.userIdStr = self.mLoginUser.userId;
     self.mLoginUId = self.mLoginUser.userId;
@@ -176,9 +177,12 @@
             static NSString *CellIdentifier = @"ECUserProfileSocialTableViewCell";
             ECUserProfileSocialTableViewCell *mCell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
             if (self.isProfileChanges){
+                /*
                 [mCell.mFacebookButton setAttributedTitle:[self loadFacebookData:self.mFolloweeIDs] forState:UIControlStateNormal];
                 [mCell.mTwitterButton setAttributedTitle:[self loadTwitterData:self.mFollowerIDs] forState:UIControlStateNormal];
                 [mCell.mInstagramButton setAttributedTitle:[self loadInstagramData] forState:UIControlStateNormal];
+                 */
+                [mCell configureSocialCell:self.mSelectedECUser :self.mSelectedECUser];
             }else{
                 [mCell configureSocialCell:self.profileUser :self.signedInUser];
             }
@@ -201,55 +205,47 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    
     if (tableView == self.mTableView){
-        NSArray *mUser = [self.filterResultArray objectAtIndex:indexPath.row];
+        NSError *infoError = nil;
+        self.mSelectedECUser = [[ECUser alloc] initWithDictionary:[self.filterResultArray objectAtIndex:indexPath.row] error:&infoError];
         
-        self.mLoginUId = [mUser valueForKey:@"_id"];
-        if ([self.userIdStr isEqualToString:[mUser valueForKey:@"_id"]]){
+        self.mLoginUId = self.mSelectedECUser.userId;
+        if ([self.userIdStr isEqualToString:self.mSelectedECUser.userId]){
             [self.mFollowButton setHidden:true];
             [self.coverImaegButton setHidden:false];
             [self.profileImageButton setHidden:false];
+            self.isSignedInUser = true;
         }else{
             [self.mFollowButton setHidden:false];
             [self.coverImaegButton setHidden:true];
             [self.profileImageButton setHidden:true];
+            self.isSignedInUser = false;
         }
-        if([self.mFollowingArr containsObject:[mUser valueForKey:@"_id"]]){
+        if([self.mFollowingArr containsObject:self.mSelectedECUser.userId]){
             [self.mFollowButton setTitle:@"Unfollow" forState:UIControlStateNormal];
         }
         else{
             [self.mFollowButton setTitle:@"Follow" forState:UIControlStateNormal];
         }
         
-        [self.mUserNameLabel setText:[NSString stringWithFormat:@"%@ %@", [mUser valueForKey:@"firstName"], [mUser valueForKey:@"lastName"]]];
+        NSString *fullName = [NSString stringWithFormat:@"%@ %@", self.mSelectedECUser.firstName, self.mSelectedECUser.lastName];
+        [self.mUserNameLabel setText: fullName];
         
-        if ([mUser valueForKey:@"profilePicUrl"] != nil){
-            [self showProfilePicImage:self ForImageUrl:[mUser valueForKey:@"profilePicUrl"]];
+        if (self.mSelectedECUser.profilePicUrl != nil){
+            [self showProfilePicImage:self ForImageUrl:self.mSelectedECUser.profilePicUrl];
+        }
+        if (self.mSelectedECUser.coverPic_Url != nil){
+            [self showImageOnTheCell:self ForImageUrl:self.mSelectedECUser.coverPic_Url];
         }
         
-        self.mfName = [mUser valueForKey:@"firstName"];
-        self.mlName = [mUser valueForKey:@"lastName"];
-        self.mFolloweeIDs = [mUser valueForKey:@"followeeIds"];
-        self.mFollowerIDs = [mUser valueForKey:@"followerIds"];// value not present in response
-        self.mFavCount = [[mUser valueForKey:@"favoriteCount"] intValue];
-        
-        /*
-        self.profileUser.userId = [mUser valueForKey:@"_id"];
-        self.profileUser.profilePicUrl = [mUser valueForKey:@"profilePicUrl"];
-        self.profileUser.firstName = [mUser valueForKey:@"firstName"];
-        self.profileUser.lastName = [mUser valueForKey:@"lastName"];
-        self.profileUser.followeeIds = [mUser valueForKey:@"followeeIds"];
-        self.profileUser.followerIds = [mUser valueForKey:@"followerIds"];// value not present in response
-        self.profileUser.favoriteCount = [[mUser valueForKey:@"favoriteCount"] intValue];
-         */
+        self.mfName = self.mSelectedECUser.firstName;
+        self.mlName = self.mSelectedECUser.lastName;
         
         self.isProfileChanges = true;
         [self.mTableView setHidden:true];
         [self.mSearchBar endEditing:YES];
         self.mSearchBar.text = @"";
         [self updateTableView];
-        
     }else{
         if (indexPath.row != 0){
             DCPost *mDCPost = [self.userPostArray objectAtIndex:indexPath.row - 1];
@@ -478,7 +474,8 @@
     dcPlaylistsTableViewController.isFeedMode = false;
     dcPlaylistsTableViewController.isSignedInUser = self.isSignedInUser;
     dcPlaylistsTableViewController.signedInUser = self.signedInUser;
-    dcPlaylistsTableViewController.profileUser = self.profileUser;
+//    dcPlaylistsTableViewController.profileUser = self.profileUser;
+    dcPlaylistsTableViewController.profileUser = self.mSelectedECUser;
     [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
 }
 
@@ -1115,10 +1112,12 @@
     NSLog(@"FB: sharerDidCancel=%@\n",[sharer debugDescription]);
 }
 
+/*
 #pragma mark - Social TableViewCell Methods
 
 - (NSMutableAttributedString*)loadFacebookData:(NSArray *)arr{
-    NSString *likesCount = [NSString stringWithFormat:@"%lu", (unsigned long)[arr count]];
+//    NSString *likesCount = [NSString stringWithFormat:@"%lu", (unsigned long)[arr count]];
+    NSString *likesCount = [NSString stringWithFormat:@"%lu", (unsigned long)[self.mSelectedECUser.followeeIds count]];
     NSMutableAttributedString * titleText = [[NSMutableAttributedString alloc] initWithString:@""];
 
     if(likesCount != nil){
@@ -1138,8 +1137,9 @@
 }
 
 - (NSMutableAttributedString*)loadTwitterData:(NSArray *)arr{
-    NSString *followerCount = [NSString stringWithFormat:@"%lu", (unsigned long)[arr count]];
-        NSMutableAttributedString * titleText = [[NSMutableAttributedString alloc] initWithString:@""];
+//    NSString *followerCount = [NSString stringWithFormat:@"%lu", (unsigned long)[arr count]];
+    NSString *followerCount = [NSString stringWithFormat:@"%lu", (unsigned long)[self.mSelectedECUser.followerIds count]];;
+    NSMutableAttributedString * titleText = [[NSMutableAttributedString alloc] initWithString:@""];
     if(followerCount != nil){
         // Setup the string
         titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFOLLOWERS", followerCount]];
@@ -1158,8 +1158,10 @@
 }
 
 - (NSMutableAttributedString*)loadInstagramData{
-    NSString *followerCount;
-    followerCount = [NSString stringWithFormat:@"%d",self.mFavCount];
+//    followerCount = [NSString stringWithFormat:@"%lu", (unsigned long)[self.mSelectedECUser.followeeIds count]];
+    
+    NSString *followerCount = [NSString stringWithFormat:@"%d", self.mSelectedECUser.favoriteCount];
+//    followerCount = [NSString stringWithFormat:@"%d",self.mFavCount];
     NSMutableAttributedString * titleText = [[NSMutableAttributedString alloc] initWithString:@""];
     if(followerCount != nil){
         titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFAVORITES", followerCount]];
@@ -1176,5 +1178,6 @@
     }
     return titleText;
 }
+*/
 
 @end

@@ -62,7 +62,7 @@
 }
 
 - (void)loadTwitterData:(ECUser *)user{
-    NSString *followerCount = [NSString stringWithFormat:@"%lu", (unsigned long)[user.followerIds count]];;
+    NSString *followerCount = [NSString stringWithFormat:@"%lu", (unsigned long)[user.followerIds count]];
     if(followerCount != nil){
         // Setup the string
         NSMutableAttributedString *titleText = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@\nFOLLOWERS", followerCount]];
