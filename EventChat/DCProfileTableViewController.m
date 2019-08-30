@@ -127,7 +127,6 @@
     [[ECAPI sharedManager] updateUser:self.signedInUser callback:^(ECUser *ecUser, NSError *error) {
         if (error) {
             NSLog(@"Error adding user: %@", error);
-            NSLog(@"%@", error);
         }
         //self.signedInUser = ecUser;
     }];
@@ -155,7 +154,6 @@
     [[ECAPI sharedManager] getPostByUserId:self.profileUser.userId callback:^(NSArray *posts, NSError *error) {
         if (error) {
             NSLog(@"Error getting posts for user: %@", error);
-            NSLog(@"%@", error);
         } else {
             _userPostsArray = [[NSMutableArray alloc] initWithArray:posts];
             [_userPostsArray sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created_at" ascending:NO]]];
@@ -168,7 +166,6 @@
     [[ECAPI sharedManager] getOthersPostByUserId:self.profileUser.userId callback:^(NSArray *posts, NSError *error) {
         if (error) {
             NSLog(@"Error getting posts for user: %@", error);
-            NSLog(@"%@", error);
         } else {
             _userPostsArray = [[NSMutableArray alloc] initWithArray:posts];
             [_userPostsArray sortUsingDescriptors:@[[NSSortDescriptor sortDescriptorWithKey:@"created_at" ascending:NO]]];

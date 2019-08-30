@@ -68,9 +68,11 @@
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
     [self.mSearchResultTableView setHidden:false];
     if (searchText.length == 0) {
+        /*
         self.isFiltered = false;
         [self.mSearchBar endEditing:YES];
         [self.mSearchResultTableView setHidden:true];
+        */
     }
     else {
         self.isFiltered = true;
@@ -465,6 +467,8 @@
     ecFollowViewController.showFollowing = true;
     ecFollowViewController.usersArray = self.mFollowingUsersArr;
     ecFollowViewController.dcUser = self.selectedEcUser;
+    ecFollowViewController.mSelectedLoginUserId = self.selectedEcUser.userId;
+    ecFollowViewController.isComeFromProfile = true;
     [self.navigationController pushViewController:ecFollowViewController animated:YES];
 }
 
@@ -473,6 +477,8 @@
     ecFollowViewController.showFollowing = false;
     ecFollowViewController.usersArray = self.mFollowerUsersArr;
     ecFollowViewController.dcUser = self.selectedEcUser;
+    ecFollowViewController.mSelectedLoginUserId = self.selectedEcUser.userId;
+    ecFollowViewController.isComeFromProfile = true;
     [self.navigationController pushViewController:ecFollowViewController animated:YES];
 }
 
@@ -487,7 +493,21 @@
 
 - (IBAction)actionOnSearchBtnClick:(id)sender {
     self.searchBarHeightConst.constant = 40.0;
-//    [self.mSearchBar endEditing:YES];
+    //If you want to enable cancel button always.
+    [[self.mSearchBar valueForKey:@"_cancelButton"] setEnabled:YES];
+    
+    [self.mSearchResultTableView setHidden:false];
+    self.isFiltered = true;
+    self.filterResultArray = [[NSMutableArray alloc]init];
+    for (NSArray *userObjet in _resultArray) {
+        if ([userObjet valueForKey:@"firstName"] && [userObjet valueForKey:@"lastName"]){
+            NSRange range = [[userObjet valueForKey:@"firstName"] rangeOfString:@"a" options:NSCaseInsensitiveSearch];
+            if (range.length > 0) {
+                [self.filterResultArray addObject:userObjet];
+            }
+        }
+    }
+    [self.mSearchResultTableView reloadData];
 }
 
 #pragma mark - SDWebImage
