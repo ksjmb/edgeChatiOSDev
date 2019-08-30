@@ -186,8 +186,13 @@
             }
             
             cell.dcPersonDelegate = self;
-            [cell configureWithPost:post signedInUser:self.signedInUser];
-            return cell;
+            if (self.isProfileChanges){
+                [cell configureWithPost:post signedInUser:self.mSelectedECUser];
+                return cell;
+            }else{
+                [cell configureWithPost:post signedInUser:self.signedInUser];
+                return cell;
+            }
         }
     }
 }
