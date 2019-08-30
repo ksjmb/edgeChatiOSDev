@@ -20,34 +20,28 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
-    // Get logged in user
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     
-    if(self.showFollowing){
-        [self.navigationItem setTitle:@"Following"];
-        [self loadFollowing];
+    if (self.isComeFromProfile){
+        if(self.showFollowing){
+            [self.navigationItem setTitle:@"Following"];
+            [self loadFollowing:self.mSelectedLoginUserId];
+        }
+        else{
+            [self.navigationItem setTitle:@"Followers"];
+            [self loadFollowers:self.mSelectedLoginUserId];
+        }
+    }else{
+        if(self.showFollowing){
+            [self.navigationItem setTitle:@"Following"];
+            [self loadFollowing:_dcUser.userId];
+        }
+        else{
+            [self.navigationItem setTitle:@"Followers"];
+            [self loadFollowers:_dcUser.userId];
+        }
     }
-    else{
-        [self.navigationItem setTitle:@"Followers"];
-        [self loadFollowers];
-    }
 }
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
 
 #pragma mark - Table view data source
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -86,13 +80,12 @@
     [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
 }
 
-- (void)loadFollowing{
-    [[ECAPI sharedManager] getFollowing:_dcUser.userId callback:^(NSArray *users, NSError *error) {
+- (void)loadFollowing:(NSString *)userId{
+//- (void)loadFollowing{
+    [[ECAPI sharedManager] getFollowing:userId callback:^(NSArray *users, NSError *error) {
         if (error) {
             NSLog(@"Error adding user: %@", error);
-            NSLog(@"%@", error);
         } else {
-            // code
             NSLog(@"%@", users);
             self.usersArray = [[NSArray alloc] initWithArray:users];
             [_userListTableView reloadData];
@@ -100,13 +93,12 @@
     }];
 }
 
-- (void)loadFollowers{
-    [[ECAPI sharedManager] getFollowers:_dcUser.userId callback:^(NSArray *users, NSError *error) {
+- (void)loadFollowers:(NSString *)userId{
+//- (void)loadFollowers{
+    [[ECAPI sharedManager] getFollowers:userId callback:^(NSArray *users, NSError *error) {
         if (error) {
             NSLog(@"Error adding user: %@", error);
-            NSLog(@"%@", error);
         } else {
-            // code
             NSLog(@"%@", users);
             self.usersArray = [[NSArray alloc] initWithArray:users];
             [_userListTableView reloadData];

@@ -74,9 +74,15 @@
     self.mLoginUser = [[ECAPI sharedManager] signedInUser];
     self.mFollowingArr = self.mLoginUser.followeeIds;
     self.userIdStr = self.mLoginUser.userId;
+    self.mLoginUId = self.mLoginUser.userId;
     self.isProfileChanges = false;
     [self.navigationItem setTitle:@"Profile"];
     [self initialSetup];
+    
+    [self getAllUserList];
+    [self loadUserPosts:self.mLoginUser.userId];
+    [self loadFollowers:self.mLoginUser.userId];
+    [self loadFollowing:self.mLoginUser.userId];
     
     /*
     //LongPressGestureToUpload_ProfileImage_CoverImage
@@ -85,12 +91,14 @@
      */
 }
 
+/*
 - (void)viewWillAppear:(BOOL)animated{
     [self getAllUserList];
     [self loadUserPosts:self.mLoginUser.userId];
     [self loadFollowers:self.mLoginUser.userId];
     [self loadFollowing:self.mLoginUser.userId];
 }
+*/
 
 #pragma mark:- SearchBar Delegate Methods
 
@@ -446,11 +454,13 @@
 }
 
 - (IBAction)actionOnFacebookButton:(id)sender {
-    ECFollowViewController *ecFollowViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECFollowViewController"];
-    ecFollowViewController.showFollowing = true;
-    ecFollowViewController.usersArray = self.mFollowingUsersArray;
-    ecFollowViewController.dcUser = self.profileUser;
-    [self.navigationController pushViewController:ecFollowViewController animated:YES];
+    ECFollowViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECFollowViewController"];
+    vc.showFollowing = true;
+    vc.usersArray = self.mFollowingUsersArray;
+    vc.dcUser = self.profileUser;
+    vc.mSelectedLoginUserId = self.mLoginUId;
+    vc.isComeFromProfile = true;
+    [self.navigationController pushViewController:vc animated:YES];
 }
 
 - (IBAction)actionOnTwitterButton:(id)sender {
@@ -458,6 +468,8 @@
     ecFollowViewController.showFollowing = false;
     ecFollowViewController.usersArray = self.mFollowerUsersArray;
     ecFollowViewController.dcUser = self.profileUser;
+    ecFollowViewController.mSelectedLoginUserId = self.mLoginUId;
+    ecFollowViewController.isComeFromProfile = true;
     [self.navigationController pushViewController:ecFollowViewController animated:YES];
 }
 
@@ -605,6 +617,7 @@
 #pragma mark:- API Call Methods
 
 - (void)loadFollowing:(NSString *)userId{
+    NSLog(@"userId loadFollowing: \(userId)");
     [[ECAPI sharedManager] getFollowing:userId callback:^(NSArray *users, NSError *error) {
         if (error) {
             NSLog(@"Error getFollowing: %@", error);
@@ -616,6 +629,7 @@
 }
 
 - (void)loadFollowers:(NSString *)userId{
+    NSLog(@"userId loadFollowers: \(userId)");
     [[ECAPI sharedManager] getFollowers:userId callback:^(NSArray *users, NSError *error) {
         if (error) {
             NSLog(@"Error getFollowers: %@", error);
