@@ -238,7 +238,8 @@
         [self.mTableView setHidden:true];
         [self.mSearchBar endEditing:YES];
         self.mSearchBar.text = @"";
-        [self updateTableView];
+//        [self updateTableView];
+        [self refreshTableView];
     }else{
         if (indexPath.row != 0){
             DCPost *mDCPost = [self.userPostArray objectAtIndex:indexPath.row - 1];
@@ -656,17 +657,16 @@
     }];
 }
 
-/*
 -(void)updateUser{
-    [[ECAPI sharedManager] updateUser:self.signedInUser callback:^(ECUser *ecUser, NSError *error) {
+    [[ECAPI sharedManager] updateUser:self.mSelectedECUser callback:^(ECUser *ecUser, NSError *error) {
         if (error) {
             NSLog(@"Error update user: %@", error);
         } else {
-            self.signedInUser = ecUser;
+            self.mSelectedECUser = ecUser;
+            [self updateTableView];
         }
     }];
 }
-*/
 
 - (void)getAllUserList{
     [[ECAPI sharedManager] getAllUserListAPI:^(NSArray *searchResult, NSError *error) {
@@ -691,6 +691,7 @@
                                       cancelButtonTitle:@"Okay"
                                       otherButtonTitles:nil];
             [alertView show];
+            [self refreshTableView];
         }
     }];
 }
@@ -707,6 +708,7 @@
                                       cancelButtonTitle:@"Okay"
                                       otherButtonTitles:nil];
             [alertView show];
+            [self refreshTableView];
         }
     }];
 }
@@ -714,10 +716,15 @@
 #pragma mark:- Post Notification Methods
 
 -(void)updateTableView {
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
     [self loadUserPosts:self.mLoginUId];
     [self loadFollowers:self.mLoginUId];
     [self loadFollowing:self.mLoginUId];
     [self.mUserProfileTableView reloadData];
+}
+
+-(void)refreshTableView {
+    [self updateUser];
 }
 
 #pragma mark:- Post Delegate Methods

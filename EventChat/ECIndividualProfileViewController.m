@@ -40,6 +40,7 @@
 @property (nonatomic, strong) NSMutableArray *resultArray;
 @property (nonatomic, strong) NSMutableArray *filterResultArray;
 @property (nonatomic, assign) BOOL isFiltered;
+@property (nonatomic, assign) BOOL isFollowTab;
 
 @end
 
@@ -164,19 +165,27 @@
     if (tableView == self.mSearchResultTableView){
         NSArray *mUser = [self.filterResultArray objectAtIndex:indexPath.row];
         
+        NSError *infoError = nil;
+        self.selectedEcUser = [[ECUser alloc] initWithDictionary:[self.filterResultArray objectAtIndex:indexPath.row] error:&infoError];
+    
+        
         self.selectedEcUser.userId = [mUser valueForKey:@"_id"];
         self.selectedEcUser.profilePicUrl = [mUser valueForKey:@"profilePicUrl"];
         self.selectedEcUser.firstName = [mUser valueForKey:@"firstName"];
         self.selectedEcUser.lastName = [mUser valueForKey:@"lastName"];
+        /*
         self.selectedEcUser.followeeIds = [mUser valueForKey:@"followeeIds"];
-        self.selectedEcUser.followerIds = [mUser valueForKey:@"followerIds"];// value not present in response
+        self.selectedEcUser.followerIds = [mUser valueForKey:@"followerIds"];
         self.selectedEcUser.favoriteCount = [[mUser valueForKey:@"favoriteCount"] intValue];
+        */
         
         [self.mSearchResultTableView setHidden:true];
         [self.mSearchBar endEditing:YES];
         self.mSearchBar.text = @"";
-        [self initialSetup];
-        [self updateTableView];
+        self.isFollowTab = false;
+//        [self initialSetup];
+//        [self updateTableView];
+        [self reloadUI];
         
     }else{
         if (indexPath.row != 0){
@@ -213,11 +222,13 @@
         [self.mFollowBtn setHidden:false];
     }
     
-    if([self.signedInUser.followeeIds containsObject:self.selectedEcUser.userId]){
-        [self.mFollowBtn setTitle:@"Unfollow" forState:UIControlStateNormal];
-    }
-    else{
-        [self.mFollowBtn setTitle:@"Follow" forState:UIControlStateNormal];
+    if (!self.isFollowTab){
+        if([self.signedInUser.followeeIds containsObject:self.selectedEcUser.userId]){
+            [self.mFollowBtn setTitle:@"Unfollow" forState:UIControlStateNormal];
+        }
+        else{
+            [self.mFollowBtn setTitle:@"Follow" forState:UIControlStateNormal];
+        }
     }
     
 //    self.mSearchBar.showsCancelButton = true;
@@ -312,6 +323,19 @@
     [self loadFollowing];
     [self loadFollowers];
     [self.mTableView reloadData];
+}
+
+-(void)reloadUI{
+    /*
+    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    [self getAllUserList];
+    [self loadUserPosts];
+    [self loadFollowing];
+    [self loadFollowers];
+    */
+    
+    [self initialSetup];
+    [self updateUser];
 }
 
 #pragma mark:- Handling background Image upload
@@ -429,6 +453,7 @@
                                       cancelButtonTitle:@"Okay"
                                       otherButtonTitles:nil];
             [alertView show];
+            [self reloadUI];
         }
     }];
 }
@@ -445,6 +470,7 @@
                                       cancelButtonTitle:@"Okay"
                                       otherButtonTitles:nil];
             [alertView show];
+            [self reloadUI];
         }
     }];
 }
@@ -452,6 +478,7 @@
 #pragma mark:- IBAction Methods
 
 - (IBAction)actionOnFollowButton:(id)sender {
+    self.isFollowTab = true;
     if ([self.mFollowBtn.titleLabel.text isEqualToString:@"Unfollow"]){
         [self unfollowByUserIdAPICall];
         [self.mFollowBtn setTitle:@"Follow" forState:UIControlStateNormal];
