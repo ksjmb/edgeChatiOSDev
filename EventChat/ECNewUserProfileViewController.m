@@ -224,11 +224,15 @@
         NSString *fullName = [NSString stringWithFormat:@"%@ %@", self.mSelectedECUser.firstName, self.mSelectedECUser.lastName];
         [self.mUserNameLabel setText: fullName];
         
-        if (self.mSelectedECUser.profilePicUrl != nil){
+        if (self.mSelectedECUser.profilePicUrl != nil && ![self.mSelectedECUser.profilePicUrl  isEqual: @""]){
             [self showProfilePicImage:self ForImageUrl:self.mSelectedECUser.profilePicUrl];
+        }else{
+            [self.userProfileImageView setImage:[UIImage imageNamed:@"missing-profile.png"]];
         }
-        if (self.mSelectedECUser.coverPic_Url != nil){
+        if (self.mSelectedECUser.coverPic_Url != nil && ![self.mSelectedECUser.coverPic_Url  isEqual: @""]){
             [self showImageOnTheCell:self ForImageUrl:self.mSelectedECUser.coverPic_Url];
+        }else{
+            [self.userBGImageView setImage:[UIImage imageNamed:@"cover_slide"]];
         }
         
         self.mfName = self.mSelectedECUser.firstName;
@@ -358,6 +362,8 @@
     
     if (self.mLoginUser.coverPic_Url != nil){
         [self showImageOnTheCell:self ForImageUrl:self.mLoginUser.coverPic_Url];
+    }else{
+       [self.userBGImageView setImage:[UIImage imageNamed:@"cover_slide"]];
     }
     self.mUserProfileTableView.estimatedRowHeight = 240.0;
     self.mUserProfileTableView.rowHeight = UITableViewAutomaticDimension;
@@ -1038,6 +1044,14 @@
                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                 if (image) {
                                     self.userProfileImageView.image = image;
+                                    //API Call
+                                    [[ECAPI sharedManager] updateProfilePicUrl:self.mSelectedECUser.userId profilePicUrl:imageURL callback:^(NSError *error) {
+                                        if (error) {
+                                            NSLog(@"Error update user profile: %@", error);
+                                        } else {
+                                            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
+                                        }
+                                    }];
                                 }
                                 else {
                                     if(error){

@@ -284,17 +284,19 @@
             }];
         }
     }
-    else{
-        if (self.selectedEcUser.profilePicUrl != nil){
-            [self showProfilePicImage:self ForImageUrl:self.selectedEcUser.profilePicUrl];
-        }
+    
+    if (self.selectedEcUser.profilePicUrl != nil && ![self.selectedEcUser.profilePicUrl  isEqual: @""]){
+        [self showProfilePicImage:self ForImageUrl:self.selectedEcUser.profilePicUrl];
+    }else{
+        [self.mUserProfileIV setImage:[UIImage imageNamed:@"missing-profile.png"]];
     }
     
-    if (self.selectedEcUser.coverPic_Url != nil){
+    if (self.selectedEcUser.coverPic_Url != nil && ![self.selectedEcUser.coverPic_Url  isEqual: @""]){
         [self showImageOnTheCell:self ForImageUrl:self.selectedEcUser.coverPic_Url];
     }else{
         [self.mBackgroundIV setImage:[UIImage imageNamed:@"cover_slide"]];
     }
+    
     self.mTableView.estimatedRowHeight = 240.0;
     self.mTableView.rowHeight = UITableViewAutomaticDimension;
     self.mTableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
