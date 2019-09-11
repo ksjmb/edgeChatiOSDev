@@ -837,16 +837,6 @@
     vc.view.frame = self.view.frame;
     [self.view addSubview:vc.view];
     [vc didMoveToParentViewController:self];
-    
-    /*
-    DCPlaylistsTableViewController *dcPlaylistsTVC = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
-    dcPlaylistsTVC.isFeedMode = true;
-    dcPlaylistsTVC.isSignedInUser = true;
-    dcPlaylistsTVC.feedItemId = postNew.postId;
-    UINavigationController *navigationController =
-    [[UINavigationController alloc] initWithRootViewController:dcPlaylistsTVC];
-    [self presentViewController:navigationController animated:YES completion:nil];
-     */
 }
 
 - (void)didTapAttendanceButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
@@ -854,14 +844,6 @@
     if (postItem.postId != nil){
         [self setUserAttendanceResponse:postItem.postId];
     }
-    
-    /*
-    DCPost *postNew = [self.userPostArray objectAtIndex:index - 1];
-    ECAttendanceDetailsViewController *ecAttendanceDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECAttendanceDetailsViewController"];
-    ecAttendanceDetailsViewController.selectedPostItem = postNew;
-    ecAttendanceDetailsViewController.isPost = true;
-    [self.navigationController pushViewController:ecAttendanceDetailsViewController animated:YES];
-     */
 }
 
 - (void)didTapShareButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index {
@@ -946,7 +928,7 @@
 -(void)setUserAttendanceResponse:(NSString *)strFeedId{
     NSString *userResponse = @"Going";
     
-    [[ECAPI sharedManager] setAttendeeResponse:self.signedInUser.userId feedItemId:strFeedId response:userResponse callback:^(NSError *error) {
+    [[ECAPI sharedManager] setAttendeeResponse:self.mSelectedECUser.userId feedItemId:strFeedId response:userResponse callback:^(NSError *error) {
         if (error) {
             NSLog(@"Error saving response: %@", error);
         } else {
@@ -956,12 +938,11 @@
 }
 
 -(void)updateUserProfile{
-    [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:self.signedInUser.profilePicUrl callback:^(NSError *error) {
+    [[ECAPI sharedManager] updateProfilePicUrl:self.mSelectedECUser.userId profilePicUrl:self.mSelectedECUser.profilePicUrl callback:^(NSError *error) {
         if (error) {
             NSLog(@"Error update user profile: %@", error);
         } else {
-            [self updateTableView];
-//            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
+            [self reloadPorfileTV];
         }
     }];
 }
