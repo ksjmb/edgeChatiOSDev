@@ -43,7 +43,11 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    if (self.isComeFromProfileVC){
+        NSLog(@"signedInUser: %@", self.signedInUser);
+    }else{
+        self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    }
     self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
     self.view.backgroundColor = [[UIColor lightGrayColor] colorWithAlphaComponent:0.8f];
     
@@ -186,6 +190,7 @@
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateChatReaction" object:nil];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"updateInflurenceTableView" object:nil];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadProfileTableView" object:nil];
                     [self removeAnimation];
                 }
             }];

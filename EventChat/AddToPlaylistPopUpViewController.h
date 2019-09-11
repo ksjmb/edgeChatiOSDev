@@ -34,5 +34,6 @@
 @property (nonatomic, copy) NSString *mFeedItemId;
 @property (assign) BOOL isImageSelected;
 @property (nonatomic, copy) NSString *selectedImageURL;
+@property (nonatomic) BOOL isComeFromProfileVC;
 
 @end

@@ -288,7 +288,8 @@
     }
     */
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableView) name:@"updateTableView" object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableView) name:@"updateTableView" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadPorfileTV) name:@"updateTableView" object:nil];
     
     self.postBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Post" style:UIBarButtonItemStylePlain target:self action:@selector(didTapPostButton:)];
     
@@ -729,6 +730,11 @@
     [self.mUserProfileTableView reloadData];
 }
 
+-(void)reloadPorfileTV {
+    self.mSelectedECUser = [[ECAPI sharedManager] signedInUser];
+    [self.mUserProfileTableView reloadData];
+}
+
 -(void)refreshTableView {
     [self updateUser];
 }
@@ -825,6 +831,8 @@
     vc.playlistDelegate = self;
     vc.isFeedMode = true;
     vc.mFeedItemId = postNew.postId;
+    vc.isComeFromProfileVC = true;
+    vc.signedInUser = self.mSelectedECUser;
     [self addChildViewController:vc];
     vc.view.frame = self.view.frame;
     [self.view addSubview:vc.view];
@@ -952,7 +960,8 @@
         if (error) {
             NSLog(@"Error update user profile: %@", error);
         } else {
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
+            [self updateTableView];
+//            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
         }
     }];
 }
@@ -1049,7 +1058,8 @@
                                         if (error) {
                                             NSLog(@"Error update user profile: %@", error);
                                         } else {
-                                            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
+                                            [self updateTableView];
+//                                            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
                                         }
                                     }];
                                 }
