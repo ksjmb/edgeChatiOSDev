@@ -43,9 +43,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    if (self.isComeFromProfileVC){
-        NSLog(@"signedInUser: %@", self.signedInUser);
-    }else{
+    if (!self.isComeFromProfileVC){
         self.signedInUser = [[ECAPI sharedManager] signedInUser];
     }
     self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];

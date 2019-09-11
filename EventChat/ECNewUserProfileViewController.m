@@ -186,13 +186,17 @@
             }
             
             cell.dcPersonDelegate = self;
+            [cell configureWithPost:post signedInUser:self.mSelectedECUser];
+            return cell;
+            /*
             if (self.isProfileChanges){
                 [cell configureWithPost:post signedInUser:self.mSelectedECUser];
                 return cell;
             }else{
-                [cell configureWithPost:post signedInUser:self.signedInUser];
+                [cell configureWithPost:post signedInUser:self.mSelectedECUser];
                 return cell;
             }
+            */
         }
     }
 }
@@ -523,7 +527,6 @@
     [self.mTableView reloadData];
 }
 
-
 #pragma mark:- Handling background Image upload
 
 - (void) beginBackgroundUpdateTask {
@@ -574,7 +577,6 @@
                             [self showProfilePicImage:self ForImageUrl:imageURL];
                         }
                     }
-                    
                 } else{
                     // Fail Condition ask for retry and cancel through alertView
                     [self showFailureAlert:@"Image"];
@@ -733,6 +735,7 @@
 -(void)reloadPorfileTV {
     self.mSelectedECUser = [[ECAPI sharedManager] signedInUser];
     [self.mUserProfileTableView reloadData];
+    [self updateUserProfile:self.mLoginUser];
 }
 
 -(void)refreshTableView {
@@ -932,17 +935,23 @@
         if (error) {
             NSLog(@"Error saving response: %@", error);
         } else {
-            [self updateUserProfile];
+            [[ECAPI sharedManager] updateProfilePicUrl:self.mSelectedECUser.userId profilePicUrl:self.mSelectedECUser.profilePicUrl callback:^(NSError *error) {
+                if (error) {
+                    NSLog(@"Error update user profile: %@", error);
+                } else {
+                    [self reloadPorfileTV];
+                }
+            }];
         }
     }];
 }
 
--(void)updateUserProfile{
-    [[ECAPI sharedManager] updateProfilePicUrl:self.mSelectedECUser.userId profilePicUrl:self.mSelectedECUser.profilePicUrl callback:^(NSError *error) {
+-(void)updateUserProfile:(ECUser *)mUser{
+    [[ECAPI sharedManager] updateProfilePicUrl:mUser.userId profilePicUrl:mUser.profilePicUrl callback:^(NSError *error) {
         if (error) {
             NSLog(@"Error update user profile: %@", error);
         } else {
-            [self reloadPorfileTV];
+            self.signedInUser = [[ECAPI sharedManager] signedInUser];
         }
     }];
 }
