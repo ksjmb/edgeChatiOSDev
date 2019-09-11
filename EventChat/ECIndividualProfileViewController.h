@@ -10,12 +10,15 @@
 #import "ECUser.h"
 #import "DCNewPostViewController.h"
 #import "DCInfluencersPersonDetailsTableViewCell.h"
+#import <FBSDKCoreKit/FBSDKCoreKit.h>
+#import <FBSDKShareKit/FBSDKShareKit.h>
+#import "AddToPlaylistPopUpViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @class ECUser;
 
-@interface ECIndividualProfileViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, DCNewPostViewControllerDelegate, DCInfluencersPersonDetailsTVCellDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UISearchBarDelegate>
+@interface ECIndividualProfileViewController : UIViewController<UITableViewDataSource, UITableViewDelegate, DCNewPostViewControllerDelegate, DCInfluencersPersonDetailsTVCellDelegate, UIActionSheetDelegate, UINavigationControllerDelegate, UISearchBarDelegate, AddToPlaylistDelegate, FBSDKSharingDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *mBackgroundIV;
 @property (weak, nonatomic) IBOutlet UIImageView *mUserProfileIV;

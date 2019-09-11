@@ -292,7 +292,6 @@
     }
     */
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTableView) name:@"updateTableView" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadPorfileTV) name:@"updateTableView" object:nil];
     
     self.postBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Post" style:UIBarButtonItemStylePlain target:self action:@selector(didTapPostButton:)];

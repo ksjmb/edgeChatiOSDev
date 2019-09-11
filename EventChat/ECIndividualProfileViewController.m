@@ -19,6 +19,7 @@
 #import "ECUserListCell.h"
 #import "ECUser.h"
 #import "DCPost.h"
+#import "AVPlayerViewController.h"
 #import "ECFollowViewController.h"
 #import "ECFavoritesViewController.h"
 #import "ECUserProfileSocialTableViewCell.h"
@@ -32,6 +33,7 @@
 #import <Social/Social.h>
 #import "SVProgressHUD.h"
 #import "ECAPINames.h"
+#import "ECCommonClass.h"
 
 @interface ECIndividualProfileViewController ()
 @property (nonatomic, strong) NSArray *mFollowingUsersArr;
@@ -41,6 +43,10 @@
 @property (nonatomic, strong) NSMutableArray *filterResultArray;
 @property (nonatomic, assign) BOOL isFiltered;
 @property (nonatomic, assign) BOOL isFollowTab;
+
+@property (nonatomic, strong) FBSDKShareDialog *mShareDialog;
+@property (nonatomic, strong) FBSDKShareLinkContent *mFBContent;
+@property (nonatomic, strong) NSMutableArray *mTopicsArr;
 
 @end
 
@@ -231,6 +237,8 @@
         }
     }
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTableView) name:@"updateTableView" object:nil];
+    
 //    self.mSearchBar.showsCancelButton = true;
     self.mSearchBar.delegate = self;
     
@@ -340,6 +348,12 @@
     [self updateUser];
 }
 
+-(void)reloadTableView {
+    self.selectedEcUser = [[ECAPI sharedManager] signedInUser];
+    [self.mTableView reloadData];
+    [self updateUserProfile:self.signedInUser];
+}
+
 #pragma mark:- Handling background Image upload
 
 - (void) beginBackgroundUpdateTask {
@@ -360,6 +374,129 @@
     if (postItem.postId != nil){
         [self setUserAttendanceResponse:postItem.postId];
     }
+}
+
+-(void)playVideoButtonTapped:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
+    DCPost *postNew = [self.userPostArr objectAtIndex:index - 1];
+    [self playButtonPressed:postNew.videoUrl];
+}
+
+- (void)didTapCommentsButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
+    DCPost *postNew = [self.userPostArr objectAtIndex:index - 1];
+    [[ECAPI sharedManager] fetchTopicsByFeedItemId:postNew.postId callback:^(NSArray *topics, NSError *error)  {
+        if(error){
+            NSLog(@"Error: %@", error);
+        }
+        else{
+            self.mTopicsArr = [[NSMutableArray alloc] initWithArray:topics];
+            ECTopic *topic = [self.mTopicsArr objectAtIndex:1];
+            DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
+            dcChat.dcPost = postNew;
+            dcChat.isPost = true;
+            dcChat.selectedTopic = topic;
+            dcChat.topicId = topic.topicId;
+            [self.navigationController pushViewController:dcChat animated:NO];
+        }
+    }];
+}
+
+- (void)didTapFavoriteButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
+    DCPost *postNew = [self.userPostArr objectAtIndex:index - 1];
+    AddToPlaylistPopUpViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddToPlaylistPopUpViewController"];
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.5;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    transition.type = kCATransitionFromBottom;
+    transition.subtype = kCATransitionFromBottom;
+    [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+    [self.navigationController.navigationBar setUserInteractionEnabled:NO];
+    self.tabBarController.tabBar.hidden = YES;
+    vc.playlistDelegate = self;
+    vc.isFeedMode = true;
+    vc.mFeedItemId = postNew.postId;
+    vc.isComeFromProfileVC = true;
+    vc.signedInUser = self.selectedEcUser;
+    [self addChildViewController:vc];
+    vc.view.frame = self.view.frame;
+    [self.view addSubview:vc.view];
+    [vc didMoveToParentViewController:self];
+}
+
+- (void)didTapShareButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index {
+    DCPost *postNew = [self.userPostArray objectAtIndex:index - 1];
+    NSString* title = postNew.displayName;
+    NSString* link = @"";
+    
+    if ([postNew.postType  isEqual: @"image"]){
+        link = postNew.imageUrl;
+    }else if ([postNew.postType  isEqual: @"video"]){
+        link = postNew.videoUrl;
+    }
+    
+    NSArray* dataToShare = @[title, link];
+    UIAlertController *alertController = [UIAlertController alertControllerWithTitle:nil
+                                                                             message:nil
+                                                                      preferredStyle:UIAlertControllerStyleActionSheet];
+    
+    UIAlertAction *cancelAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Cancel", @"Cancel action")
+                                                           style:UIAlertActionStyleCancel
+                                                         handler:^(UIAlertAction *action)
+                                   {
+                                       NSLog(@"Cancel action");
+                                   }];
+    
+    UIAlertAction *facebookAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Facebook", @"Facebook action")
+                                                             style:UIAlertActionStyleDefault
+                                                           handler:^(UIAlertAction *action)
+                                     {
+                                         NSLog(@"Facebook action");
+                                         NSLog(@"Share to Facebook");
+                                         self.mShareDialog = [[FBSDKShareDialog alloc] init];
+                                         self.mFBContent = [[FBSDKShareLinkContent alloc] init];
+                                         self.mFBContent.contentURL = [NSURL URLWithString:link];
+                                         self.mFBContent.contentTitle = [[NSBundle mainBundle] objectForInfoDictionaryKey: @"Bundle display name"];
+                                         self.mFBContent.contentDescription = postNew.content;
+                                         
+                                         if ([[UIApplication sharedApplication] canOpenURL:[NSURL URLWithString:@"fbauth2://"]]){
+                                             [self.mShareDialog setMode:FBSDKShareDialogModeNative];
+                                         }
+                                         else {
+                                             [self.mShareDialog setMode:FBSDKShareDialogModeAutomatic];
+                                         }
+                                         //[self.shareDialog setMode:FBSDKShareDialogModeShareSheet];
+                                         [self.mShareDialog setShareContent:self.mFBContent];
+                                         [self.mShareDialog setFromViewController:self];
+                                         [self.mShareDialog setDelegate:self];
+                                         [self.mShareDialog show];
+                                         //[FBSDKShareDialog showFromViewController:self withContent:self.content delegate:self];
+                                     }];
+    
+    UIAlertAction *twitterAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Twitter", @"Twitter action")
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction *action)
+                                    {
+                                        [self twitterSetup:[NSURL URLWithString:link] :postNew.content];
+                                    }];
+    
+    UIAlertAction *moreOptionsAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"More Options...", @"More Options... action")
+                                                                style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction *action)
+                                        {
+                                            NSLog(@"More Option... action");
+                                            UIActivityViewController* activityViewController =
+                                            [[UIActivityViewController alloc] initWithActivityItems:dataToShare
+                                                                              applicationActivities:nil];
+                                            
+                                            [self presentViewController:activityViewController
+                                                               animated:YES
+                                                             completion:^{}];
+                                        }];
+    
+    [alertController addAction:cancelAction];
+    [alertController addAction:facebookAction];
+    [alertController addAction:twitterAction];
+    [alertController addAction:moreOptionsAction];
+    [self presentViewController:alertController animated:YES completion:nil];
 }
 
 #pragma mark:- API Call Methods
@@ -416,18 +553,24 @@
         if (error) {
             NSLog(@"Error saving response: %@", error);
         } else {
-//            [self updateUserProfile];
-            [self updateUser];
+            [[ECAPI sharedManager] updateProfilePicUrl:self.selectedEcUser.userId profilePicUrl:self.selectedEcUser.profilePicUrl callback:^(NSError *error) {
+                if (error) {
+                    NSLog(@"Error update user profile: %@", error);
+                } else {
+                    [self reloadTableView];
+                }
+            }];
+//            [self updateUser];
         }
     }];
 }
 
--(void)updateUserProfile{
-    [[ECAPI sharedManager] updateProfilePicUrl:self.selectedEcUser.userId profilePicUrl:self.selectedEcUser.profilePicUrl callback:^(NSError *error) {
+-(void)updateUserProfile:(ECUser *)mUser{
+    [[ECAPI sharedManager] updateProfilePicUrl:mUser.userId profilePicUrl:mUser.profilePicUrl callback:^(NSError *error) {
         if (error) {
             NSLog(@"Error update user profile: %@", error);
         } else {
-            [self updateTableView];
+            self.signedInUser = [[ECAPI sharedManager] signedInUser];
         }
     }];
 }
@@ -609,6 +752,106 @@
                                 }
                             }];
         }
+}
+
+#pragma mark:- Action on video tap Methods
+
+-(void)playButtonPressed:(NSString *)videoURLStr {
+    BOOL isInternetAvailable = [[ECCommonClass sharedManager]isInternetAvailabel];
+    if (isInternetAvailable) {
+        AVPlayerItem *playerItem = [AVPlayerItem playerItemWithURL:[NSURL URLWithString:videoURLStr]];
+        AVPlayer *player = [AVPlayer playerWithPlayerItem:playerItem];
+        AVPlayerViewController *avvc = [AVPlayerViewController new];
+        avvc.player = player;
+        [player play];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(didFinishVideoPlay)
+                                                     name:AVPlayerItemDidPlayToEndTimeNotification
+                                                   object:nil];
+        
+        [self presentViewController:avvc animated:YES completion:nil];
+    } else {
+        [[ECCommonClass sharedManager] alertViewTitle:@"Network Error" message:@"No internet connection available"];
+    }
+}
+
+-(void)didFinishVideoPlay{
+    [self.navigationController dismissViewControllerAnimated:false completion:nil];
+}
+
+#pragma mark:- Twitter Methods
+
+- (void)twitterSetup:(NSURL *)url :(NSString *)title{
+    dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+    dispatch_sync(aQueue,^{
+        NSLog(@"1. This is the global Dispatch Queue");
+        [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+        [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+        [SVProgressHUD showWithStatus:@"Loading..."];
+    });
+    dispatch_sync(aQueue,^{
+        NSLog(@"2. %s",dispatch_queue_get_label(aQueue));
+    });
+    dispatch_async(aQueue,^{
+        NSLog(@"3. %s",dispatch_queue_get_label(aQueue));
+        UIImage *mImage = [UIImage imageWithData:[NSData dataWithContentsOfURL:url]];
+        [self shareViaTwitter:mImage :title];
+    });
+}
+
+- (void)shareViaTwitter:(UIImage *)image :(NSString *)title{
+    SLComposeViewController *tweetSheet = [SLComposeViewController composeViewControllerForServiceType:SLServiceTypeTwitter];
+    [tweetSheet addImage:image];
+    [tweetSheet setTitle:title];
+    [SVProgressHUD dismiss];
+    
+    [tweetSheet setCompletionHandler:^(SLComposeViewControllerResult result) {
+        [SVProgressHUD dismiss];
+        switch (result) {
+            case SLComposeViewControllerResultCancelled:
+            {
+                NSLog(@"Post Failed");
+                UIAlertController* alert;
+                alert = [UIAlertController alertControllerWithTitle:@"Failed" message:@"Something went wrong while sharing on Twitter, Please try again later." preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+                }];
+                [alert addAction:defaultAction];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self presentViewController:alert animated:YES completion:nil];
+                });
+                break;
+            }
+            case SLComposeViewControllerResultDone:
+            {
+                NSLog(@"Post Sucessful");
+                UIAlertController* alert;
+                alert = [UIAlertController alertControllerWithTitle:@"Success" message:@"Your post has been successfully shared." preferredStyle:UIAlertControllerStyleAlert];
+                UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"Okay" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {}];
+                [alert addAction:defaultAction];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self presentViewController:alert animated:YES completion:nil];
+                });
+                break;
+            }
+            default:
+                break;
+        }
+    }];
+    [self presentViewController:tweetSheet animated:YES completion:Nil];
+}
+
+#pragma mark - FBSDKSharingDelegate
+
+- (void)sharer:(id<FBSDKSharing>)sharer didCompleteWithResults :(NSDictionary *)results {
+    NSLog(@"FB: didCompleteWithResults=%@\n",[results debugDescription]);
+}
+
+- (void)sharer:(id<FBSDKSharing>)sharer didFailWithError:(NSError *)error {
+    NSLog(@"FB: didFailWithError=%@\n",[error debugDescription]);
+}
+
+- (void)sharerDidCancel:(id<FBSDKSharing>)sharer {
+    NSLog(@"FB: sharerDidCancel=%@\n",[sharer debugDescription]);
 }
 
 @end
