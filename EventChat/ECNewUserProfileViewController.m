@@ -67,7 +67,7 @@
 
 @implementation ECNewUserProfileViewController
 
-#pragma mark:- ViewController LifeCycle Methods
+#pragma mark - ViewController LifeCycle Methods
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -92,7 +92,7 @@
      */
 }
 
-#pragma mark:- SearchBar Delegate Methods
+#pragma mark - SearchBar Delegate Methods
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
     [self.mTableView setHidden:false];
@@ -129,7 +129,7 @@
     [self.mSearchBar endEditing:YES];
 }
 
-#pragma mark:- UITableView DataSource and Delegate Methods
+#pragma mark - UITableView DataSource and Delegate Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -279,18 +279,10 @@
     }
 }
 
-#pragma mark:- Instance Methods
+#pragma mark - Instance Methods
 
 - (void)initialSetup{
     [self.mFollowButton setHidden:true];
-    /*
-    if([self.mLoginUser.followeeIds containsObject:self.mLoginUser.userId]){
-        [self.mFollowButton setTitle:@"Unfollow" forState:UIControlStateNormal];
-    }
-    else{
-        [self.mFollowButton setTitle:@"Follow" forState:UIControlStateNormal];
-    }
-    */
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadPorfileTV) name:@"updateTableView" object:nil];
     
@@ -440,7 +432,7 @@
     }
 }
 
-#pragma mark:- IBAction Methods
+#pragma mark - IBAction Methods
 
 - (IBAction)actionOnFollowButton:(id)sender {
     if ([self.mFollowButton.titleLabel.text isEqualToString:@"Unfollow"]){
@@ -526,7 +518,7 @@
     [self.mTableView reloadData];
 }
 
-#pragma mark:- Handling background Image upload
+#pragma mark - Handling background Image upload
 
 - (void) beginBackgroundUpdateTask {
     self.backgroundUpdateTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
@@ -539,7 +531,7 @@
     self.backgroundUpdateTaskId = UIBackgroundTaskInvalid;
 }
 
-#pragma mark:- Upload Image or Video
+#pragma mark - Upload Image or Video
 
 // Uploading Image On S3
 -(void)uploadImage{
@@ -627,7 +619,7 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-#pragma mark:- API Call Methods
+#pragma mark - API Call Methods
 
 - (void)loadFollowing:(NSString *)userId{
     NSLog(@"userId loadFollowing: \(userId)");
@@ -721,7 +713,7 @@
     }];
 }
 
-#pragma mark:- Post Notification Methods
+#pragma mark - Post Notification Methods
 
 -(void)updateTableView {
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
@@ -741,13 +733,13 @@
     [self updateUser];
 }
 
-#pragma mark:- Post Delegate Methods
+#pragma mark - Post Delegate Methods
 
 - (void)refreshPostStream {
     [self loadUserPosts:self.profileUser.userId];
 }
 
-#pragma mark:- SDWebImage
+#pragma mark - SDWebImage
 
 -(void)showImageOnHeader:(NSString *)url{
     SDImageCache *cache = [SDImageCache sharedImageCache];
@@ -786,14 +778,14 @@
     }
 }
 
-#pragma mark:- AddToPlaylist Delegate Methods
+#pragma mark - AddToPlaylist Delegate Methods
 
 - (void)updateUI{
     [self.navigationController.navigationBar setUserInteractionEnabled:YES];
     self.tabBarController.tabBar.hidden = NO;
 }
 
-#pragma mark:- DCInfluencersPerson DetailsTVCell Delegate Methods
+#pragma mark - DCInfluencersPerson DetailsTVCell Delegate Methods
 
 -(void)playVideoButtonTapped:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
     DCPost *postNew = [self.userPostArray objectAtIndex:index - 1];
@@ -875,8 +867,6 @@
                                                              style:UIAlertActionStyleDefault
                                                            handler:^(UIAlertAction *action)
                                      {
-                                         NSLog(@"Facebook action");
-                                         NSLog(@"Share to Facebook");
                                          self.shareDialog = [[FBSDKShareDialog alloc] init];
                                          self.content = [[FBSDKShareLinkContent alloc] init];
                                          self.content.contentURL = [NSURL URLWithString:link];
@@ -889,12 +879,10 @@
                                          else {
                                              [self.shareDialog setMode:FBSDKShareDialogModeAutomatic];
                                          }
-                                         //[self.shareDialog setMode:FBSDKShareDialogModeShareSheet];
                                          [self.shareDialog setShareContent:self.content];
                                          [self.shareDialog setFromViewController:self];
                                          [self.shareDialog setDelegate:self];
                                          [self.shareDialog show];
-                                         //[FBSDKShareDialog showFromViewController:self withContent:self.content delegate:self];
                                      }];
     
     UIAlertAction *twitterAction = [UIAlertAction actionWithTitle:NSLocalizedString(@"Twitter", @"Twitter action")
@@ -925,7 +913,7 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-#pragma mark:- API Call Methods
+#pragma mark - API Call Methods
 
 -(void)setUserAttendanceResponse:(NSString *)strFeedId{
     NSString *userResponse = @"Going";
@@ -955,7 +943,7 @@
     }];
 }
 
-#pragma mark:- Action on video tap Methods
+#pragma mark - Action on video tap
 
 -(void)playButtonPressed:(NSString *)videoURLStr {
     BOOL isInternetAvailable = [[ECCommonClass sharedManager]isInternetAvailabel];
@@ -1048,7 +1036,6 @@
                                             NSLog(@"Error update user profile: %@", error);
                                         } else {
                                             [self updateTableView];
-//                                            [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
                                         }
                                     }];
                                 }
@@ -1064,7 +1051,7 @@
     
 }
 
-#pragma mark:- Twitter Methods
+#pragma mark - Twitter Methods
 
 - (void)twitterSetup:(NSURL *)url :(NSString *)title{
     dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);

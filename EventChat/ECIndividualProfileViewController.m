@@ -19,7 +19,6 @@
 #import "ECUserListCell.h"
 #import "ECUser.h"
 #import "DCPost.h"
-#import "AVPlayerViewController.h"
 #import "ECFollowViewController.h"
 #import "ECFavoritesViewController.h"
 #import "ECUserProfileSocialTableViewCell.h"
@@ -34,6 +33,9 @@
 #import "SVProgressHUD.h"
 #import "ECAPINames.h"
 #import "ECCommonClass.h"
+#import <MediaPlayer/MediaPlayer.h>
+#import <AVFoundation/AVFoundation.h>
+#import <AVKit/AVKit.h>
 
 @interface ECIndividualProfileViewController ()
 @property (nonatomic, strong) NSArray *mFollowingUsersArr;
@@ -52,7 +54,7 @@
 
 @implementation ECIndividualProfileViewController
 
-#pragma mark:- ViewController LifeCycle Methods
+#pragma mark - ViewController LifeCycle Methods
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -70,7 +72,7 @@
     [self updateUser];
 }
 
-#pragma mark:- SearchBar Delegate Methods
+#pragma mark - SearchBar Delegate Methods
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText{
     [self.mSearchResultTableView setHidden:false];
@@ -107,7 +109,7 @@
     [self.mSearchBar endEditing:YES];
 }
 
-#pragma mark:- UITableView DataSource and Delegate Methods
+#pragma mark - UITableView DataSource and Delegate Methods
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -219,7 +221,7 @@
     }
 }
 
-#pragma mark:- Instance Methods
+#pragma mark - Instance Methods
 
 - (void)initialSetup{
     if ([self.loginUserIdStr isEqualToString:self.selectedEcUser.userId]){
@@ -336,17 +338,11 @@
 }
 
 -(void)reloadUI{
-    /*
-    self.signedInUser = [[ECAPI sharedManager] signedInUser];
-    [self getAllUserList];
-    [self loadUserPosts];
-    [self loadFollowing];
-    [self loadFollowers];
-    */
-    
     [self initialSetup];
     [self updateUser];
 }
+
+#pragma mark - Post Notification Methods
 
 -(void)reloadTableView {
     self.selectedEcUser = [[ECAPI sharedManager] signedInUser];
@@ -354,76 +350,17 @@
     [self updateUserProfile:self.signedInUser];
 }
 
-#pragma mark:- Handling background Image upload
+#pragma mark - AddToPlaylist Delegate Methods
 
-- (void) beginBackgroundUpdateTask {
-    self.bkUptTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
-        [self endBackgroundUpdateTask];
-    }];
+- (void)updateUI{
+    [self.navigationController.navigationBar setUserInteractionEnabled:YES];
+    self.tabBarController.tabBar.hidden = NO;
 }
 
-- (void) endBackgroundUpdateTask {
-    [[UIApplication sharedApplication] endBackgroundTask: self.bkUptTaskId];
-    self.bkUptTaskId = UIBackgroundTaskInvalid;
-}
-
-#pragma mark:- DCInfluencersPerson DetailsTVCell Delegate Methods
-
-- (void)didTapAttendanceButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
-    DCPost *postItem = [self.userPostArr objectAtIndex:index - 1];
-    if (postItem.postId != nil){
-        [self setUserAttendanceResponse:postItem.postId];
-    }
-}
-
--(void)playVideoButtonTapped:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
-    DCPost *postNew = [self.userPostArr objectAtIndex:index - 1];
-    [self playButtonPressed:postNew.videoUrl];
-}
-
-- (void)didTapCommentsButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
-    DCPost *postNew = [self.userPostArr objectAtIndex:index - 1];
-    [[ECAPI sharedManager] fetchTopicsByFeedItemId:postNew.postId callback:^(NSArray *topics, NSError *error)  {
-        if(error){
-            NSLog(@"Error: %@", error);
-        }
-        else{
-            self.mTopicsArr = [[NSMutableArray alloc] initWithArray:topics];
-            ECTopic *topic = [self.mTopicsArr objectAtIndex:1];
-            DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
-            dcChat.dcPost = postNew;
-            dcChat.isPost = true;
-            dcChat.selectedTopic = topic;
-            dcChat.topicId = topic.topicId;
-            [self.navigationController pushViewController:dcChat animated:NO];
-        }
-    }];
-}
-
-- (void)didTapFavoriteButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
-    DCPost *postNew = [self.userPostArr objectAtIndex:index - 1];
-    AddToPlaylistPopUpViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddToPlaylistPopUpViewController"];
-    CATransition *transition = [CATransition animation];
-    transition.duration = 0.5;
-    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    transition.type = kCATransitionFromBottom;
-    transition.subtype = kCATransitionFromBottom;
-    [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
-    [self.navigationController.navigationBar setUserInteractionEnabled:NO];
-    self.tabBarController.tabBar.hidden = YES;
-    vc.playlistDelegate = self;
-    vc.isFeedMode = true;
-    vc.mFeedItemId = postNew.postId;
-    vc.isComeFromProfileVC = true;
-    vc.signedInUser = self.selectedEcUser;
-    [self addChildViewController:vc];
-    vc.view.frame = self.view.frame;
-    [self.view addSubview:vc.view];
-    [vc didMoveToParentViewController:self];
-}
+#pragma mark - DCInfluencersPerson DetailsTVCell Delegate Methods
 
 - (void)didTapShareButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index {
-    DCPost *postNew = [self.userPostArray objectAtIndex:index - 1];
+    DCPost *postNew = [self.userPostArr objectAtIndex:index - 1];
     NSString* title = postNew.displayName;
     NSString* link = @"";
     
@@ -499,7 +436,60 @@
     [self presentViewController:alertController animated:YES completion:nil];
 }
 
-#pragma mark:- API Call Methods
+- (void)didTapCommentsButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
+    DCPost *postNew = [self.userPostArr objectAtIndex:index - 1];
+    [[ECAPI sharedManager] fetchTopicsByFeedItemId:postNew.postId callback:^(NSArray *topics, NSError *error)  {
+        if(error){
+            NSLog(@"Error: %@", error);
+        }
+        else{
+            self.mTopicsArr = [[NSMutableArray alloc] initWithArray:topics];
+            ECTopic *topic = [self.mTopicsArr objectAtIndex:1];
+            DCChatReactionViewController *dcChat = [self.storyboard instantiateViewControllerWithIdentifier:@"DCChatReactionViewController"];
+            dcChat.dcPost = postNew;
+            dcChat.isPost = true;
+            dcChat.selectedTopic = topic;
+            dcChat.topicId = topic.topicId;
+            [self.navigationController pushViewController:dcChat animated:NO];
+        }
+    }];
+}
+
+- (void)didTapAttendanceButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
+    DCPost *postItem = [self.userPostArr objectAtIndex:index - 1];
+    if (postItem.postId != nil){
+        [self setUserAttendanceResponse:postItem.postId];
+    }
+}
+
+- (void)didTapFavoriteButton:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
+    DCPost *postNew = [self.userPostArr objectAtIndex:index - 1];
+    AddToPlaylistPopUpViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddToPlaylistPopUpViewController"];
+    CATransition *transition = [CATransition animation];
+    transition.duration = 0.5;
+    transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    transition.type = kCATransitionFromBottom;
+    transition.subtype = kCATransitionFromBottom;
+    [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
+    [self.navigationController.navigationBar setUserInteractionEnabled:NO];
+    self.tabBarController.tabBar.hidden = YES;
+    vc.playlistDelegate = self;
+    vc.isFeedMode = true;
+    vc.mFeedItemId = postNew.postId;
+    vc.isComeFromProfileVC = true;
+    vc.signedInUser = self.selectedEcUser;
+    [self addChildViewController:vc];
+    vc.view.frame = self.view.frame;
+    [self.view addSubview:vc.view];
+    [vc didMoveToParentViewController:self];
+}
+
+-(void)playVideoButtonTapped:(DCInfluencersPersonDetailsTableViewCell *)dcPersonDetailsCell index:(NSInteger)index{
+    DCPost *postNew = [self.userPostArr objectAtIndex:index - 1];
+    [self playButtonPressed:postNew.videoUrl];
+}
+
+#pragma mark - API Call Methods
 
 - (void)getAllUserList{
     [[ECAPI sharedManager] getAllUserListAPI:^(NSArray *searchResult, NSError *error) {
@@ -560,7 +550,6 @@
                     [self reloadTableView];
                 }
             }];
-//            [self updateUser];
         }
     }];
 }
@@ -620,7 +609,7 @@
     }];
 }
 
-#pragma mark:- IBAction Methods
+#pragma mark - IBAction Methods
 
 - (IBAction)actionOnFollowButton:(id)sender {
     self.isFollowTab = true;
@@ -680,6 +669,19 @@
         }
     }
     [self.mSearchResultTableView reloadData];
+}
+
+#pragma mark - Handling background Image upload
+
+- (void) beginBackgroundUpdateTask {
+    self.bkUptTaskId = [[UIApplication sharedApplication] beginBackgroundTaskWithExpirationHandler:^{
+        [self endBackgroundUpdateTask];
+    }];
+}
+
+- (void) endBackgroundUpdateTask {
+    [[UIApplication sharedApplication] endBackgroundTask: self.bkUptTaskId];
+    self.bkUptTaskId = UIBackgroundTaskInvalid;
 }
 
 #pragma mark - SDWebImage
@@ -754,7 +756,7 @@
         }
 }
 
-#pragma mark:- Action on video tap Methods
+#pragma mark - Action on video tap
 
 -(void)playButtonPressed:(NSString *)videoURLStr {
     BOOL isInternetAvailable = [[ECCommonClass sharedManager]isInternetAvailabel];
@@ -779,7 +781,7 @@
     [self.navigationController dismissViewControllerAnimated:false completion:nil];
 }
 
-#pragma mark:- Twitter Methods
+#pragma mark - Twitter Methods
 
 - (void)twitterSetup:(NSURL *)url :(NSString *)title{
     dispatch_queue_t aQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
