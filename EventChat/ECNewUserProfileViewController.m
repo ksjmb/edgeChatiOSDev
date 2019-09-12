@@ -301,6 +301,20 @@
     [self.coverImaegButton setImage:[IonIcons imageWithIcon:ion_ios_camera_outline  size:27.0 color:[UIColor darkGrayColor]] forState:UIControlStateNormal];
     [self.profileImageButton setImage:[IonIcons imageWithIcon:ion_ios_camera_outline  size:27.0 color:[UIColor darkGrayColor]] forState:UIControlStateNormal];
     
+    //profileImageButton
+    self.profileImageButton.layer.cornerRadius = self.profileImageButton.frame.size.width / 2;
+    self.profileImageButton.layer.borderWidth = 1;
+    self.profileImageButton.layer.borderColor = [UIColor lightGrayColor].CGColor;
+        self.profileImageButton.backgroundColor = [UIColor whiteColor];
+    self.profileImageButton.layer.masksToBounds = YES;
+    
+    //coverImaegButton
+    self.coverImaegButton.layer.cornerRadius = self.coverImaegButton.frame.size.width / 2;
+    self.coverImaegButton.layer.borderWidth = 1;
+    self.coverImaegButton.layer.borderColor = [UIColor lightGrayColor].CGColor;
+    self.coverImaegButton.backgroundColor = [UIColor whiteColor];
+    self.coverImaegButton.layer.masksToBounds = YES;
+    
     // Apply round mask
     self.userProfileImageView.layer.cornerRadius = self.userProfileImageView.frame.size.width / 2;
     self.userProfileImageView.layer.borderWidth = 5;
