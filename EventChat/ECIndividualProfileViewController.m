@@ -36,6 +36,7 @@
 #import <MediaPlayer/MediaPlayer.h>
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
+#import "ECFullScreenImageViewController.h"
 
 @interface ECIndividualProfileViewController ()
 @property (nonatomic, strong) NSArray *mFollowingUsersArr;
@@ -49,6 +50,7 @@
 @property (nonatomic, strong) FBSDKShareDialog *mShareDialog;
 @property (nonatomic, strong) FBSDKShareLinkContent *mFBContent;
 @property (nonatomic, strong) NSMutableArray *mTopicsArr;
+@property (strong, nonatomic) ECFullScreenImageViewController *fullScreenImgVC;
 
 @end
 
@@ -197,11 +199,16 @@
         
     }else{
         if (indexPath.row != 0){
+            DCPost *mDCPost = [self.userPostArr objectAtIndex:indexPath.row - 1];
+            if ([mDCPost.postType  isEqual: @"image"]){
+                if (mDCPost.imageUrl != nil){
+                    self.fullScreenImgVC = [[ECFullScreenImageViewController alloc] initWithNibName:@"ECFullScreenImageViewController" bundle:nil];
+                    self.fullScreenImgVC.imagePath = mDCPost.imageUrl;
+                    [self presentViewController:self.fullScreenImgVC animated:YES completion:nil];
+                }
+            }
             /*
-             DCPost *mDCPost = [self.userPostArr objectAtIndex:indexPath.row - 1];
-             if ([mDCPost.postType  isEqual: @"image"]){
-             
-             }else if ([mDCPost.postType  isEqual: @"video"]){
+             else if ([mDCPost.postType  isEqual: @"video"]){
              [self playButtonPressed:mDCPost.videoUrl];
              }
              */

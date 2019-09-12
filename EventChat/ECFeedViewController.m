@@ -191,6 +191,7 @@
         _profileButton.layer.masksToBounds = YES;
         _profileButton.layer.borderWidth = 0.5;
         _profileButton.layer.borderColor = [UIColor whiteColor].CGColor;
+        
         [_profileButton setImage:[self imageWithImage:img scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
         [_profileButton addTarget:self action:@selector(didTapViewProfile:) forControlEvents:UIControlEventTouchUpInside];
         self.sortOptionsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_profileButton];
@@ -261,8 +262,15 @@
             }
 
 //            [_profileButton setImage:[self imageWithImage:img scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
-            [self showProfilePicImage:self ForImageUrl:self.signedInUser.profilePicUrl ForImageView:_profileButton];
-            [_profileButton addTarget:self action:@selector(didTapViewProfile:) forControlEvents:UIControlEventTouchUpInside];
+            
+            if (self.signedInUser.profilePicUrl != nil && ![self.signedInUser.profilePicUrl  isEqual: @""]){
+                [self showProfilePicImage:self ForImageUrl:self.signedInUser.profilePicUrl ForImageView:_profileButton];
+            }else{
+                UIImage *blankImg = [UIImage imageNamed:@"missing-profile.png"];
+                [self.profileButton setImage:[self imageWithImage:blankImg scaledToSize:CGSizeMake(30.0, 30.0)]  forState:UIControlStateNormal];
+            }
+            [self.profileButton addTarget:self action:@selector(didTapViewProfile:) forControlEvents:UIControlEventTouchUpInside];
+            
             self.sortOptionsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_profileButton];
             self.navigationItem.leftBarButtonItem = self.sortOptionsBarButtonItem;
             [self updateUserProfilePic:self.signedInUser.userId URL:imageURL];
