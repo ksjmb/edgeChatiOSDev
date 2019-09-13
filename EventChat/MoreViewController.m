@@ -124,11 +124,11 @@
             [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
              */
             
-            ECNewUserProfileViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewUserProfileViewController"];
-            dcProfileTableViewController.isSignedInUser = true;
-            dcProfileTableViewController.profileUser = self.signedInUser;
-//            dcProfileTableViewController.mLoginUser = self.signedInUser;
-            [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
+            ECNewUserProfileViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewUserProfileViewController"];
+            vc.isSignedInUser = true;
+            vc.profileUser = self.signedInUser;
+//            vc.mLoginUser = self.signedInUser;
+            [self.navigationController pushViewController:vc animated:YES];
             
         }else{
             [self pushToSignInVC:@"DCProfileTableViewController"];
@@ -229,10 +229,17 @@
 
 -(void)sendToSpecificVC:(NSString*)identifier{
     if([identifier isEqualToString:@"DCProfileTableViewController"]) {
+        ECNewUserProfileViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewUserProfileViewController"];
+        vc.isSignedInUser = true;
+        vc.profileUser = self.signedInUser;
+        [self.navigationController pushViewController:vc animated:YES];
+        
+        /*
         DCProfileTableViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCProfileTableViewController"];
         dcProfileTableViewController.isSignedInUser = true;
         dcProfileTableViewController.profileUser = self.signedInUser;
         [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
+        */
     }
     else if([identifier isEqualToString:@"ECNewPlaylistTableViewController"]) {
         ECNewPlaylistTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewPlaylistTableViewController"];

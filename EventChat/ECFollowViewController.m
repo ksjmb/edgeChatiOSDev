@@ -10,6 +10,7 @@
 #import "ECAPI.h"
 #import "DCProfileTableViewController.h"
 #import "ECUser.h"
+#import "ECIndividualProfileViewController.h"
 
 @interface ECFollowViewController ()
 @property (nonatomic, weak) IBOutlet UITableView *userListTableView;
@@ -17,6 +18,8 @@
 @end
 
 @implementation ECFollowViewController
+
+#pragma mark - ViewController LifeCycle Methods
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -44,16 +47,16 @@
 }
 
 #pragma mark - Table view data source
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 60.0;
 }
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    
     return [self.usersArray count];
 }
 
@@ -73,15 +76,22 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
     NSError *infoError = nil;
     ECUser *ecUser = [[ECUser alloc] initWithDictionary:[self.usersArray objectAtIndex:indexPath.row] error:&infoError];
+    ECIndividualProfileViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECIndividualProfileViewController"];
+    vc.isSignedInUser = false;
+    vc.selectedEcUser = ecUser;
+    [self.navigationController pushViewController:vc animated:YES];
+    
+    /*
     DCProfileTableViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCProfileTableViewController"];
     dcProfileTableViewController.isSignedInUser = false;
     dcProfileTableViewController.profileUser = ecUser;
-    
     [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
+    */
 }
 
+#pragma mark - API Call Methods
+
 - (void)loadFollowing:(NSString *)userId{
-//- (void)loadFollowing{
     [[ECAPI sharedManager] getFollowing:userId callback:^(NSArray *users, NSError *error) {
         if (error) {
             NSLog(@"Error adding user: %@", error);
@@ -94,7 +104,6 @@
 }
 
 - (void)loadFollowers:(NSString *)userId{
-//- (void)loadFollowers{
     [[ECAPI sharedManager] getFollowers:userId callback:^(NSArray *users, NSError *error) {
         if (error) {
             NSLog(@"Error adding user: %@", error);

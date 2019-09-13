@@ -338,10 +338,17 @@
 
 -(void)sendToSpecificVC:(NSString*)identifier{
     if([identifier isEqualToString:@"DCProfileTableViewController"]) {
+        ECNewUserProfileViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewUserProfileViewController"];
+        vc.isSignedInUser = true;
+        vc.profileUser = self.signedInUser;
+        [self.navigationController pushViewController:vc animated:YES];
+        
+        /*
         DCProfileTableViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCProfileTableViewController"];
         dcProfileTableViewController.isSignedInUser = true;
         dcProfileTableViewController.profileUser = self.signedInUser;
         [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
+         */
     }
     else if([identifier isEqualToString:@"ECNewPlaylistTableViewController"]) {
         ECNewPlaylistTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewPlaylistTableViewController"];
@@ -887,12 +894,10 @@
 
 //** ProfileTap **//
 - (IBAction)didTapViewProfile:(id)sender{
-    ECNewUserProfileViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewUserProfileViewController"];
-//    DCProfileTableViewController *dcProfileTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCProfileTableViewController"];
-    dcProfileTableViewController.isSignedInUser = true;
-    dcProfileTableViewController.profileUser = self.signedInUser;
-//    dcProfileTableViewController.mLoginUser = self.signedInUser;
-    [self.navigationController pushViewController:dcProfileTableViewController animated:YES];
+    ECNewUserProfileViewController *dcProfileVC = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewUserProfileViewController"];
+    dcProfileVC.isSignedInUser = true;
+    dcProfileVC.profileUser = self.signedInUser;
+    [self.navigationController pushViewController:dcProfileVC animated:YES];
 }
 
 //** FavTap **//

@@ -177,7 +177,6 @@
         
         NSError *infoError = nil;
         self.selectedEcUser = [[ECUser alloc] initWithDictionary:[self.filterResultArray objectAtIndex:indexPath.row] error:&infoError];
-    
         
         self.selectedEcUser.userId = [mUser valueForKey:@"_id"];
         self.selectedEcUser.profilePicUrl = [mUser valueForKey:@"profilePicUrl"];
