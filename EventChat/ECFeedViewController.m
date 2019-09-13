@@ -89,10 +89,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     ECCommonClass *instance = [ECCommonClass sharedManager];
     if (instance.isAouthToken){
-        
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(applicationIsActive:)
                                                      name:UIApplicationDidBecomeActiveNotification
@@ -104,7 +102,6 @@
                                                    object:nil];
         
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(profileUpdated) name:@"profileUpdated" object:nil];
-        //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(morevctap) name:@"morevctap" object:nil];
         
         [self.eventFeedTableView registerNib:[UINib nibWithNibName:@"ECNewTableViewCell" bundle:nil]
                       forCellReuseIdentifier:@"ECNewTableViewCell"];
@@ -148,12 +145,8 @@
         if (@available(iOS 11.0, *)) {
             [self.searchController.searchBar.heightAnchor constraintLessThanOrEqualToConstant: 44].active = YES;
         }
-        // Search is now just presenting a view controller. As such, normal view controller
-        // presentation semantics apply. Namely that presentation will walk up the view controller
-        // hierarchy until it finds the root view controller or one that defines a presentation context.
-        //
+
         self.definesPresentationContext = YES;
-        //[self loadEventBriteSearchResults];
         NSLog(@"Overlay: %@", [[NSUserDefaults standardUserDefaults] objectForKey:@"HasSeenOverlay"]);
         BOOL hasSeenOverlay = [[NSUserDefaults standardUserDefaults] objectForKey:@"HasSeenOverlay"];
         if(!hasSeenOverlay){
@@ -163,7 +156,7 @@
             [addController setModalPresentationStyle:UIModalPresentationOverFullScreen];
             [self.navigationController presentViewController:addController animated:YES completion: nil];
         }
-        //
+        
         NSString *fb_profileImageURL = [[NSUserDefaults standardUserDefaults] valueForKey:@"FB_PROFILE_PIC_URL"];
         [[NSUserDefaults standardUserDefaults] synchronize];
         UIImage* img;
@@ -196,18 +189,18 @@
         [_profileButton addTarget:self action:@selector(didTapViewProfile:) forControlEvents:UIControlEventTouchUpInside];
         self.sortOptionsBarButtonItem = [[UIBarButtonItem alloc] initWithCustomView:_profileButton];
         self.navigationItem.leftBarButtonItem = self.sortOptionsBarButtonItem;
-        //
         
+        /*
         // JB: 01/26/18 - Commented out for not and loading particular category directly. Will address after business discussion.
-        //    [[ECAPI sharedManager] getFeedItems:^(NSArray *searchResult, NSError *error) {
-        //        self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
-        //
-        ////        dispatch_async(dispatch_get_main_queue(), ^{
-        ////            [self.eventFeedTableView reloadData];
-        ////        });
-        //        [self.eventFeedTableView reloadData];
-        //        [SVProgressHUD dismiss];
-        //    }];
+            [[ECAPI sharedManager] getFeedItems:^(NSArray *searchResult, NSError *error) {
+                self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.eventFeedTableView reloadData];
+                });
+                [self.eventFeedTableView reloadData];
+                [SVProgressHUD dismiss];
+            }];
+         */
         
         self.filterList = [[HTHorizontalSelectionList alloc] initWithFrame:CGRectMake(0, 0.0, self.view.frame.size.width, 56)];
         self.filterList.delegate = self;
@@ -260,8 +253,6 @@
             else{
                 img = [UIImage imageNamed:@"missing-profile.png"];
             }
-
-//            [_profileButton setImage:[self imageWithImage:img scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
             
             if (self.signedInUser.profilePicUrl != nil && ![self.signedInUser.profilePicUrl  isEqual: @""]){
                 [self showProfilePicImage:self ForImageUrl:self.signedInUser.profilePicUrl ForImageView:_profileButton];
@@ -293,11 +284,6 @@
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     [self.eventFeedTableView reloadData];
 }
-
-//-(void)morevctap {
-//    NSLog(@"iscomming from more...");
-//    [self pushToSignInVC:@"MoreViewController"];
-//}
 
 #pragma mark:- AddToPlaylist Delegate Methods
 
@@ -489,7 +475,6 @@
 
 - (IBAction)showSearchbar:(id)sender{
     self.searchController = [[UISearchController alloc] initWithSearchResultsController:nil];
-    
     [self.searchController.searchBar setBarStyle:UIBarStyleDefault];
     [self.searchController.searchBar setTintColor:[ECColor colorFromHexString:[[NSBundle mainBundle] objectForInfoDictionaryKey: @"mainThemeColorHex"]]];
     self.searchController.delegate = self;
@@ -526,40 +511,10 @@
             [SVProgressHUD dismiss];
         }
     }];
-    
-    //    if([feedItemCategory.type isEqual:@"entity"]){
-    //        [[ECAPI sharedManager] filterFeedItemsByEntityType:@"person" callback:^(NSArray *searchResult, NSError *error) {
-    //            if (error) {
-    //                NSLog(@"Error adding user: %@", error);
-    //                NSLog(@"%@", error);
-    //            }
-    //            else{
-    //                self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
-    //                [self.eventFeedTableView reloadData];
-    //                [SVProgressHUD dismiss];
-    //            }
-    //        }];
-    //    }
-    //    else{
-    //        [[ECAPI sharedManager] filterFeedItemsByCatagory:feedItemCategory.name callback:^(NSArray *searchResult, NSError *error) {
-    //            self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
-    //            [self.eventFeedTableView reloadData];
-    //            [SVProgressHUD dismiss];
-    //        }];
-    //    }
-    //    if(index == 0){
-    //        [[ECAPI sharedManager] getFeedItems:^(NSArray *searchResult, NSError *error) {
-    //            self.feedItemsArray = [[NSMutableArray alloc] initWithArray:searchResult];
-    //            [self.eventFeedTableView reloadData];
-    //            [SVProgressHUD dismiss];
-    //        }];
-    //    }else{
-    //
-    //
-    //    }
 }
 
-#pragma mark - API calls
+#pragma mark - API Calls Methods
+
 - (void)loadEventBriteSearchResults{
     [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
     [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
@@ -669,21 +624,17 @@
     }];
 }
 
-#pragma mark - Table view data source
-
-- (AFHTTPRequestOperationManager *)operationManager
-{
-    if (!_operationManager)
-    {
+- (AFHTTPRequestOperationManager *)operationManager {
+    if (!_operationManager) {
         _operationManager = [[AFHTTPRequestOperationManager alloc] init];
         _operationManager.responseSerializer = [AFImageResponseSerializer serializer];
     };
-    
     return _operationManager;
 }
 
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+#pragma mark - UITableView DataSource & Delegate Methods
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 311.0;
 }
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -734,70 +685,18 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    //[self performSegueWithIdentifier:@"show_details" sender:nil];
-    //    ECEventDetailsViewController *ecEventDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECEventDetailsViewController"];
-    //    ECEventBriteEvent *event = [[ECEventBriteEvent alloc] initWithDictionary:[self.feedResult.events objectAtIndex:indexPath.row] error:nil];
-    //    ecEventDetailsViewController.selectedEvent = event;
-    //    ecEventDetailsViewController.eventId = event.id;
-    //
-    //    [self.navigationController pushViewController:ecEventDetailsViewController animated:YES];
+    /*
+    [self performSegueWithIdentifier:@"show_details" sender:nil];
+        ECEventDetailsViewController *ecEventDetailsViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"ECEventDetailsViewController"];
+        ECEventBriteEvent *event = [[ECEventBriteEvent alloc] initWithDictionary:[self.feedResult.events objectAtIndex:indexPath.row] error:nil];
+        ecEventDetailsViewController.selectedEvent = event;
+        ecEventDetailsViewController.eventId = event.id;
+        [self.navigationController pushViewController:ecEventDetailsViewController animated:YES];
+     */
 }
 
-/*
- // Override to support conditional editing of the table view.
- - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the specified item to be editable.
- return YES;
- }
- */
+#pragma mark - Action Sheet Methods
 
-/*
- // Override to support editing the table view.
- - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
- if (editingStyle == UITableViewCellEditingStyleDelete) {
- // Delete the row from the data source
- [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
- } else if (editingStyle == UITableViewCellEditingStyleInsert) {
- // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
- }
- }
- */
-
-/*
- // Override to support rearranging the table view.
- - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath {
- }
- */
-
-/*
- // Override to support conditional rearranging of the table view.
- - (BOOL)tableView:(UITableView *)tableView canMoveRowAtIndexPath:(NSIndexPath *)indexPath {
- // Return NO if you do not want the item to be re-orderable.
- return YES;
- }
- */
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
-
-/*
- #pragma mark - Navigation
- 
- // In a storyboard-based application, you will often want to do a little preparation before navigation
- - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
- // Get the new view controller using [segue destinationViewController].
- // Pass the selected object to the new view controller.
- }
- */
-
-#pragma mark - Action sheet
 - (void)actionSheet:(UIActionSheet *)popup clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     NSLog(@"%@", self.feedResult.events);
@@ -864,9 +763,9 @@
     }
 }
 
-#pragma mark - Action sheet
-- (IBAction)didTapMoreOptionsButton:(id)sender
-{
+#pragma mark - IBActions Methods
+
+- (IBAction)didTapMoreOptionsButton:(id)sender {
     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:
                             @"Date Added", @"End Date", @"Alphabetical (A - Z)", @"Alphabetical (Z - A)",
                             nil];
@@ -874,8 +773,7 @@
     [popup showInView:[UIApplication sharedApplication].keyWindow];
 }
 
-- (IBAction)didTapFilterButton:(id)sender
-{
+- (IBAction)didTapFilterButton:(id)sender {
     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:
                             @"5 Miles", @"10 Miles", @"25 Miles", @"50 Miles",
                             nil];
@@ -883,8 +781,7 @@
     [popup showInView:[UIApplication sharedApplication].keyWindow];
 }
 
-- (IBAction)didTapAddToPlaylistButton:(id)sender
-{
+- (IBAction)didTapAddToPlaylistButton:(id)sender {
     UIActionSheet *popup = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:nil otherButtonTitles:
                             @"Playlist 1", @"Playlist 2", @"Playlist 3",
                             nil];
@@ -903,31 +800,6 @@
 //** FavTap **//
 - (IBAction)didTapViewFavorites:(id)sender{
     if (self.userEmail != nil){
-        /*
-        AddToPlaylistPopUpViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"AddToPlaylistPopUpViewController"];
-        CATransition *transition = [CATransition animation];
-        transition.duration = 0.5;
-        transition.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-        transition.type = kCATransitionFromBottom;
-        transition.subtype = kCATransitionFromBottom;
-        [self.navigationController.view.layer addAnimation:transition forKey:kCATransition];
-        [self.navigationController.navigationBar setUserInteractionEnabled:NO];
-        self.tabBarController.tabBar.hidden = YES;
-        [self.filterList setUserInteractionEnabled:NO];
-        vc.playlistDelegate = self;
-        [self addChildViewController:vc];
-        vc.view.frame = self.view.frame;
-        [self.view addSubview:vc.view];
-        [vc didMoveToParentViewController:self];
-        
-         //=======================
-        
-        DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
-        dcPlaylistsTableViewController.isFeedMode = false;
-        dcPlaylistsTableViewController.isSignedInUser = true;
-        [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
-        */
-        
         ECNewPlaylistTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewPlaylistTableViewController"];
          vc.isFeedMode = false;
          vc.isSignedInUser = true;
@@ -944,7 +816,8 @@
     self.navigationItem.titleView = self.searchController.searchBar;
 }
 
-#pragma mark - UISearchBarDelegate
+#pragma mark - UISearchBarDelegate Methods
+
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     //self.searchBar.showsCancelButton = false;
     [searchBar resignFirstResponder];
@@ -1439,16 +1312,12 @@
     SDImageCache *cache = [SDImageCache sharedImageCache];
     UIImage *inMemoryImage = [cache imageFromMemoryCacheForKey:url];
     // resolves the SDWebImage issue of image missing
-    if (inMemoryImage)
-    {
-//        imageView.image = inMemoryImage;
+    if (inMemoryImage) {
         [button setImage:[self imageWithImage:inMemoryImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
     }
     else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
         UIImage *image = [cache imageFromDiskCacheForKey:url];
-//        imageView.image = image;
         [button setImage:[self imageWithImage:image scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
-        
     }else{
         NSURL *urL = [NSURL URLWithString:url];
         SDWebImageManager *manager = [SDWebImageManager sharedManager];
@@ -1460,7 +1329,6 @@
                              }
                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                 if (image) {
-//                                    imageView.image = image;
                                     [button setImage:[self imageWithImage:image scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
                                 }
                                 else {
@@ -1472,7 +1340,6 @@
                                 }
                             }];
     }
-    
 }
 
 #pragma mark - FBSDKSharingDelegate
