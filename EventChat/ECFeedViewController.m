@@ -1159,11 +1159,6 @@
             dcInfluencersPersonDetailsVC.mSelectedDCFeedItem = ecFeedCell.feedItem;
             [self.navigationController pushViewController:dcInfluencersPersonDetailsVC animated:YES];
         }
-        /*
-        DCInfluencersPersonDetailsViewController * dcInfluencersPersonDetailsVC = [self.storyboard instantiateViewControllerWithIdentifier:@"DCInfluencersPersonDetailsViewController"];
-        dcInfluencersPersonDetailsVC.mSelectedDCFeedItem = ecFeedCell.feedItem;
-        [self.navigationController pushViewController:dcInfluencersPersonDetailsVC animated:YES];
-         */
     }
 }
 

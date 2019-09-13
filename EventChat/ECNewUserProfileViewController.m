@@ -582,7 +582,7 @@
                             [self showProfilePicImage:self ForImageUrl:imageURL];
                         }
                     }
-                } else{
+                } else{ 
                     // Fail Condition ask for retry and cancel through alertView
                     [self showFailureAlert:@"Image"];
                     [SVProgressHUD dismiss];

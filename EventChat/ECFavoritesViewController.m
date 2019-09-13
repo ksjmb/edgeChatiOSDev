@@ -20,6 +20,7 @@
 #import "DCPersonDetailTableViewController.h"
 #import "DCProfileTableViewController.h"
 #import "DCPlaylist.h"
+#import "DCInfluencersPersonDetailsViewController.h"
 
 @interface ECFavoritesViewController ()
 @property (nonatomic, assign) AppDelegate *appDelegate;
@@ -29,42 +30,23 @@
 
 @implementation ECFavoritesViewController
 
+#pragma mark - ViewController LifeCycle Methods
+
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
     self.appDelegate = (AppDelegate *)[[UIApplication sharedApplication] delegate];
-    if(!self.isSignedInUser){
-    }
-    NSLog(@"SignedInUser: %@", self.signedInUser);
     if(!_canShare){
         self.navigationItem.rightBarButtonItem = nil;
     }
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
-}
-
-- (void)viewDidAppear:(BOOL)animated{
-}
-
-/*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
-
 #pragma mark - Table view data source
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 115.0;
 }
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
 }
@@ -88,6 +70,7 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
+    NSLog(@"Selected indexPath.row: %ld", (long)indexPath.row);
 }
 
 - (NSArray *)tableView:(UITableView *)tableView editActionsForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -118,18 +101,20 @@
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if(self.isSignedInUser){
         if (editingStyle == UITableViewCellEditingStyleDelete) {
+            /*
             NSError *eventError;
-//            DCFeedItem *dcFeedItem = [self.favoriteList objectAtIndex:indexPath.row];
-//            [[ECAPI sharedManager] deleteFavoriteFeedItem:dcFeedItem.feedItemId playlistId:_playlistId userId:self.signedInUser.userId callback:^(ECUser *ecUser, NSError *error) {
-//                if(error){
-//                    NSLog(@"Error: %@", error);
-//                }
-//                else{
-//                    self.signedInUser = ecUser;
-//                    [self.favoriteList removeObjectAtIndex:indexPath.row];
-//                    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-//                }
-//            }];
+            DCFeedItem *dcFeedItem = [self.favoriteList objectAtIndex:indexPath.row];
+            [[ECAPI sharedManager] deleteFavoriteFeedItem:dcFeedItem.feedItemId playlistId:_playlistId userId:self.signedInUser.userId callback:^(ECUser *ecUser, NSError *error) {
+                if(error){
+                    NSLog(@"Error: %@", error);
+                }
+                else{
+                    self.signedInUser = ecUser;
+                    [self.favoriteList removeObjectAtIndex:indexPath.row];
+                    [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+                }
+            }];
+            */
         } else if (editingStyle == UITableViewCellEditingStyleInsert) {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
         }
@@ -147,7 +132,8 @@
     }
 }
 
-#pragma mark - API Methods
+#pragma mark - API Call Methods
+
 - (IBAction)didTapSharePlaylist:(id)sender{
     // only canonical identifier is required
     BranchUniversalObject *buo = [[BranchUniversalObject alloc] initWithCanonicalIdentifier:[NSString stringWithFormat:@"playlist/%@", _playlistId]];
@@ -190,11 +176,13 @@
         NSLog(@"finished presenting");
     }]; 
 }
+
 - (void)didTapDeleteFavoriteButton:(NSInteger)index{
-    
+    NSLog(@"didTapDeleteFavoriteButton.");
 }
 
 #pragma mark - ECFavoritesCall Delegate Methods
+
 - (void)favoritesDidTapCommentsButton:(ECFavoritesCell *)ecFavoritesCell{
     NSLog(@"%@", ecFavoritesCell.favoriteFeedItem.feedItemId);
     NSMutableArray *array = [[NSMutableArray alloc] init];
@@ -246,11 +234,19 @@
         }
     }
     else if ([ecFavoritesCell.favoriteFeedItem.entityType isEqual:EntityType_EVENT]){
+        NSLog(@"EntityType_EVENT: %@", EntityType_EVENT);
     }
     else{
+        //Need To change
         DCPersonDetailTableViewController * dcPersonDetailTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPersonDetailTableViewController"];
         dcPersonDetailTableViewController.selectedFeedItem = ecFavoritesCell.favoriteFeedItem;
         [self.navigationController pushViewController:dcPersonDetailTableViewController animated:YES];
+        /*
+        DCInfluencersPersonDetailsViewController * dcInflurPersonVC = [self.storyboard instantiateViewControllerWithIdentifier:@"DCInfluencersPersonDetailsViewController"];
+        dcInflurPersonVC.mSelectedDCFeedItem = ecFavoritesCell.favoriteFeedItem;
+        [self.navigationController pushViewController:dcInflurPersonVC animated:YES];
+         */
     }
 }
+
 @end

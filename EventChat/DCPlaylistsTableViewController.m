@@ -23,6 +23,8 @@
 
 @implementation DCPlaylistsTableViewController
 
+#pragma mark - ViewController LifeCycle Methods
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     /*
@@ -56,62 +58,9 @@
     }];
 }
 
-- (IBAction)didTapCancel:(id)sender{
-    [self dismissViewControllerAnimated:YES completion:nil];
-}
-
-- (IBAction)didTapAddPlaylist:(id)sender{
-    DCPlaylist *newPlaylist = [DCPlaylist alloc];
-    UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"New Playlist" message:@"Enter a name for the playlist" preferredStyle:UIAlertControllerStyleAlert];
-    
-    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
-        textField.delegate = self;
-        [textField becomeFirstResponder];
-    }];
-    
-    UIAlertAction * cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-    }];
-    UIAlertAction * ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
-        NSArray * tfArray = alert.textFields;
-        UITextField * tf = [tfArray objectAtIndex:0];
-        newPlaylist.playlistName = tf.text;
-        if([tf.text length] > 0){
-            /*
-            [[ECAPI sharedManager] createPlaylist:self.signedInUser.userId playlistName:newPlaylist.playlistName callback:^(DCPlaylist *playlist, NSError *error) {
-                if(error){
-                    NSLog(@"Error: %@", error);
-                }
-                else{
-                    [self.playlists insertObject:playlist atIndex:0];
-                    [_playlistTableView reloadData];
-                }
-            }];
-             */
-        }
-        else{
-            UIAlertView *alertView = [[UIAlertView alloc]
-                                      initWithTitle:@"Error"
-                                      message:@"Please enter a Name for the new playlist."
-                                      delegate:nil
-                                      cancelButtonTitle:@"Okay"
-                                      otherButtonTitles:nil];
-            [alertView show];
-        }
-    }];
-    
-    [alert addAction:ok];
-    [alert addAction:cancel];
-    [self presentViewController:alert animated:NO completion:nil];
-}
-
-#pragma mark - TextField delegate
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-    return YES;
-}
-
 #pragma mark - Table view data source
-- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
-{
+
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     return 80.0;
 }
 
@@ -171,32 +120,32 @@
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath{
-    DCPlaylist *playlist = [_playlists objectAtIndex:indexPath.row];
     if(_isFeedMode){
-        //@kj
         /*
-        [[ECAPI sharedManager] addToPlaylist:playlist.playlistId feedItemId:_feedItemId userId:self.signedInUser.userId callback:^(NSArray *playlists, NSError *error) {
-            if(error){
-                NSLog(@"Error: %@", error);
-            }
-            else{
-                _playlists = [[NSMutableArray alloc] initWithArray:playlists];
-                //Update user profile API call
-                [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:self.signedInUser.profilePicUrl callback:^(NSError *error) {
-                    if (error) {
-                        NSLog(@"Error adding user: %@", error);
-                    } else {
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdated" object:nil];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdatedNew" object:nil];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateEventTV" object:nil];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateChatReaction" object:nil];
-                        [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
-                        [self dismissViewControllerAnimated:YES completion:nil];
-                    }
-                }];
-//                [self dismissViewControllerAnimated:YES completion:nil];
-            };
-        }];
+         DCPlaylist *playlist = [_playlists objectAtIndex:indexPath.row];
+         
+         [[ECAPI sharedManager] addToPlaylist:playlist.playlistId feedItemId:_feedItemId userId:self.signedInUser.userId callback:^(NSArray *playlists, NSError *error) {
+         if(error){
+         NSLog(@"Error: %@", error);
+         }
+         else{
+         _playlists = [[NSMutableArray alloc] initWithArray:playlists];
+         //Update user profile API call
+         [[ECAPI sharedManager] updateProfilePicUrl:self.signedInUser.userId profilePicUrl:self.signedInUser.profilePicUrl callback:^(NSError *error) {
+         if (error) {
+         NSLog(@"Error adding user: %@", error);
+         } else {
+         [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdated" object:nil];
+         [[NSNotificationCenter defaultCenter] postNotificationName:@"profileUpdatedNew" object:nil];
+         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateEventTV" object:nil];
+         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateChatReaction" object:nil];
+         [[NSNotificationCenter defaultCenter] postNotificationName:@"updateTableView" object:nil];
+         [self dismissViewControllerAnimated:YES completion:nil];
+         }
+         }];
+         //                [self dismissViewControllerAnimated:YES completion:nil];
+         };
+         }];
          */
     }else{
         DCPlaylist *playlist = [_playlists objectAtIndex:indexPath.row];
@@ -236,7 +185,57 @@
         
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+    }
+}
+
+#pragma mark - IBActions Methods
+
+- (IBAction)didTapCancel:(id)sender{
+    [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (IBAction)didTapAddPlaylist:(id)sender{
+    DCPlaylist *newPlaylist = [DCPlaylist alloc];
+    UIAlertController * alert = [UIAlertController alertControllerWithTitle:@"New Playlist" message:@"Enter a name for the playlist" preferredStyle:UIAlertControllerStyleAlert];
+    
+    [alert addTextFieldWithConfigurationHandler:^(UITextField * _Nonnull textField) {
+        textField.delegate = self;
+        [textField becomeFirstResponder];
+    }];
+    
+    UIAlertAction * cancel = [UIAlertAction actionWithTitle:@"CANCEL" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+    }];
+    UIAlertAction * ok = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        NSArray * tfArray = alert.textFields;
+        UITextField * tf = [tfArray objectAtIndex:0];
+        newPlaylist.playlistName = tf.text;
+        if([tf.text length] > 0){
+            /*
+            [[ECAPI sharedManager] createPlaylist:self.signedInUser.userId playlistName:newPlaylist.playlistName callback:^(DCPlaylist *playlist, NSError *error) {
+                if(error){
+                    NSLog(@"Error: %@", error);
+                }
+                else{
+                    [self.playlists insertObject:playlist atIndex:0];
+                    [_playlistTableView reloadData];
+                }
+            }];
+             */
+        }
+        else{
+            UIAlertView *alertView = [[UIAlertView alloc]
+                                      initWithTitle:@"Error"
+                                      message:@"Please enter a Name for the new playlist."
+                                      delegate:nil
+                                      cancelButtonTitle:@"Okay"
+                                      otherButtonTitles:nil];
+            [alertView show];
+        }
+    }];
+    
+    [alert addAction:ok];
+    [alert addAction:cancel];
+    [self presentViewController:alert animated:NO completion:nil];
 }
 
 - (IBAction)refresh:(UIRefreshControl *)sender {
@@ -246,4 +245,11 @@
         [sender endRefreshing];
     }];
 }
+
+#pragma mark - TextField delegate
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+    return YES;
+}
+
 @end
