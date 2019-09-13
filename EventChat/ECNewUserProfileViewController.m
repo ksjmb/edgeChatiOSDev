@@ -365,12 +365,14 @@
         }
     }
     else{
-        if (self.mLoginUser.profilePicUrl != nil){
+        if (self.mLoginUser.profilePicUrl != nil && ![self.mLoginUser.profilePicUrl  isEqual: @""]){
             [self showProfilePicImage:self ForImageUrl:self.mLoginUser.profilePicUrl];
+        }else{
+            [self.userProfileImageView setImage:[UIImage imageNamed:@"missing-profile.png"]];
         }
     }
     
-    if (self.mLoginUser.coverPic_Url != nil){
+    if (self.mLoginUser.coverPic_Url != nil && ![self.mLoginUser.coverPic_Url  isEqual: @""]){
         [self showImageOnTheCell:self ForImageUrl:self.mLoginUser.coverPic_Url];
     }else{
        [self.userBGImageView setImage:[UIImage imageNamed:@"cover_slide"]];
@@ -575,14 +577,13 @@
                             instance.isProfilePicUpdated = false;
                             self.signedInUser.coverPic_Url = imageURL;
                             [self showImageOnTheCell:self ForImageUrl:imageURL];
-//                            [self updateUser];
                         }else{
                             instance.isProfilePicUpdated = true;
                             self.signedInUser.profilePicUrl = imageURL;
                             [self showProfilePicImage:self ForImageUrl:imageURL];
                         }
                     }
-                } else{ 
+                } else{
                     // Fail Condition ask for retry and cancel through alertView
                     [self showFailureAlert:@"Image"];
                     [SVProgressHUD dismiss];
@@ -751,45 +752,6 @@
 
 - (void)refreshPostStream {
     [self loadUserPosts:self.profileUser.userId];
-}
-
-#pragma mark - SDWebImage
-
--(void)showImageOnHeader:(NSString *)url{
-    SDImageCache *cache = [SDImageCache sharedImageCache];
-    UIImage *inMemoryImage = [cache imageFromMemoryCacheForKey:url];
-    
-    if (inMemoryImage)
-    {
-        self.userBGImageView.image = inMemoryImage;
-    }
-    else if ([[SDWebImageManager sharedManager] diskImageExistsForURL:[NSURL URLWithString:url]]){
-        UIImage *image = [cache imageFromDiskCacheForKey:url];
-        self.userBGImageView.image = image;
-        
-    }else{
-        NSURL *urL = [NSURL URLWithString:url];
-        SDWebImageManager *manager = [SDWebImageManager sharedManager];
-        [manager.imageDownloader setDownloadTimeout:20];
-        [manager downloadImageWithURL:urL
-                              options:0
-                             progress:^(NSInteger receivedSize, NSInteger expectedSize) {
-                                 // progression tracking code
-                             }
-                            completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
-                                if (image) {
-                                    self.userBGImageView.image = image;
-                                    self.userBGImageView.layer.borderWidth = 1.0;
-                                    self.userBGImageView.layer.borderColor = (__bridge CGColorRef _Nullable)([UIColor redColor]);
-                                }
-                                else {
-                                    if(error){
-                                        NSLog(@"Problem downloading Image, play try again");
-                                        return;
-                                    }
-                                }
-                            }];
-    }
 }
 
 #pragma mark - AddToPlaylist Delegate Methods
@@ -1008,6 +970,14 @@
                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                 if (image) {
                                     self.userBGImageView.image = image;
+                                    NSString *urlString = [imageURL absoluteString];
+                                    [[ECAPI sharedManager] updateUserCoverPicURL:self.mSelectedECUser coverPicURL:urlString callback:^(ECUser *ecUser, NSError *error) {
+                                        if (error) {
+                                            NSLog(@"Error update user cover pic: %@", error);
+                                        } else {
+                                            self.mSelectedECUser.coverPic_Url = urlString;
+                                        }
+                                    }];
                                 }
                                 else {
                                     if(error){
@@ -1044,8 +1014,8 @@
                             completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, BOOL finished, NSURL *imageURL) {
                                 if (image) {
                                     self.userProfileImageView.image = image;
-                                    //API Call
-                                    [[ECAPI sharedManager] updateProfilePicUrl:self.mSelectedECUser.userId profilePicUrl:imageURL callback:^(NSError *error) {
+                                    NSString *urlString = [imageURL absoluteString];
+                                    [[ECAPI sharedManager] updateProfilePicUrl:self.mSelectedECUser.userId profilePicUrl:urlString callback:^(NSError *error) {
                                         if (error) {
                                             NSLog(@"Error update user profile: %@", error);
                                         } else {

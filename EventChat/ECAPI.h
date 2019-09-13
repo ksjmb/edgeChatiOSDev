@@ -81,6 +81,7 @@ typedef void (^DCNodeApiClientFailure)(AFHTTPRequestOperation *task, NSError *er
                  callback:(void (^)(NSError *error))callback;
 - (void)updateUser:(ECUser *)ecUser
           callback:(void (^)(ECUser *ecUser, NSError *error))callback;
+- (void)updateUserCoverPicURL:(ECUser *)ecUser coverPicURL:(NSString *)cover_pic_url  callback:(void (^)(ECUser *ecUser, NSError *error))callback;
 
 #pragma mark - Follow feature methods
 - (void)getFollowers:(NSString *)userId callback:(void (^)(NSArray *users, NSError *error))callback;

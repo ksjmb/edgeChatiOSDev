@@ -1032,6 +1032,45 @@ static const int kRetryCount = 3;
     [self taskWithRetry:createTaskBlock failure:failureBlock retryCount:kRetryCount];
 }
 
+- (void)updateUserCoverPicURL:(ECUser *)ecUser coverPicURL:(NSString *)cover_pic_url
+          callback:(void (^)(ECUser *ecUser, NSError *error))callback{
+    NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/users/updateUser/%@", ecUser.userId];
+    
+    NSMutableDictionary *mutableParameters = [NSMutableDictionary dictionary];
+    mutableParameters[@"coverPic_Url"] = cover_pic_url;
+    
+    NSDictionary *parameters = [NSDictionary dictionaryWithDictionary:mutableParameters];
+    
+    DCNodeApiClientCreateTask createTaskBlock = ^AFHTTPRequestOperation *(void (^retryBlock)(AFHTTPRequestOperation *task, NSError *error)) {
+        AFHTTPRequestOperation *createdTask = [[ECHTTPRequestOperationManager sharedManagerDC]
+                                               POST:endpoint
+                                               parameters:parameters
+                                               success:^(AFHTTPRequestOperation *operation, id responseObject) {
+                                                   NSDictionary *responseDictionary = [responseObject dictionaryOrNilValue];
+                                                   
+                                                   NSError *infoError = nil;
+                                                   ECUser *responseUser = [[ECUser alloc] initWithDictionary:responseDictionary[@"data"] error:&infoError];
+                                                   
+                                                   if (infoError) {
+                                                       NSLog(@"Error fetching user by email: %@", infoError);
+                                                       callback(nil, infoError);
+                                                       return;
+                                                   }
+                                                   callback(responseUser, nil);
+                                               }
+                                               failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                                                   callback(nil, error);
+                                               }];
+        return createdTask;
+    };
+    
+    DCNodeApiClientFailure failureBlock = ^(AFHTTPRequestOperation *task, NSError *error) {
+        NSLog(@"[DCNodeApiClient updateProfilePicUrl]: error %@", error);
+    };
+    
+    [self taskWithRetry:createTaskBlock failure:failureBlock retryCount:kRetryCount];
+}
+
 #pragma mark - Follow feature methods
 - (void)getFollowers:(NSString *)userId callback:(void (^)(NSArray *users, NSError *error))callback{
     NSString *endpoint = [NSString stringWithFormat:@"/rest/v4/users/%@/followers", userId];
