@@ -283,21 +283,18 @@
 
 - (void)initialSetup{
     [self.mFollowButton setHidden:true];
-    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadPorfileTV) name:@"updateTableView" object:nil];
-    
     self.postBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"Post" style:UIBarButtonItemStylePlain target:self action:@selector(didTapPostButton:)];
-    
     self.mSearchBar.delegate = self;
+
+    /*
+    self.postBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor whiteColor]] style:UIBarButtonItemStylePlain target:self  action:@selector(didTapPostButton:)];
+    [self.navigationItem setRightBarButtonItem:self.postBarButtonItem];
+     */
     
-    //    self.postBarButtonItem = [[UIBarButtonItem alloc] initWithImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor whiteColor]] style:UIBarButtonItemStylePlain target:self  action:@selector(didTapPostButton:)];
-//    [self.navigationItem setRightBarButtonItem:self.postBarButtonItem];
     self.navigationItem.rightBarButtonItems=@[self.postBarButtonItem, self.mSearchBarBtnItem];
-    
     self.navigationController.navigationItem.backBarButtonItem = [[UIBarButtonItem alloc] initWithTitle:@"" style:UIBarButtonItemStylePlain target:nil action:nil];
-    
     [self.mUserNameLabel setText:[NSString stringWithFormat:@"%@ %@", self.mLoginUser.firstName, self.mLoginUser.lastName]];
-    
     [self.coverImaegButton setImage:[IonIcons imageWithIcon:ion_ios_camera_outline  size:27.0 color:[UIColor darkGrayColor]] forState:UIControlStateNormal];
     [self.profileImageButton setImage:[IonIcons imageWithIcon:ion_ios_camera_outline  size:27.0 color:[UIColor darkGrayColor]] forState:UIControlStateNormal];
     
@@ -340,10 +337,7 @@
             [request startWithCompletionHandler:^(FBSDKGraphRequestConnection *connection,
                                                   id result,
                                                   NSError *error) {
-                // Handle the result
-//                NSLog(@"Results: %@", result);
                 NSDictionary *responseDictionary = [result dictionaryOrNilValue];
-                
                 NSError *infoError = nil;
                 ECFacebookUserData *fbUserData = [[ECFacebookUserData alloc] initWithDictionary:responseDictionary[@"data"] error:&infoError];
                 NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:fbUserData.url]];
@@ -352,7 +346,6 @@
                 
                 //Update profilePicUrl in User Collection
                 if(self.isSignedInUser){
-//                    NSLog(@"ProfilePicUrl: %@", fbUserData.url);
                     [[ECAPI sharedManager] updateProfilePicUrl:self.mLoginUser.userId profilePicUrl:fbUserData.url callback:^(NSError *error) {
                         if (error) {
                             NSLog(@"Error adding user: %@", error);

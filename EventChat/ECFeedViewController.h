@@ -26,5 +26,6 @@
 @property (nonatomic, assign) BOOL isCommingFromLogin;
 @property (nonatomic, strong) DCFeedItem *saveFeedItem;
 
--(void)pushToSignInVC;
+//-(void)pushToSignInVC;
+
 @end
