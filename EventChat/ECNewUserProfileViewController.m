@@ -82,15 +82,18 @@
     [self initialSetup];
     
     [self getAllUserList];
-    [self loadUserPosts:self.mLoginUser.userId];
+//    [self loadUserPosts:self.mLoginUser.userId];
     [self loadFollowers:self.mLoginUser.userId];
     [self loadFollowing:self.mLoginUser.userId];
-    
     /*
     //LongPressGestureToUpload_ProfileImage_CoverImage
     [self setupGestureForProfileImageView];
     [self setupGestureForCoverImageView];
-     */
+    */
+}
+
+- (void)viewWillAppear:(BOOL)animated{
+    [self loadUserPosts:self.mLoginUId];
 }
 
 #pragma mark - SearchBar Delegate Methods
