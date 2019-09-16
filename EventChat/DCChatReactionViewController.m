@@ -256,6 +256,7 @@
     }
 //    [self getFeedItemAttendeeList];
     [self.attendeeListTableView setHidden:true];
+    [self getFeedItemAttendeeListAPICallForInitialSetup];
 }
 
 - (void)convertStringDateToNSDate :(NSString *)strDate{
@@ -1436,6 +1437,24 @@
                 }
             }
             [self.attendeeListTableView reloadData];
+        }
+    }];
+}
+
+-(void)getFeedItemAttendeeListAPICallForInitialSetup{
+    [SVProgressHUD setDefaultStyle:SVProgressHUDStyleDark];
+    [SVProgressHUD setDefaultMaskType:SVProgressHUDMaskTypeBlack];
+    [SVProgressHUD showWithStatus:@"Loading"];
+    
+    [[ECAPI sharedManager] getAttendeeList:self.selectedFeedItem.feedItemId callback:^(NSArray *attendees, NSError *error) {
+        [SVProgressHUD dismiss];
+        if (error) {
+            NSLog(@"Error saving response: getFeedItemAttendeeList: %@", error);
+        } else {
+            self.attendeeList = [[NSArray alloc] initWithArray:attendees copyItems:true];
+            NSString *mReactionCount = [NSString stringWithFormat:@"(%lu", (unsigned long)self.attendeeList.count];
+            mReactionCount = [mReactionCount stringByAppendingString:@")"];
+            [self.reactionsCountLabel setText:mReactionCount];
         }
     }];
 }
