@@ -24,6 +24,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.signedInUser = [[ECAPI sharedManager] signedInUser];
+    self.userListTableView.tableFooterView = [UIView new];
     
     if (self.isComeFromProfile){
         if(self.showFollowing){
