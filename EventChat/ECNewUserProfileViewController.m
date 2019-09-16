@@ -44,6 +44,7 @@
 #import "Reachability.h"
 #import "ECAPINames.h"
 #import "ECIndividualProfileTableViewCell.h"
+#import "ECNewPlaylistTableViewController.h"
 
 @interface ECNewUserProfileViewController ()
 @property (nonatomic, assign) NSString *userEmailStr;
@@ -476,6 +477,13 @@
 }
 
 - (IBAction)actionOnInstagramButton:(id)sender {
+    ECNewPlaylistTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewPlaylistTableViewController"];
+    vc.isFeedMode = false;
+    vc.isSignedInUser = self.isSignedInUser;
+    vc.profileUser = self.mSelectedECUser;
+    [self.navigationController pushViewController:vc animated:YES];
+    
+    /*
     DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
     dcPlaylistsTableViewController.isFeedMode = false;
     dcPlaylistsTableViewController.isSignedInUser = self.isSignedInUser;
@@ -483,6 +491,7 @@
 //    dcPlaylistsTableViewController.profileUser = self.profileUser;
     dcPlaylistsTableViewController.profileUser = self.mSelectedECUser;
     [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+     */
 }
 
 - (IBAction)didTapPostButton:(id)sender{

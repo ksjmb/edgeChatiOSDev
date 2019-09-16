@@ -37,6 +37,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import <AVKit/AVKit.h>
 #import "ECFullScreenImageViewController.h"
+#import "ECNewPlaylistTableViewController.h"
 
 @interface ECIndividualProfileViewController ()
 @property (nonatomic, strong) NSArray *mFollowingUsersArr;
@@ -51,6 +52,7 @@
 @property (nonatomic, strong) FBSDKShareLinkContent *mFBContent;
 @property (nonatomic, strong) NSMutableArray *mTopicsArr;
 @property (strong, nonatomic) ECFullScreenImageViewController *fullScreenImgVC;
+@property (nonatomic, assign) BOOL isLoginUser;
 
 @end
 
@@ -233,8 +235,10 @@
 - (void)initialSetup{
     if ([self.loginUserIdStr isEqualToString:self.selectedEcUser.userId]){
         [self.mFollowBtn setHidden:true];
+        self.isLoginUser = true;
     }else{
         [self.mFollowBtn setHidden:false];
+        self.isLoginUser = false;
     }
     
     if (!self.isFollowTab){
@@ -651,12 +655,20 @@
 }
 
 - (IBAction)actionOnInstaBtn:(id)sender {
+    ECNewPlaylistTableViewController *vc = [self.storyboard instantiateViewControllerWithIdentifier:@"ECNewPlaylistTableViewController"];
+    vc.isFeedMode = false;
+    vc.isSignedInUser = self.isLoginUser;
+    vc.profileUser = self.selectedEcUser;
+    [self.navigationController pushViewController:vc animated:YES];
+    
+    /*
     DCPlaylistsTableViewController *dcPlaylistsTableViewController = [self.storyboard instantiateViewControllerWithIdentifier:@"DCPlaylistsTableViewController"];
     dcPlaylistsTableViewController.isFeedMode = false;
     dcPlaylistsTableViewController.isSignedInUser = self.isSignedInUser;
     dcPlaylistsTableViewController.signedInUser = self.signedInUser;
     dcPlaylistsTableViewController.profileUser = self.selectedEcUser;
     [self.navigationController pushViewController:dcPlaylistsTableViewController animated:YES];
+    */
 }
 
 - (IBAction)actionOnSearchBtnClick:(id)sender {
