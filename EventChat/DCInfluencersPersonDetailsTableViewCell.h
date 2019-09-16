@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *mVideoTitleLabelHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *playerViewHeightConstraint;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *imageViewHeightConstraint;
-
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *stackViewWidthConstraint;
 
 @property (nonatomic, weak) id <DCInfluencersPersonDetailsTVCellDelegate> dcPersonDelegate;
 @property (nonatomic, strong) DCFeedItem *mDCFeedItem;
@@ -59,6 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong) ECUser *mSignedInUser;
 @property (nonatomic, strong) DCPost *mDCPost;
 - (void)configureWithPost:(DCPost *)post signedInUser:(ECUser *)signedInUser;
+- (void)configureWithUserProfilePost:(DCPost *)post signedInUser:(ECUser *)signedInUser;
 
 @end
 

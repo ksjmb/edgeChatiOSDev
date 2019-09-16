@@ -165,7 +165,8 @@
             
             cell.dcPersonDelegate = self;
             //        [cell configureWithPost:post signedInUser:self.signedInUser];
-            [cell configureWithPost:post signedInUser:self.selectedEcUser];
+//            [cell configureWithPost:post signedInUser:self.selectedEcUser];
+            [cell configureWithUserProfilePost:post signedInUser:self.selectedEcUser];
             return cell;
         }
     }

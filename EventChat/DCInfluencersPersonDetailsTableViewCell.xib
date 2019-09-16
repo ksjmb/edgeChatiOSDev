@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14113" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -49,7 +49,7 @@
                         </connections>
                     </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Msg" textAlignment="justified" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ftZ-hf-lnV">
-                        <rect key="frame" x="8" y="158" width="359" height="33"/>
+                        <rect key="frame" x="8" y="158" width="359" height="33.5"/>
                         <constraints>
                             <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="21" id="0Id-v9-awN"/>
                         </constraints>
@@ -58,7 +58,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="n1I-Ty-N4C">
-                        <rect key="frame" x="8" y="195" width="359" height="40.5"/>
+                        <rect key="frame" x="8" y="195.5" width="359" height="40"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="00 Comments" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rw0-OP-xTT">
                                 <rect key="frame" x="38" y="8.5" width="77.5" height="21"/>
@@ -177,6 +177,7 @@
                 <outlet property="mVideoTitle" destination="ftZ-hf-lnV" id="qFY-qo-dCg"/>
                 <outlet property="mVideoTitleLabelHeightConstraint" destination="0Id-v9-awN" id="Sce-ZX-DOX"/>
                 <outlet property="playerViewHeightConstraint" destination="o36-W4-t82" id="Tkk-lh-60P"/>
+                <outlet property="stackViewWidthConstraint" destination="c1i-gP-LjO" id="se9-DL-LIH"/>
             </connections>
             <point key="canvasLocation" x="260.5" y="49"/>
         </tableViewCell>

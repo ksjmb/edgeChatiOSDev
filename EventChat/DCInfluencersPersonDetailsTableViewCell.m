@@ -230,6 +230,84 @@
      */
 }
 
+- (void)configureWithUserProfilePost:(DCPost *)post signedInUser:(ECUser *)signedInUser{
+    self.mSignedInUser = signedInUser;
+    self.mDCPost = post;
+    self.mVideoPlayBtn.backgroundColor = [UIColor colorWithRed:1 green:1 blue:1 alpha:0.25];
+    [self.mVideoPlayBtn setHidden:true];
+    //Hide Fav_Btn
+    [self.mVideoFavBtn setHidden:true];
+    self.stackViewWidthConstraint.constant = 65.0;
+    
+    /*
+    if([signedInUser.favoritedFeedItemIds containsObject:post.postId]){
+        [self.mVideoFavBtn setImage:[IonIcons imageWithIcon:ion_ios_heart  size:27.0 color:[UIColor redColor]] forState:UIControlStateNormal];
+    }else{
+        UIImage *btnImage = [UIImage imageNamed:@"heart_new"];
+        [self.mVideoFavBtn setTintColor:[UIColor darkTextColor]];
+        [self.mVideoFavBtn setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(30.0, 30.0)] forState:UIControlStateNormal];
+    }
+    */
+    
+    if([signedInUser.attendingFeedItemIds containsObject:post.postId]){
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_blue"];
+        [self.mVideoLikeBtn setTintColor:[UIColor colorWithRed:(67/255.0) green:(114/255.0) blue:(199/255.0) alpha:1]];
+        [self.mVideoLikeBtn setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+    }else{
+        UIImage *btnImage = [UIImage imageNamed:@"thumb_white"];
+        [self.mVideoLikeBtn setTintColor:[UIColor darkTextColor]];
+        [self.mVideoLikeBtn setImage:[self imageWithImage:btnImage scaledToSize:CGSizeMake(27.0, 27.0)] forState:UIControlStateNormal];
+    }
+    
+    //Comments Button
+    if([post.commentCount intValue] > 0){
+        NSString *mCommentCount = [NSString stringWithFormat:@"%@", post.commentCount];
+        mCommentCount = [mCommentCount stringByAppendingString:@" comments"];
+        [self.mVideoCommentCount setText:mCommentCount];
+        self.mVideoCommentBtn.enabled = TRUE;
+    }
+    else{
+        [self.mVideoCommentCount setText:@"00 comments"];
+        self.mVideoCommentBtn.enabled = FALSE;
+        //Remove Later
+        self.mVideoCommentBtn.enabled = TRUE;
+    }
+    
+    [self.mVideoShareBtn setImage:[IonIcons imageWithIcon:ion_share  size:30.0 color:[UIColor darkTextColor]] forState:UIControlStateNormal];
+    
+    //Video present
+    if ([post.postType  isEqual: @"video"]){
+        if(post.imageUrl != nil){
+            [self showImageOnTheCell:self ForImageUrl:post.imageUrl];
+        }
+        [self.mPlayerView loadWithVideoId:post.videoUrl];
+        [self.mPlayerView playVideo];
+        self.imageViewHeightConstraint.constant = 0;
+        self.mVideoTitleLabelHeightConstraint.constant = 0;
+        self.imageViewHeightConstraint.constant = 150;
+        self.playerViewHeightConstraint.constant = 150;
+        [self.mVideoPlayBtn setHidden:false];
+        [self.mVideoImageView setHidden:false];
+    }
+    //Image present
+    else if ([post.postType  isEqual: @"image"]){
+        if(post.imageUrl != nil){
+            [self showImageOnTheCell:self ForImageUrl:post.imageUrl];
+        }
+        self.playerViewHeightConstraint.constant = 0;
+        self.mVideoTitleLabelHeightConstraint.constant = 0;
+        self.imageViewHeightConstraint.constant = 150;
+        [self.mVideoImageView setHidden:false];
+    }
+    //Only text message present
+    else if (post.imageUrl == nil && post.videoUrl == nil){
+        self.imageViewHeightConstraint.constant = 0;
+        self.playerViewHeightConstraint.constant = 0;
+    }
+    
+    [self.mVideoTitle setText:[NSString stringWithFormat:@"%@", post.content]];
+}
+
 - (UIImage *)imageWithImage:(UIImage *)image scaledToSize:(CGSize)newSize{
     UIGraphicsBeginImageContext(newSize);
     [image drawInRect:CGRectMake(0, 0, newSize.width, newSize.height)];
